@@ -394,7 +394,6 @@ def update_casper_answer(answer: dict):
     [Output('history-records', 'data'),
      Output('history-panel', 'records')],
     [Input('response', 'status'),
-     Input('history-panel', 'onQuestionSelect'),
      Input('history-panel', 'onClearHistory')],
     [State('question', 'data'),
      State({'type': 'wise-man', 'name': ALL}, 'answer'),
@@ -402,7 +401,7 @@ def update_casper_answer(answer: dict):
      State('query', 'value')],
     prevent_initial_call=True
 )
-def manage_history(status, selected_question, clear_trigger, question, answers, current_records, current_query):
+def manage_history(status, clear_trigger, question, answers, current_records, current_query):
     """统一管理历史记录相关操作"""
     import time
     import uuid
@@ -473,15 +472,17 @@ def manage_history(status, selected_question, clear_trigger, question, answers, 
 
 @callback(
     Output('query', 'value', allow_duplicate=True),
-    Input('history-panel', 'onQuestionSelect'),
+    Input('response', 'status'),
+    State('query', 'value'),
     prevent_initial_call=True
 )
-def reask_from_history(selected_question):
-    """从历史记录重新提问"""
-    if selected_question:
-        print(f"🔄 从历史记录重新提问: {selected_question[:50]}...")
-        return selected_question
-    return ''
+def clear_input_after_completion(status, current_query):
+    """回答完成后清空输入框"""
+    # 当状态不是进行中时（即完成回答时），清空输入框
+    if status != 'progress' and current_query:
+        print(f"✅ 回答完成，清空输入框")
+        return ''
+    return current_query
 
 
 # 历史记录详情modal相关回调
@@ -520,13 +521,19 @@ def show_history_detail(record_detail):
 app.clientside_callback(
     """
     function(records) {
-        if (records && records.length > 0 && window.HistoryStorage) {
-            // 保存历史记录到localStorage
+        if (window.HistoryStorage) {
+            // 清空所有记录
             window.HistoryStorage.clearAll();
-            records.forEach(record => {
-                window.HistoryStorage.saveRecord(record);
-            });
-            console.log('📚 已保存', records.length, '条历史记录到localStorage');
+            
+            // 如果有记录，重新保存
+            if (records && records.length > 0) {
+                records.forEach(record => {
+                    window.HistoryStorage.saveRecord(record);
+                });
+                console.log('📚 已保存', records.length, '条历史记录到localStorage');
+            } else {
+                console.log('🗑️ 已清空localStorage中的历史记录');
+            }
         }
         return window.dash_clientside.no_update;
     }

@@ -39,14 +39,6 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         }
     };
 
-    const handleReaskClick = (record, event) => {
-        event.stopPropagation();
-        
-        if (setProps) {
-            setProps({ onQuestionSelect: record.question });
-        }
-    };
-
     const handleClearHistory = () => {
         if (window.confirm('确定要清空所有历史记录吗？')) {
             if (setProps) {
@@ -105,18 +97,7 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
                     React.createElement('div', {
                         key: 'question',
                         className: 'history-question'
-                    }, `問題: ${record.question}`),
-                    React.createElement('div', {
-                        key: 'actions',
-                        className: 'history-actions'
-                    }, [
-                        React.createElement('button', {
-                            key: 'reask-btn',
-                            className: 'reask-btn',
-                            onClick: (e) => handleReaskClick(record, e),
-                            title: '重新提问'
-                        }, '🔄')
-                    ])
+                    }, `問題: ${record.question}`)
                 ])
             )
         )
