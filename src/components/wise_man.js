@@ -20,7 +20,20 @@ function getColor(status) {
     throw new Error(`Invalid status: ${status}`);
 }
 
-export default function WiseMan({ setProps, name, order_number, question_id, answer, n_clicks }) {
+export default function WiseMan({ 
+    setProps, 
+    name, 
+    order_number, 
+    question_id = 0, 
+    answer = {
+        id: 0,
+        status: 'info',
+        error: '',
+        conditions: '',
+        response: 'Waiting for query...'
+    }, 
+    n_clicks = 0 
+}) {
     const fullName = `${name.toUpperCase()} • ${order_number}`;
     const color = getColor(answer['status']);
     const processing = question_id !== answer['id'];
@@ -38,15 +51,3 @@ export default function WiseMan({ setProps, name, order_number, question_id, ans
         $('div', { className: innerClassName, style: { background: color } }, fullName)
     )
 }
-
-WiseMan.defaultProps = {
-    n_clicks: 0,
-    question_id: 0,
-    answer: {
-        id: 0,
-        status: 'info',
-        error: '',
-        conditions: '',
-        response: 'Waiting for query...'
-    }
-};

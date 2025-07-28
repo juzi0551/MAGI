@@ -9,7 +9,7 @@ function getStatusText(status) {
         return '合 意';
 
     if (status === 'no')
-        return '拒 絶';
+        return '否 絶';
 
     if (status === 'conditional')
         return '状 態';
@@ -39,7 +39,7 @@ function getStatusColor(status) {
     throw new Error('Invalid status: ' + status);
 }
 
-export default function Response({ status, question_id, answer_id }) {
+export default function Response({ status = 'info', question_id = 0, answer_id = 0 }) {
     const text = getStatusText(status);
     const color = getStatusColor(status);
 
@@ -51,9 +51,3 @@ export default function Response({ status, question_id, answer_id }) {
         $('div', { className: 'inner' }, text)
     );
 }
-
-Response.defaultProps = {
-    status: 'info',
-    question_id: 0,
-    answer_id: 0
-};

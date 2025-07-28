@@ -1,7 +1,7 @@
 import React from 'react';
 const $ = React.createElement;
 
-export default function Status({ extention }) {
+export default function Status({ extention = '????' }) {
     const extentionLabel = `EXTENTION:${extention}`;
 
     return $('div', { className: 'system-status' },
@@ -12,7 +12,3 @@ export default function Status({ extention }) {
         $('div', {}, 'PRIORITY:AAA')
     );
 }
-
-Status.defaultProps = {
-    extention: '????'
-};
