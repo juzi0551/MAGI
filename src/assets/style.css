@@ -83,12 +83,14 @@ body {
 .wise-answer {
     border: 2px solid #ff8d00;
     padding: 10px;
+    padding-bottom: 50px; /* 为状态标签预留空间 */
     background: black;
     color: #ff8d00;
     font-family: 'Lucida Console', monospace;
     flex: 1;
     overflow-y: auto;
     position: relative;
+    min-height: 120px; /* 确保最小高度 */
 }
 
 .wise-answer-title {
@@ -106,6 +108,8 @@ body {
     font-size: 0.75em;
     line-height: 1.2;
     white-space: pre-wrap;
+    margin-bottom: 40px; /* 确保内容不会覆盖状态标签 */
+    padding-right: 80px; /* 为右下角状态标签留出空间 */
 }
 
 .wise-answer .answer-status {

@@ -2,6 +2,8 @@ import litellm
 import re
 import os
 import json
+import time
+import ssl
 from dotenv import load_dotenv
 from prompts import get_personality_prompt
 
@@ -135,128 +137,186 @@ def setup_litellm(provider: str = None, model: str = None, api_key: str = None):
     return final_model
 
 def is_yes_or_no_question(question: str, key: str, provider: str = None, model: str = None):
-    """判断是否为是/否问题 - 只使用大模型判断"""
+    """判断是否为是/否问题 - 带重试机制"""
     from prompts import YES_NO_QUESTION_PROMPT
     
     final_model = setup_litellm(provider, model, key)
     
-    # 尝试使用logit_bias（仅对OpenAI模型有效）
-    extra_params = {}
-    if provider == 'openai' or final_model.startswith('gpt'):
-        extra_params['logit_bias'] = {
-            9642: 100,  # Yes
-            2822: 100   # No
-        }
+    # 重试配置
+    max_retries = 3
+    retry_delay = 1  # 秒
     
-    # 构建请求消息
-    messages = [
-        {'role': 'system', 'content': YES_NO_QUESTION_PROMPT},
-        {'role': 'user', 'content': question},
-    ]
-    
-    # 打印原始请求
-    print(f"\n🔍 [DEBUG] 是非题判断 - 原始请求:")
-    print(f"模型: {final_model}")
-    print(f"提供商: {provider}")
-    print(f"额外参数: {extra_params}")
-    print(f"消息数量: {len(messages)}")
-    print(f"用户问题: {question}")
-    print(f"完整消息列表:")
-    for i, msg in enumerate(messages):
-        print(f"  [{i}] {msg['role']}: {msg['content']}")
-    
-    response = litellm.completion(
-        model=final_model,
-        messages=messages,
-        max_tokens=1,
-        temperature=0,
-        **extra_params
-    )
-    
-    # 打印原始响应
-    print(f"\n📥 [DEBUG] 是非题判断 - 原始响应:")
-    print(f"完整响应对象: {response}")
-    print(f"响应内容: {response.choices[0].message.content}")
-    print(f"响应角色: {response.choices[0].message.role}")
-    if hasattr(response, 'usage'):
-        print(f"Token使用: {response.usage}")
+    for attempt in range(max_retries):
+        try:
+            # 尝试使用logit_bias（仅对OpenAI模型有效）
+            extra_params = {}
+            if provider == 'openai' or final_model.startswith('gpt'):
+                extra_params['logit_bias'] = {
+                    9642: 100,  # Yes
+                    2822: 100   # No
+                }
+            
+            # 为SSL问题添加特殊配置
+            if provider == 'openrouter':
+                extra_params.update({
+                    'timeout': 30,
+                    'max_retries': 2
+                })
+            
+            # 构建请求消息
+            messages = [
+                {'role': 'system', 'content': YES_NO_QUESTION_PROMPT},
+                {'role': 'user', 'content': question},
+            ]
+            
+            # 打印原始请求
+            print(f"\n🔍 [DEBUG] 是非题判断 - 尝试 {attempt + 1}/{max_retries}:")
+            print(f"模型: {final_model}")
+            print(f"提供商: {provider}")
+            print(f"用户问题: {question}")
+            
+            response = litellm.completion(
+                model=final_model,
+                messages=messages,
+                max_tokens=1,
+                temperature=0,
+                **extra_params
+            )
+            
+            # 打印原始响应
+            print(f"\n📥 [DEBUG] 是非题判断 - 成功响应:")
+            print(f"响应内容: {response.choices[0].message.content}")
+            if hasattr(response, 'usage'):
+                print(f"Token使用: {response.usage}")
 
-    content = response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip()
 
-    if content == 'Yes':
-        print(f"✅ 判断结果: 是非题")
-        return True
-    elif content == 'No':
-        print(f"✅ 判断结果: 开放性问题")
-        return False
-    else:
-        # 如果不是标准的Yes/No回答，默认为开放性问题
-        print(f'⚠️ 无效的问题注释响应: {content}, 默认为开放性问题')
-        return False
+            if content == 'Yes':
+                print(f"✅ 判断结果: 是非题")
+                return True
+            elif content == 'No':
+                print(f"✅ 判断结果: 开放性问题")
+                return False
+            else:
+                # 如果不是标准的Yes/No回答，默认为开放性问题
+                print(f'⚠️ 无效的问题注释响应: {content}, 默认为开放性问题')
+                return False
+
+        except Exception as e:
+            error_msg = str(e)
+            print(f"\n❌ [DEBUG] 是非题判断 - 尝试 {attempt + 1} 失败:")
+            print(f"错误信息: {error_msg}")
+            print(f"错误类型: {type(e).__name__}")
+            
+            # 检查是否是SSL/网络错误
+            is_network_error = any(keyword in error_msg.lower() for keyword in [
+                'ssl', 'eof', 'connection', 'timeout', 'network', 'unexpected_eof'
+            ])
+            
+            # 如果是网络错误且还有重试机会，则重试
+            if is_network_error and attempt < max_retries - 1:
+                print(f"🔄 检测到网络错误，{retry_delay}秒后重试...")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # 指数退避
+                continue
+            
+            # 最后一次尝试失败，返回默认值
+            print(f"⚠️ 所有重试都失败，默认为开放性问题")
+            return False
+    
+    # 理论上不会到达这里，但为了安全起见
+    return False
 
 def get_system_prompt(personality: str):
     """获取系统提示词 - 使用配置文件中的人格提示词"""
     return get_personality_prompt(personality)
 
 def get_structured_answer(question: str, personality: str, is_yes_or_no: bool, key: str, provider: str = None, model: str = None):
-    """根据问题类型获取结构化或自然语言回答"""
+    """根据问题类型获取结构化或自然语言回答 - 带重试机制"""
     final_model = setup_litellm(provider, model, key)
     
-    try:
-        # 构建系统消息，明确告知问题类型
-        base_prompt = get_system_prompt(personality)
-        if is_yes_or_no:
-            system_message = f"{base_prompt}\n\n重要提示：这是一个是非题，请按照JSON格式输出。"
-        else:
-            system_message = f"{base_prompt}\n\n重要提示：这是一个开放性问题，请直接输出自然语言回答。"
-        
-        # 构建请求消息
-        messages = [
-            {'role': 'system', 'content': system_message},
-            {'role': 'user', 'content': question},
-        ]
-        
-        # 打印原始请求
-        print(f"\n🤖 [DEBUG] 结构化回答 - 原始请求:")
-        print(f"模型: {final_model}")
-        print(f"提供商: {provider}")
-        print(f"问题类型: {'是非题' if is_yes_or_no else '开放性问题'}")
-        print(f"温度: 0.7")
-        print(f"完整消息列表:")
-        for i, msg in enumerate(messages):
-            print(f"  [{i}] {msg['role']}: {msg['content'][:200]}{'...' if len(msg['content']) > 200 else ''}")
-        
-        response = litellm.completion(
-            model=final_model,
-            messages=messages,
-            temperature=0.7
-        )
-        
-        # 打印原始响应
-        print(f"\n📥 [DEBUG] 结构化回答 - 原始响应:")
-        print(f"完整响应对象: {response}")
-        print(f"响应内容: {response.choices[0].message.content}")
-        print(f"响应角色: {response.choices[0].message.role}")
-        if hasattr(response, 'usage'):
-            print(f"Token使用: {response.usage}")
+    # 重试配置
+    max_retries = 3
+    retry_delay = 2  # 秒
+    
+    for attempt in range(max_retries):
+        try:
+            # 构建系统消息，明确告知问题类型
+            base_prompt = get_system_prompt(personality)
+            if is_yes_or_no:
+                system_message = f"{base_prompt}\n\n重要提示：这是一个是非题，请按照JSON格式输出。"
+            else:
+                system_message = f"{base_prompt}\n\n重要提示：这是一个开放性问题，请直接输出自然语言回答。"
+            
+            # 构建请求消息
+            messages = [
+                {'role': 'system', 'content': system_message},
+                {'role': 'user', 'content': question},
+            ]
+            
+            # 打印原始请求
+            print(f"\n🤖 [DEBUG] 结构化回答 - 尝试 {attempt + 1}/{max_retries}:")
+            print(f"模型: {final_model}")
+            print(f"提供商: {provider}")
+            print(f"问题类型: {'是非题' if is_yes_or_no else '开放性问题'}")
+            print(f"温度: 0.7")
+            
+            # 为SSL问题添加特殊配置
+            extra_params = {}
+            if provider == 'openrouter':
+                # 为OpenRouter添加超时和重试配置
+                extra_params.update({
+                    'timeout': 30,
+                    'max_retries': 2
+                })
+            
+            response = litellm.completion(
+                model=final_model,
+                messages=messages,
+                temperature=0.7,
+                **extra_params
+            )
+            
+            # 打印原始响应
+            print(f"\n📥 [DEBUG] 结构化回答 - 成功响应:")
+            print(f"响应内容: {response.choices[0].message.content[:200]}{'...' if len(response.choices[0].message.content) > 200 else ''}")
+            if hasattr(response, 'usage'):
+                print(f"Token使用: {response.usage}")
 
-        return response.choices[0].message.content
+            return response.choices[0].message.content
 
-    except Exception as e:
-        error_msg = str(e)
-        print(f"\n❌ [DEBUG] 结构化回答 - 异常:")
-        print(f"错误信息: {error_msg}")
-        print(f"错误类型: {type(e).__name__}")
-        
-        # 提供更友好的错误信息
-        if "LLM Provider NOT provided" in error_msg:
-            return f"模型配置错误：无法识别模型 '{final_model}'。\n\n请检查模型名称格式：\n- OpenAI: gpt-4, gpt-3.5-turbo\n- DeepSeek: deepseek-chat, deepseek-coder\n- OpenRouter: anthropic/claude-3.5-sonnet\n- 自定义: 请确保模型名称正确且API兼容"
-        elif "api_key" in error_msg.lower():
-            return f"API密钥错误：请检查 {provider} 的API密钥是否正确"
-        elif "rate limit" in error_msg.lower():
-            return f"请求频率限制：请稍后再试"
-        else:
-            return f"获取回答时出错: {error_msg}"
+        except Exception as e:
+            error_msg = str(e)
+            print(f"\n❌ [DEBUG] 结构化回答 - 尝试 {attempt + 1} 失败:")
+            print(f"错误信息: {error_msg}")
+            print(f"错误类型: {type(e).__name__}")
+            
+            # 检查是否是SSL/网络错误
+            is_network_error = any(keyword in error_msg.lower() for keyword in [
+                'ssl', 'eof', 'connection', 'timeout', 'network', 'unexpected_eof'
+            ])
+            
+            # 如果是网络错误且还有重试机会，则重试
+            if is_network_error and attempt < max_retries - 1:
+                print(f"🔄 检测到网络错误，{retry_delay}秒后重试...")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # 指数退避
+                continue
+            
+            # 最后一次尝试失败或非网络错误，返回错误信息
+            if "LLM Provider NOT provided" in error_msg:
+                return f"模型配置错误：无法识别模型 '{final_model}'。\n\n请检查模型名称格式：\n- OpenAI: gpt-4, gpt-3.5-turbo\n- DeepSeek: deepseek-chat, deepseek-coder\n- OpenRouter: anthropic/claude-3.5-sonnet\n- 自定义: 请确保模型名称正确且API兼容"
+            elif "api_key" in error_msg.lower():
+                return f"API密钥错误：请检查 {provider} 的API密钥是否正确"
+            elif "rate limit" in error_msg.lower():
+                return f"请求频率限制：请稍后再试"
+            elif is_network_error:
+                return f"网络连接错误：SSL连接失败，请检查网络连接或稍后重试。\n\n建议：\n1. 检查网络连接\n2. 尝试切换到其他AI提供商\n3. 检查防火墙设置"
+            else:
+                return f"获取回答时出错: {error_msg}"
+    
+    # 理论上不会到达这里，但为了安全起见
+    return "所有重试尝试都失败了，请检查网络连接或稍后重试。"
 
 
 def parse_structured_response(response_content: str, is_yes_or_no: bool):
