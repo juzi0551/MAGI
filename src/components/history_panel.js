@@ -1,7 +1,8 @@
 import React from 'react';
 
 const HistoryPanel = ({ id, records = [], setProps }) => {
-    const formatTimestamp = (timestamp) => {
+    // 使用共享工具函数，如果不可用则使用本地备份
+    const formatTimestamp = window.HistoryUtils?.formatTimestamp || ((timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleString('zh-CN', {
             year: 'numeric',
@@ -11,24 +12,39 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
             minute: '2-digit',
             second: '2-digit'
         });
-    };
+    });
 
-    const getStatusText = (status) => {
+    const getStatusText = window.HistoryUtils?.getStatusText || ((status) => {
         const statusMap = {
-            'yes': '合意',
-            'no': '拒絶',
-            'conditional': '状態',
-            'info': '情報',
-            'error': '誤差'
+            'yes': '可 決',
+            'no': '否 決',
+            'conditional': '状 態',
+            'info': '情 報',
+            'error': '誤 差',
+            'standby': '待 機',
+            'progress': '審議中'
         };
-        return statusMap[status] || '待機';
-    };
+        return statusMap[status] || '待 機';
+    });
 
     const getStatusClass = (status) => {
         return `status-tag status-${status}`;
     };
 
-    const handleItemClick = (record) => {
+    const handleItemClick = (record, event) => {
+        // 阻止事件冒泡
+        event.stopPropagation();
+        
+        if (setProps) {
+            // 触发打开详情modal
+            setProps({ onRecordDetail: record });
+        }
+    };
+
+    const handleReaskClick = (record, event) => {
+        // 阻止事件冒泡
+        event.stopPropagation();
+        
         if (setProps) {
             setProps({ onQuestionSelect: record.question });
         }
@@ -73,8 +89,8 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
                 React.createElement('div', {
                     key: record.id,
                     className: 'history-item',
-                    onClick: () => handleItemClick(record),
-                    title: '点击重新提问'
+                    onClick: (e) => handleItemClick(record, e),
+                    title: '点击查看详情'
                 }, [
                     React.createElement('div', {
                         key: 'item-header',
@@ -92,7 +108,18 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
                     React.createElement('div', {
                         key: 'question',
                         className: 'history-question'
-                    }, `問題: ${record.question}`)
+                    }, `問題: ${record.question}`),
+                    React.createElement('div', {
+                        key: 'actions',
+                        className: 'history-actions'
+                    }, [
+                        React.createElement('button', {
+                            key: 'reask-btn',
+                            className: 'reask-btn',
+                            onClick: (e) => handleReaskClick(record, e),
+                            title: '重新提问'
+                        }, '🔄')
+                    ])
                 ])
             )
         )

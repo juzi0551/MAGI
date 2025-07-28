@@ -567,3 +567,183 @@ body {
     color: black;
     border-color: #ff8d00;
 }
+
+/* 历史记录操作按钮样式 */
+.history-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.reask-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 1px solid #ff8d00;
+    color: #ff8d00;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.reask-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+    transform: scale(1.1);
+}
+
+/* 历史记录详情modal样式 */
+.history-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.history-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.history-section {
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    padding: 15px;
+    background: rgba(255, 141, 0, 0.05);
+}
+
+.section-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ff8d00;
+    padding-bottom: 5px;
+}
+
+.section-content {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.question-time {
+    color: #ccc;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+    margin-top: 8px;
+}
+
+.decision-status {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'MAGI-Matisse', monospace;
+    text-transform: uppercase;
+}
+
+.decision-status.status-yes { 
+    background: #52e691; 
+    color: black; 
+}
+
+.decision-status.status-no { 
+    background: #a41413; 
+    color: white; 
+}
+
+.decision-status.status-conditional { 
+    background: #ff8d00; 
+    color: black; 
+}
+
+.decision-status.status-info { 
+    background: #3caee0; 
+    color: black; 
+}
+
+.decision-status.status-error { 
+    background: gray; 
+    color: white; 
+}
+
+.answers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.wise-answer-item {
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    padding: 12px;
+    background: rgba(255, 141, 0, 0.03);
+}
+
+.wise-name {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.wise-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: 'MAGI-Matisse', monospace;
+    margin-bottom: 8px;
+}
+
+.wise-status.status-yes { 
+    background: #52e691; 
+    color: black; 
+}
+
+.wise-status.status-no { 
+    background: #a41413; 
+    color: white; 
+}
+
+.wise-status.status-conditional { 
+    background: #ff8d00; 
+    color: black; 
+}
+
+.wise-status.status-info { 
+    background: #3caee0; 
+    color: black; 
+}
+
+.wise-status.status-error { 
+    background: gray; 
+    color: white; 
+}
+
+.wise-response {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    word-break: break-word;
+    white-space: pre-wrap;
+}

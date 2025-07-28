@@ -17,6 +17,7 @@ Modal = load_react_component(app, 'components', 'modal.js')
 Header = load_react_component(app, 'components', 'header.js')
 Status = load_react_component(app, 'components', 'status.js')
 HistoryPanel = load_react_component(app, 'components', 'history_panel.js')
+HistoryModal = load_react_component(app, 'components', 'history_modal.js')
 
 def get_status_element(status_key):
     """根据状态键返回带样式的状态元素"""
@@ -73,7 +74,8 @@ app.layout = Div(
                 id='history-panel',
                 records=[],
                 onQuestionSelect=None,
-                onClearHistory=None
+                onClearHistory=None,
+                onRecordDetail=None
             ),
             # 问题输入框移到左侧面板
             Div(className='input-container', children=[
@@ -106,6 +108,14 @@ app.layout = Div(
         Modal(id={'type': 'modal', 'name': 'melchior'}, name='melchior'),
         Modal(id={'type': 'modal', 'name': 'balthasar'}, name='balthasar'),
         Modal(id={'type': 'modal', 'name': 'casper'}, name='casper'),
+        
+        # 历史记录详情modal
+        HistoryModal(
+            id='history-detail-modal',
+            is_open=False,
+            question=None,
+            answer=None
+        ),
 
         dcc.Store(id='question', data={'id': 0, 'query': ''}),
         dcc.Store(id='annotated-question', data={'id': 0, 'query': '', 'is_yes_or_no_question': False}),
@@ -474,6 +484,77 @@ def reask_from_history(selected_question):
     return ''
 
 
+# 历史记录详情modal相关回调
+@callback(
+    Output('history-detail-modal', 'is_open'),
+    Output('history-detail-modal', 'question'),
+    Output('history-detail-modal', 'answer'),
+    Input('history-panel', 'onRecordDetail'),
+    prevent_initial_call=True
+)
+def show_history_detail(record_detail):
+    """显示历史记录详情modal"""
+    if record_detail:
+        print(f"📖 打开历史记录详情: {record_detail.get('question', '')[:50]}...")
+        
+        # 构造question和answer数据结构
+        question_data = {
+            'id': record_detail.get('id'),
+            'query': record_detail.get('question'),
+            'timestamp': record_detail.get('timestamp'),
+            'is_yes_or_no_question': record_detail.get('questionType') == 'yes_no'
+        }
+        
+        answer_data = {
+            'finalStatus': record_detail.get('finalStatus'),
+            'answers': record_detail.get('answers', [])
+        }
+        
+        return True, question_data, answer_data
+    
+    return False, None, None
+
+
+# 分离的客户端回调来处理localStorage
+# 1. 保存历史记录到localStorage
+app.clientside_callback(
+    """
+    function(records) {
+        if (records && records.length > 0 && window.HistoryStorage) {
+            // 保存历史记录到localStorage
+            window.HistoryStorage.clearAll();
+            records.forEach(record => {
+                window.HistoryStorage.saveRecord(record);
+            });
+            console.log('📚 已保存', records.length, '条历史记录到localStorage');
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('history-records', 'data', allow_duplicate=True),
+    Input('history-records', 'data'),
+    prevent_initial_call=True
+)
+
+# 2. 页面加载时从localStorage加载历史记录
+app.clientside_callback(
+    """
+    function(panel_id) {
+        // 页面加载时从localStorage加载历史记录
+        if (window.HistoryStorage && window.HistoryStorage.isAvailable()) {
+            const loadedRecords = window.HistoryStorage.getRecords();
+            console.log('🔄 从localStorage加载了', loadedRecords.length, '条历史记录');
+            return [loadedRecords, loadedRecords];
+        }
+        console.log('⚠️ localStorage不可用或HistoryStorage未加载');
+        return [[], []];
+    }
+    """,
+    [Output('history-records', 'data', allow_duplicate=True),
+     Output('history-panel', 'records', allow_duplicate=True)],
+    Input('history-panel', 'id'),
+    prevent_initial_call='initial_duplicate'
+)
 
 
 if __name__ == '__main__':
