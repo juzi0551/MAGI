@@ -43,7 +43,7 @@ app.layout = Div(
         ]),
         Div(className='input-container', children=[
             Label('问题: '),
-            dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off'),
+            dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
         ]),
         Modal(id={'type': 'modal', 'name': 'melchior'}, name='melchior'),
         Modal(id={'type': 'modal', 'name': 'balthasar'}, name='balthasar'),
