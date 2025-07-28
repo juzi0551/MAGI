@@ -63,7 +63,7 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
             React.createElement('span', {
                 key: 'title',
                 className: 'history-title'
-            }, '📚 問題履歴'),
+            }, '📚 履歴'),
             React.createElement('button', {
                 key: 'clear-btn',
                 className: 'clear-history-btn',
@@ -78,7 +78,7 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         }, records.length === 0 ? 
             React.createElement('div', {
                 className: 'no-history'
-            }, '暂无历史记录') :
+            }, '暫 無') :
             records.slice().reverse().map((record) => 
                 React.createElement('div', {
                     key: record.id,

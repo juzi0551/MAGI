@@ -423,6 +423,7 @@ body {
     font-family: 'Lucida Console', monospace;
 }
 
+
 .input-container {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -462,7 +463,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 200px;
-    margin-bottom: 80px;
+    margin-bottom: 16px;
 }
 
 /* 标题栏样式 */

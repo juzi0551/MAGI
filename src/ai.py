@@ -319,6 +319,42 @@ def get_structured_answer(question: str, personality: str, is_yes_or_no: bool, k
     return "所有重试尝试都失败了，请检查网络连接或稍后重试。"
 
 
+def fix_json(broken_json):
+    """尝试修复损坏的JSON字符串"""
+    # 1. 尝试提取answer字段
+    answer_match = re.search(r'"answer"\s*:\s*"(.*?)(?:"|$)', broken_json, re.DOTALL)
+    if answer_match:
+        answer = answer_match.group(1).strip()
+        # 如果内容被截断，尝试找到最后一个完整的句子
+        if answer.endswith('...'):
+            answer = re.sub(r'\.{3,}$', '', answer)  # 移除结尾的省略号
+        
+        # 2. 尝试提取分类状态
+        status_match = re.search(r'"status"\s*:\s*"(\w+)"', broken_json)
+        status = status_match.group(1) if status_match else "info"
+        
+        print(f"🔧 JSON修复 - 提取字段成功")
+        print(f"   提取的回答: {answer[:50]}{'...' if len(answer) > 50 else ''}")
+        print(f"   提取的状态: {status}")
+        
+        return answer, {'status': status, 'conditions': None}
+    
+    # 3. 如果没有明确的JSON结构，尝试提取有意义的文本内容
+    # 移除所有JSON标记和引号
+    text_only = re.sub(r'[{}\[\]":]', ' ', broken_json)
+    text_only = re.sub(r'\s+', ' ', text_only).strip()
+    
+    # 如果文本以"answer"开头，尝试提取后面的内容
+    if "answer" in text_only:
+        parts = text_only.split("answer", 1)
+        if len(parts) > 1:
+            cleaned_text = parts[1].strip()
+            if cleaned_text:
+                return cleaned_text, {'status': 'info', 'conditions': None}
+    
+    # 4. 如果以上方法都失败，返回清理后的原始内容
+    return broken_json, {'status': 'info', 'conditions': None}
+
 def parse_structured_response(response_content: str, is_yes_or_no: bool):
     """解析结构化响应"""
     if not is_yes_or_no:
@@ -354,6 +390,13 @@ def parse_structured_response(response_content: str, is_yes_or_no: bool):
         print(f"❌ JSON解析失败: {e}")
         print(f"   原始内容: {response_content[:100]}{'...' if len(response_content) > 100 else ''}")
         print(f"   清理后内容: {cleaned_content[:100]}{'...' if len(cleaned_content) > 100 else ''}")
-        # 如果JSON解析失败，返回原始内容和默认分类
-        return response_content, {'status': 'info', 'conditions': None}
+        
+        # 尝试修复损坏的JSON
+        try:
+            answer, classification = fix_json(cleaned_content)
+            return answer, classification
+        except Exception as repair_error:
+            print(f"❌ JSON修复失败: {repair_error}")
+            # 如果JSON解析和修复都失败，返回原始内容和默认分类
+            return response_content, {'status': 'info', 'conditions': None}
 

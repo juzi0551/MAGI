@@ -8,7 +8,7 @@ import ai
 # 加载环境变量
 load_dotenv()
 
-app = Dash(__name__)
+app = Dash(__name__, assets_folder='assets')
 
 Magi = load_react_component(app, 'components', 'magi.js')
 WiseMan = load_react_component(app, 'components', 'wise_man.js')
@@ -46,6 +46,10 @@ def get_status_element(status_key):
 app.layout = Div(
     className='system',
     children=[
+        # 音频管理器脚本
+        dcc.Store(id='audio-enabled', data=True),
+        dcc.Store(id='audio-volume', data=30),
+        
         # 左侧面板 - 原有的MAGI系统
         Div(className='left-panel', children=[
             Magi(id='magi', children=[
@@ -79,7 +83,7 @@ app.layout = Div(
             ),
             # 问题输入框移到左侧面板
             Div(className='input-container', children=[
-                Label('問題: '),
+                Label('问题: '),
                 dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
             ]),
         ]),
@@ -569,6 +573,85 @@ app.clientside_callback(
     [Output('history-records', 'data', allow_duplicate=True),
      Output('history-panel', 'records', allow_duplicate=True)],
     Input('history-panel', 'id'),
+    prevent_initial_call='initial_duplicate'
+)
+
+
+
+
+# 音效集成 - 客户端回调
+app.clientside_callback(
+    """
+    function(audio_enabled, audio_volume) {
+        // 初始化音频管理器
+        if (window.MagiAudio) {
+            window.MagiAudio.setEnabled(audio_enabled);
+            window.MagiAudio.setVolume(audio_volume / 100);
+            console.log('🔊 MAGI音效设置更新:', {enabled: audio_enabled, volume: audio_volume + '%'});
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('audio-enabled', 'data', allow_duplicate=True),
+    [Input('audio-enabled', 'data'),
+     Input('audio-volume', 'data')],
+    prevent_initial_call=True
+)
+
+# 监听审议状态变化播放音效
+app.clientside_callback(
+    """
+    function(status, audio_enabled) {
+        if (!audio_enabled || !window.MagiAudio) return window.dash_clientside.no_update;
+        
+        console.log('🎵 MAGI状态变化:', status);
+        
+        if (status === 'progress') {
+            // 开始审议 - 播放审议音效
+            window.MagiAudio.playDeliberating(false);
+            console.log('🔄 播放审议音效');
+        } else if (status !== 'standby') {
+            // 决议完成 - 播放决议音效
+            window.MagiAudio.playDecision(status);
+            console.log('✅ 播放决议音效:', status);
+        }
+        
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('response', 'status', allow_duplicate=True),
+    [Input('response', 'status'),
+     Input('audio-enabled', 'data')],
+    prevent_initial_call=True
+)
+
+# 页面加载时初始化音频系统
+app.clientside_callback(
+    """
+    function(audio_enabled) {
+        // 动态加载音频管理器脚本
+        if (!window.MagiAudio) {
+            const script = document.createElement('script');
+            script.src = '/assets/magi_audio.js';
+            script.onload = function() {
+                console.log('🎵 MAGI音频系统已加载');
+                // 添加用户交互监听器来启动音频上下文
+                const startAudio = function() {
+                    if (window.MagiAudio) {
+                        window.MagiAudio.ensureAudioContext();
+                        console.log('🎵 音频上下文已激活');
+                    }
+                };
+                document.addEventListener('click', startAudio, {once: true});
+                document.addEventListener('keydown', startAudio, {once: true});
+            };
+            document.head.appendChild(script);
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('audio-enabled', 'data', allow_duplicate=True),
+    Input('audio-enabled', 'data'),
     prevent_initial_call='initial_duplicate'
 )
 
