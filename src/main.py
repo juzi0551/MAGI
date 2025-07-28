@@ -20,31 +20,57 @@ Status = load_react_component(app, 'components', 'status.js')
 app.layout = Div(
     className='system',
     children=[
-        Magi(id='magi', children=[
-            Header(side='left', title='提訴'),
-            Header(side='right', title='決議'),
-            Status(id='status'),
-            WiseMan(
-                id={'type': 'wise-man', 'name': 'melchior'},
-                name='melchior',
-                order_number=1,
-                personality='You are a scientist. Your goal is to further our understanding of the universe and advance our technological progress.'),
-            WiseMan(
-                id={'type': 'wise-man', 'name': 'balthasar'},
-                name='balthasar',
-                order_number=2,
-                personality='You are a mother. Your goal is to protect your children and ensure their well-being.'),
-            WiseMan(
-                id={'type': 'wise-man', 'name': 'casper'},
-                name='casper',
-                order_number=3,
-                personality='You are a woman. Your goal is to pursue love, dreams and desires.'),
-            Response(id='response', status='info')
+        # 左侧面板 - 原有的MAGI系统
+        Div(className='left-panel', children=[
+            Magi(id='magi', children=[
+                Header(side='left', title='提訴'),
+                Header(side='right', title='決議'),
+                Status(id='status'),
+                WiseMan(
+                    id={'type': 'wise-man', 'name': 'melchior'},
+                    name='melchior',
+                    order_number=1,
+                    personality='You are a scientist. Your goal is to further our understanding of the universe and advance our technological progress.'),
+                WiseMan(
+                    id={'type': 'wise-man', 'name': 'balthasar'},
+                    name='balthasar',
+                    order_number=2,
+                    personality='You are a mother. Your goal is to protect your children and ensure their well-being.'),
+                WiseMan(
+                    id={'type': 'wise-man', 'name': 'casper'},
+                    name='casper',
+                    order_number=3,
+                    personality='You are a woman. Your goal is to pursue love, dreams and desires.'),
+                Response(id='response', status='info')
+            ]),
+            # 问题输入框移到左侧面板
+            Div(className='input-container', children=[
+                Label('问题: '),
+                dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
+            ]),
         ]),
-        Div(className='input-container', children=[
-            Label('问题: '),
-            dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
+        
+        # 右侧面板 - 三个核心的回答
+        Div(className='right-panel', children=[
+            Div(className='wise-answers', children=[
+                Div(id='melchior-answer', className='wise-answer melchior', children=[
+                    Div('MELCHIOR-1 (科学家)', className='wise-answer-title'),
+                    Div(id='melchior-content', className='answer-content', children='待機中...'),
+                    Div(id='melchior-status', className='answer-status', children='待機')
+                ]),
+                Div(id='balthasar-answer', className='wise-answer balthasar', children=[
+                    Div('BALTHASAR-2 (母亲)', className='wise-answer-title'),
+                    Div(id='balthasar-content', className='answer-content', children='待機中...'),
+                    Div(id='balthasar-status', className='answer-status', children='待機')
+                ]),
+                Div(id='casper-answer', className='wise-answer casper', children=[
+                    Div('CASPER-3 (女人)', className='wise-answer-title'),
+                    Div(id='casper-content', className='answer-content', children='待機中...'),
+                    Div(id='casper-status', className='answer-status', children='待機')
+                ])
+            ])
         ]),
+        
         Modal(id={'type': 'modal', 'name': 'melchior'}, name='melchior'),
         Modal(id={'type': 'modal', 'name': 'balthasar'}, name='balthasar'),
         Modal(id={'type': 'modal', 'name': 'casper'}, name='casper'),
@@ -265,6 +291,60 @@ def modal_visibility(n_clicks):
     Input({'type': 'wise-man', 'name': MATCH}, 'answer'))
 def modal_content(question: dict, answer: dict):
     return question, answer
+
+
+@callback(
+    Output('melchior-content', 'children'),
+    Output('melchior-status', 'children'),
+    Input({'type': 'wise-man', 'name': 'melchior'}, 'answer'))
+def update_melchior_answer(answer: dict):
+    if answer and answer.get('response'):
+        status_map = {
+            'yes': '承認',
+            'no': '否定', 
+            'conditional': '条件付',
+            'error': 'ERROR',
+            'info': 'INFO'
+        }
+        status = status_map.get(answer.get('status', 'info'), '待機')
+        return str(answer['response']), status
+    return '待機中...', '待機'
+
+
+@callback(
+    Output('balthasar-content', 'children'),
+    Output('balthasar-status', 'children'),
+    Input({'type': 'wise-man', 'name': 'balthasar'}, 'answer'))
+def update_balthasar_answer(answer: dict):
+    if answer and answer.get('response'):
+        status_map = {
+            'yes': '承認',
+            'no': '否定',
+            'conditional': '条件付',
+            'error': 'ERROR',
+            'info': 'INFO'
+        }
+        status = status_map.get(answer.get('status', 'info'), '待機')
+        return str(answer['response']), status
+    return '待機中...', '待機'
+
+
+@callback(
+    Output('casper-content', 'children'),
+    Output('casper-status', 'children'),
+    Input({'type': 'wise-man', 'name': 'casper'}, 'answer'))
+def update_casper_answer(answer: dict):
+    if answer and answer.get('response'):
+        status_map = {
+            'yes': '承認',
+            'no': '否定',
+            'conditional': '条件付',
+            'error': 'ERROR',
+            'info': 'INFO'
+        }
+        status = status_map.get(answer.get('status', 'info'), '待機')
+        return str(answer['response']), status
+    return '待機中...', '待機'
 
 
 if __name__ == '__main__':

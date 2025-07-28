@@ -6,10 +6,10 @@ function getStatusText(status) {
         return '情 報';
 
     if (status === 'yes')
-        return '合 意';
+        return '可 決';
 
     if (status === 'no')
-        return '否 絶';
+        return '否 決';
 
     if (status === 'conditional')
         return '状 態';
