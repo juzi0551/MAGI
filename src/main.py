@@ -485,16 +485,17 @@ def clear_input_after_completion(status, current_query):
     return current_query
 
 
-# 历史记录详情modal相关回调
+# 历史记录详情modal打开回调
 @callback(
-    Output('history-detail-modal', 'is_open'),
-    Output('history-detail-modal', 'question'),
-    Output('history-detail-modal', 'answer'),
+    Output('history-detail-modal', 'is_open', allow_duplicate=True),
+    Output('history-detail-modal', 'question', allow_duplicate=True),
+    Output('history-detail-modal', 'answer', allow_duplicate=True),
     Input('history-panel', 'onRecordDetail'),
     prevent_initial_call=True
 )
 def show_history_detail(record_detail):
     """显示历史记录详情modal"""
+    # 如果有记录详情数据，打开modal
     if record_detail:
         print(f"📖 打开历史记录详情: {record_detail.get('question', '')[:50]}...")
         
@@ -513,7 +514,9 @@ def show_history_detail(record_detail):
         
         return True, question_data, answer_data
     
-    return False, None, None
+    # 如果没有数据，不更新
+    from dash import no_update
+    return no_update, no_update, no_update
 
 
 # 分离的客户端回调来处理localStorage

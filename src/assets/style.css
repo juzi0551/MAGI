@@ -389,7 +389,7 @@ body {
     display: grid;
     grid-template-columns: auto 1fr;
     color: #ff8d00;
-    font-family: 'Lucida Console', monospace;
+    font-family: 'MAGI-Matisse', sans-serif;
     column-gap: 10px;
     row-gap: 5px;
     margin-top: 15px;

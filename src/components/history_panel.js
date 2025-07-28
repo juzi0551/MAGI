@@ -35,7 +35,12 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         event.stopPropagation();
         
         if (setProps) {
-            setProps({ onRecordDetail: record });
+            // 添加时间戳确保每次点击都是唯一的，避免Dash不触发回调
+            const recordWithTimestamp = {
+                ...record,
+                _clickTimestamp: Date.now()
+            };
+            setProps({ onRecordDetail: recordWithTimestamp });
         }
     };
 
