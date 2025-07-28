@@ -628,31 +628,6 @@ body {
     border-color: #ff8d00;
 }
 
-/* 历史记录操作按钮样式 */
-.history-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    justify-content: flex-end;
-}
-
-.reask-btn {
-    background: rgba(255, 141, 0, 0.2);
-    border: 1px solid #ff8d00;
-    color: #ff8d00;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-family: 'MAGI-Matisse', monospace;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.reask-btn:hover {
-    background: rgba(255, 141, 0, 0.4);
-    transform: scale(1.1);
-}
-
 /* 历史记录详情modal样式 */
 .history-modal {
     position: fixed;
