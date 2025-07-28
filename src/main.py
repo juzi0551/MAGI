@@ -79,7 +79,7 @@ app.layout = Div(
             ),
             # 问题输入框移到左侧面板
             Div(className='input-container', children=[
-                Label('问题: '),
+                Label('問題: '),
                 dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
             ]),
         ]),
