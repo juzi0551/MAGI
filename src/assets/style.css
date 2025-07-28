@@ -90,7 +90,7 @@ body {
     font-family: 'MAGI-Matisse', sans-serif;
     line-height: 0.9;
     text-transform: uppercase;
-    min-width: 36px;
+    min-width: 60px;
     text-align: center;
 }
 
@@ -383,4 +383,187 @@ body {
     color: #ff8d00;
     font-family: monospace;
     height: 40px;
+}
+
+/* 历史记录面板样式 */
+.history-panel {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid #ff8d00;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* 标题栏样式 */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ff8d00;
+}
+
+.history-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 清空按钮样式 */
+.clear-history-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 1px solid #ff8d00;
+    color: #ff8d00;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clear-history-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+}
+
+/* 历史记录列表样式 */
+.history-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* 无历史记录提示 */
+.no-history {
+    color: #666;
+    text-align: center;
+    padding: 20px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+}
+
+/* 历史记录项样式 */
+.history-item {
+    background: rgba(255, 141, 0, 0.1);
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    margin: 8px 0;
+    padding: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background: rgba(255, 141, 0, 0.2);
+    transform: translateX(5px);
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.history-time {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+}
+
+.history-question {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* 状态标签样式 */
+.status-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: 'MAGI-Matisse', monospace;
+}
+
+.status-tag.status-yes { 
+    background: #52e691; 
+    color: black; 
+}
+
+.status-tag.status-no { 
+    background: #a41413; 
+    color: white; 
+}
+
+.status-tag.status-conditional { 
+    background: #ff8d00; 
+    color: black; 
+}
+
+.status-tag.status-info { 
+    background: #3caee0; 
+    color: black; 
+}
+
+.status-tag.status-error { 
+    background: gray; 
+    color: white; 
+}
+
+/* 右侧面板状态框样式 */
+.answer-status {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 4px 12px;
+    border: 2px solid;
+    font-size: 12px;
+    font-family: 'MAGI-Matisse', sans-serif;
+    line-height: 0.9;
+    text-transform: uppercase;
+    min-width: 60px;
+    text-align: center;
+}
+
+.answer-status.status-yes {
+    background: #52e691;
+    color: black;
+    border-color: #52e691;
+}
+
+.answer-status.status-no {
+    background: #a41413;
+    color: white;
+    border-color: #a41413;
+}
+
+.answer-status.status-conditional {
+    background: #ff8d00;
+    color: black;
+    border-color: #ff8d00;
+}
+
+.answer-status.status-info {
+    background: #3caee0;
+    color: black;
+    border-color: #3caee0;
+}
+
+.answer-status.status-error {
+    background: gray;
+    color: white;
+    border-color: gray;
+}
+
+.answer-status.status-standby {
+    background: #ff8d00;
+    color: black;
+    border-color: #ff8d00;
 }

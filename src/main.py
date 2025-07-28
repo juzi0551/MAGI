@@ -16,6 +16,7 @@ Response = load_react_component(app, 'components', 'response.js')
 Modal = load_react_component(app, 'components', 'modal.js')
 Header = load_react_component(app, 'components', 'header.js')
 Status = load_react_component(app, 'components', 'status.js')
+HistoryPanel = load_react_component(app, 'components', 'history_panel.js')
 
 def get_status_element(status_key):
     """根据状态键返回带样式的状态元素"""
@@ -67,6 +68,13 @@ app.layout = Div(
                     personality='You are a woman. Your goal is to pursue love, dreams and desires.'),
                 Response(id='response', status='standby')
             ]),
+            # 历史记录面板
+            HistoryPanel(
+                id='history-panel',
+                records=[],
+                onQuestionSelect=None,
+                onClearHistory=None
+            ),
             # 问题输入框移到左侧面板
             Div(className='input-container', children=[
                 Label('问题: '),
@@ -103,6 +111,7 @@ app.layout = Div(
         dcc.Store(id='annotated-question', data={'id': 0, 'query': '', 'is_yes_or_no_question': False}),
         dcc.Store(id='is_yes_or_no_question', data=False),
         dcc.Store(id='question-id', data=0),
+        dcc.Store(id='history-records', data=[]),
     ])
 
 
@@ -368,6 +377,103 @@ def update_casper_answer(answer: dict):
         status_key = answer.get('status', 'info')
         return str(answer['response']), get_status_element(status_key)
     return '待機中...', get_status_element('standby')
+
+
+# 历史记录相关回调函数
+@callback(
+    [Output('history-records', 'data'),
+     Output('history-panel', 'records')],
+    [Input('response', 'status'),
+     Input('history-panel', 'onQuestionSelect'),
+     Input('history-panel', 'onClearHistory')],
+    [State('question', 'data'),
+     State({'type': 'wise-man', 'name': ALL}, 'answer'),
+     State('history-records', 'data'),
+     State('query', 'value')],
+    prevent_initial_call=True
+)
+def manage_history(status, selected_question, clear_trigger, question, answers, current_records, current_query):
+    """统一管理历史记录相关操作"""
+    import time
+    import uuid
+    from dash import callback_context
+    
+    ctx = callback_context
+    if not ctx.triggered:
+        return current_records or [], current_records or []
+    
+    trigger_id = ctx.triggered[0]['prop_id']
+    
+    # 清空历史记录
+    if 'onClearHistory' in trigger_id and clear_trigger:
+        print("🗑️ 清空历史记录")
+        return [], []
+    
+    # 保存新的问答记录
+    if 'response.status' in trigger_id:
+        # 只有当问题处理完成且有有效答案时才保存
+        if (question and question.get('query') and answers and len(answers) >= 3 and
+            all(answer and answer.get('response') for answer in answers)):
+            
+            # 创建历史记录项
+            record = {
+                'id': str(uuid.uuid4()),
+                'timestamp': int(time.time() * 1000),
+                'question': question['query'],
+                'questionType': 'yes_no' if question.get('is_yes_or_no_question', False) else 'info',
+                'finalStatus': status,
+                'answers': [
+                    {
+                        'name': 'melchior',
+                        'status': answers[0].get('status', 'info'),
+                        'response': str(answers[0].get('response', '')),
+                        'conditions': answers[0].get('conditions')
+                    },
+                    {
+                        'name': 'balthasar', 
+                        'status': answers[1].get('status', 'info'),
+                        'response': str(answers[1].get('response', '')),
+                        'conditions': answers[1].get('conditions')
+                    },
+                    {
+                        'name': 'casper',
+                        'status': answers[2].get('status', 'info'), 
+                        'response': str(answers[2].get('response', '')),
+                        'conditions': answers[2].get('conditions')
+                    }
+                ],
+                'metadata': {
+                    'provider': os.getenv('DEFAULT_PROVIDER', 'openrouter'),
+                    'model': os.getenv('OPENROUTER_MODEL', 'gemini-2.5-flash'),
+                    'processingTime': 0
+                }
+            }
+            
+            # 添加到历史记录
+            updated_records = (current_records or []).copy()
+            updated_records.append(record)
+            
+            print(f"📚 保存历史记录: {question['query'][:50]}... (状态: {status})")
+            
+            return updated_records, updated_records
+    
+    # 默认返回当前记录
+    return current_records or [], current_records or []
+
+
+@callback(
+    Output('query', 'value', allow_duplicate=True),
+    Input('history-panel', 'onQuestionSelect'),
+    prevent_initial_call=True
+)
+def reask_from_history(selected_question):
+    """从历史记录重新提问"""
+    if selected_question:
+        print(f"🔄 从历史记录重新提问: {selected_question[:50]}...")
+        return selected_question
+    return ''
+
+
 
 
 if __name__ == '__main__':
