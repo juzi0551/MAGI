@@ -2,6 +2,12 @@ import React from 'react';
 const $ = React.createElement;
 
 function getStatusText(status) {
+    if (status === 'standby')
+        return '待 機';
+
+    if (status === 'progress')
+        return '審議中';
+
     if (status === 'info')
         return '情 報';
 
@@ -21,6 +27,12 @@ function getStatusText(status) {
 }
 
 function getStatusColor(status) {
+    if (status === 'standby')
+        return '#ff8d00';
+
+    if (status === 'progress')
+        return '#ff8d00';
+
     if (status === 'info')
         return '#3caee0';
 

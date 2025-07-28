@@ -17,6 +17,30 @@ Modal = load_react_component(app, 'components', 'modal.js')
 Header = load_react_component(app, 'components', 'header.js')
 Status = load_react_component(app, 'components', 'status.js')
 
+def get_status_element(status_key):
+    """根据状态键返回带样式的状态元素"""
+    status_config = {
+        'standby': {'text': '待 機', 'color': '#ff8d00', 'bg': '#ff8d00', 'text_color': 'black'},
+        'progress': {'text': '審議中', 'color': '#ff8d00', 'bg': '#ff8d00', 'text_color': 'black'},
+        'yes': {'text': '可 決', 'color': '#52e691', 'bg': '#52e691', 'text_color': 'black'},
+        'no': {'text': '否 決', 'color': '#a41413', 'bg': '#a41413', 'text_color': 'white'},
+        'conditional': {'text': '状 態', 'color': '#ff8d00', 'bg': '#ff8d00', 'text_color': 'black'},
+        'error': {'text': '誤 差', 'color': 'gray', 'bg': 'gray', 'text_color': 'white'},
+        'info': {'text': '情 報', 'color': '#3caee0', 'bg': '#3caee0', 'text_color': 'black'}
+    }
+    
+    config = status_config.get(status_key, status_config['standby'])
+    
+    return Div(
+        config['text'],
+        className='answer-status',
+        style={
+            'borderColor': config['color'],
+            'backgroundColor': config['bg'],
+            'color': config['text_color']
+        }
+    )
+
 app.layout = Div(
     className='system',
     children=[
@@ -41,7 +65,7 @@ app.layout = Div(
                     name='casper',
                     order_number=3,
                     personality='You are a woman. Your goal is to pursue love, dreams and desires.'),
-                Response(id='response', status='info')
+                Response(id='response', status='standby')
             ]),
             # 问题输入框移到左侧面板
             Div(className='input-container', children=[
@@ -56,17 +80,17 @@ app.layout = Div(
                 Div(id='melchior-answer', className='wise-answer melchior', children=[
                     Div('MELCHIOR-1 (科学家)', className='wise-answer-title'),
                     Div(id='melchior-content', className='answer-content', children='待機中...'),
-                    Div(id='melchior-status', className='answer-status', children='待機')
+                    Div(id='melchior-status', children=get_status_element('standby'))
                 ]),
                 Div(id='balthasar-answer', className='wise-answer balthasar', children=[
                     Div('BALTHASAR-2 (母亲)', className='wise-answer-title'),
                     Div(id='balthasar-content', className='answer-content', children='待機中...'),
-                    Div(id='balthasar-status', className='answer-status', children='待機')
+                    Div(id='balthasar-status', children=get_status_element('standby'))
                 ]),
                 Div(id='casper-answer', className='wise-answer casper', children=[
                     Div('CASPER-3 (女人)', className='wise-answer-title'),
                     Div(id='casper-content', className='answer-content', children='待機中...'),
-                    Div(id='casper-status', className='answer-status', children='待機')
+                    Div(id='casper-status', children=get_status_element('standby'))
                 ])
             ])
         ]),
@@ -234,11 +258,31 @@ def response_question_id(question: dict):
 
 
 @callback(
+    Output('response', 'status', allow_duplicate=True),
+    Input('question', 'data'),
+    prevent_initial_call=True)
+def response_progress_status(question: dict):
+    # 当有新问题时，立即显示审议中状态
+    if question and question.get('query'):
+        return 'progress'
+    return 'standby'
+
+
+@callback(
     Output('response', 'status'),
     Output('response', 'answer_id'),
     Input({'type': 'wise-man', 'name': ALL}, 'answer'),
+    Input('question', 'data'),
     prevent_initial_call=True)
-def response_status(answers: list):
+def response_status(answers: list, question: dict):
+    # 如果没有问题，返回待机状态
+    if not question or not question.get('query'):
+        return 'standby', 0
+    
+    # 如果还没有收到所有回答，显示审议中状态
+    if not answers or len(answers) < 3 or any(not answer for answer in answers):
+        return 'progress', question['id']
+    
     answer_id = min([answer['id'] for answer in answers])
     
     print(f"\n🏛️  第三步：MAGI系统综合决策 [ID: {answer_id}]")
@@ -299,16 +343,9 @@ def modal_content(question: dict, answer: dict):
     Input({'type': 'wise-man', 'name': 'melchior'}, 'answer'))
 def update_melchior_answer(answer: dict):
     if answer and answer.get('response'):
-        status_map = {
-            'yes': '承認',
-            'no': '否定', 
-            'conditional': '条件付',
-            'error': 'ERROR',
-            'info': 'INFO'
-        }
-        status = status_map.get(answer.get('status', 'info'), '待機')
-        return str(answer['response']), status
-    return '待機中...', '待機'
+        status_key = answer.get('status', 'info')
+        return str(answer['response']), get_status_element(status_key)
+    return '待機中...', get_status_element('standby')
 
 
 @callback(
@@ -317,16 +354,9 @@ def update_melchior_answer(answer: dict):
     Input({'type': 'wise-man', 'name': 'balthasar'}, 'answer'))
 def update_balthasar_answer(answer: dict):
     if answer and answer.get('response'):
-        status_map = {
-            'yes': '承認',
-            'no': '否定',
-            'conditional': '条件付',
-            'error': 'ERROR',
-            'info': 'INFO'
-        }
-        status = status_map.get(answer.get('status', 'info'), '待機')
-        return str(answer['response']), status
-    return '待機中...', '待機'
+        status_key = answer.get('status', 'info')
+        return str(answer['response']), get_status_element(status_key)
+    return '待機中...', get_status_element('standby')
 
 
 @callback(
@@ -335,16 +365,9 @@ def update_balthasar_answer(answer: dict):
     Input({'type': 'wise-man', 'name': 'casper'}, 'answer'))
 def update_casper_answer(answer: dict):
     if answer and answer.get('response'):
-        status_map = {
-            'yes': '承認',
-            'no': '否定',
-            'conditional': '条件付',
-            'error': 'ERROR',
-            'info': 'INFO'
-        }
-        status = status_map.get(answer.get('status', 'info'), '待機')
-        return str(answer['response']), status
-    return '待機中...', '待機'
+        status_key = answer.get('status', 'info')
+        return str(answer['response']), get_status_element(status_key)
+    return '待機中...', get_status_element('standby')
 
 
 if __name__ == '__main__':
