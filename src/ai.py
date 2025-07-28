@@ -136,6 +136,8 @@ def setup_litellm(provider: str = None, model: str = None, api_key: str = None):
 
 def is_yes_or_no_question(question: str, key: str, provider: str = None, model: str = None):
     """判断是否为是/否问题 - 只使用大模型判断"""
+    from prompts import YES_NO_QUESTION_PROMPT
+    
     final_model = setup_litellm(provider, model, key)
     
     # 尝试使用logit_bias（仅对OpenAI模型有效）
@@ -146,36 +148,50 @@ def is_yes_or_no_question(question: str, key: str, provider: str = None, model: 
             2822: 100   # No
         }
     
+    # 构建请求消息
+    messages = [
+        {'role': 'system', 'content': YES_NO_QUESTION_PROMPT},
+        {'role': 'user', 'content': question},
+    ]
+    
+    # 打印原始请求
+    print(f"\n🔍 [DEBUG] 是非题判断 - 原始请求:")
+    print(f"模型: {final_model}")
+    print(f"提供商: {provider}")
+    print(f"额外参数: {extra_params}")
+    print(f"消息数量: {len(messages)}")
+    print(f"用户问题: {question}")
+    print(f"完整消息列表:")
+    for i, msg in enumerate(messages):
+        print(f"  [{i}] {msg['role']}: {msg['content']}")
+    
     response = litellm.completion(
         model=final_model,
-        messages=[
-            {'role': 'system', 'content': 'You answer with a simple "yes" or "no".'},
-            {'role': 'system', 'content': 'Your role is to assess whether the question presented by the user is a yes/no question from a linguistic perspective.'},
-            {'role': 'system', 'content': 'You are not expected to answer the question itself, nor assess how difficult might it be to answer.'},
-            {'role': 'system', 'content': '[Example 1] User: Is 3 < 2?; You: Yes'},
-            {'role': 'system', 'content': '[Example 2] User: What time is it?; You: No'},
-            {'role': 'system', 'content': '[Example 3] User: Should I buy new shoes?; You: Yes'},
-            {'role': 'system', 'content': '[Example 4] User: Is love more important than science?; You: Yes'},
-            {'role': 'system', 'content': '[Example 5] User: What is the meaning of life?; You: No'},
-            {'role': 'system', 'content': '[Example 6] User: 1=1是否等于2?; You: Yes'},
-            {'role': 'system', 'content': '[Example 7] User: 1=1=3; You: Yes'},
-            {'role': 'system', 'content': '[Example 8] User: 2+2=5; You: Yes'},
-            {'role': 'user', 'content': question},
-        ],
+        messages=messages,
         max_tokens=1,
         temperature=0,
         **extra_params
     )
+    
+    # 打印原始响应
+    print(f"\n📥 [DEBUG] 是非题判断 - 原始响应:")
+    print(f"完整响应对象: {response}")
+    print(f"响应内容: {response.choices[0].message.content}")
+    print(f"响应角色: {response.choices[0].message.role}")
+    if hasattr(response, 'usage'):
+        print(f"Token使用: {response.usage}")
 
     content = response.choices[0].message.content.strip()
 
     if content == 'Yes':
+        print(f"✅ 判断结果: 是非题")
         return True
     elif content == 'No':
+        print(f"✅ 判断结果: 开放性问题")
         return False
     else:
         # 如果不是标准的Yes/No回答，默认为开放性问题
-        print(f'Invalid question annotation response: {content}, 默认为开放性问题')
+        print(f'⚠️ 无效的问题注释响应: {content}, 默认为开放性问题')
         return False
 
 def get_system_prompt(personality: str):
@@ -194,23 +210,43 @@ def get_structured_answer(question: str, personality: str, is_yes_or_no: bool, k
         else:
             system_message = f"{base_prompt}\n\n重要提示：这是一个开放性问题，请直接输出自然语言回答。"
         
-        # 添加调试信息
-        print(f"使用提供商: {provider}, 模型: {final_model}")
+        # 构建请求消息
+        messages = [
+            {'role': 'system', 'content': system_message},
+            {'role': 'user', 'content': question},
+        ]
+        
+        # 打印原始请求
+        print(f"\n🤖 [DEBUG] 结构化回答 - 原始请求:")
+        print(f"模型: {final_model}")
+        print(f"提供商: {provider}")
         print(f"问题类型: {'是非题' if is_yes_or_no else '开放性问题'}")
+        print(f"温度: 0.7")
+        print(f"完整消息列表:")
+        for i, msg in enumerate(messages):
+            print(f"  [{i}] {msg['role']}: {msg['content'][:200]}{'...' if len(msg['content']) > 200 else ''}")
         
         response = litellm.completion(
             model=final_model,
-            messages=[
-                {'role': 'system', 'content': system_message},
-                {'role': 'user', 'content': question},
-            ],
+            messages=messages,
             temperature=0.7
         )
+        
+        # 打印原始响应
+        print(f"\n📥 [DEBUG] 结构化回答 - 原始响应:")
+        print(f"完整响应对象: {response}")
+        print(f"响应内容: {response.choices[0].message.content}")
+        print(f"响应角色: {response.choices[0].message.role}")
+        if hasattr(response, 'usage'):
+            print(f"Token使用: {response.usage}")
 
         return response.choices[0].message.content
 
     except Exception as e:
         error_msg = str(e)
+        print(f"\n❌ [DEBUG] 结构化回答 - 异常:")
+        print(f"错误信息: {error_msg}")
+        print(f"错误类型: {type(e).__name__}")
         
         # 提供更友好的错误信息
         if "LLM Provider NOT provided" in error_msg:

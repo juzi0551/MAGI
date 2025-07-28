@@ -115,6 +115,19 @@ CASPER_PROMPT = """# 角色扮演指令：MAGI - Casper-3
 ---
 现在，请等待我的提案。"""
 
+# 是否问题判断提示词
+YES_NO_QUESTION_PROMPT = """You answer with a simple "yes" or "no".
+Your role is to assess whether the question presented by the user is a yes/no question from a linguistic perspective.
+You are not expected to answer the question itself, nor assess how difficult might it be to answer.
+[Example 1] User: Is 3 < 2?; You: Yes
+[Example 2] User: What time is it?; You: No
+[Example 3] User: Should I buy new shoes?; You: Yes
+[Example 4] User: Is love more important than science?; You: Yes
+[Example 5] User: What is the meaning of life?; You: No
+[Example 6] User: 1=1是否等于2?; You: Yes
+[Example 7] User: 1=1=3; You: Yes
+[Example 8] User: 2+2=5; You: Yes"""
+
 # 人格映射
 PERSONALITY_PROMPTS = {
     'melchior': MELCHIOR_PROMPT,
