@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -c assets/history_utils.js)",
+      "Bash(node -c components/response.js)",
+      "Bash(node -c components/wise_man.js)",
+      "Bash(node -c components/history_panel.js)",
+      "Bash(mv assets/history_utils.js assets/magi_utils.js)",
+      "Bash(mv utils/magi_utils.js assets/)",
+      "Bash(mv utils/history_storage.js assets/)",
+      "Bash(rmdir utils)"
+    ],
+    "deny": []
+  }
+}

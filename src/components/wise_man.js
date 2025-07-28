@@ -1,25 +1,6 @@
 import React from 'react';
 const $ = React.createElement;
 
-function getColor(status) {
-    if (status === 'yes')
-        return '#52e691';
-
-    if (status === 'no')
-        return '#a41413';
-
-    if (status === 'info')
-        return '#3caee0';
-
-    if (status === 'conditional')
-        return 'repeating-linear-gradient(56deg, rgb(82, 230, 145) 0px, rgb(82, 230, 145) 30px, #82cd68 30px, #82cd68 60px)';
-
-    if (status === 'error')
-        return 'black';
-
-    throw new Error(`Invalid status: ${status}`);
-}
-
 export default function WiseMan({ 
     setProps, 
     name, 
@@ -34,8 +15,20 @@ export default function WiseMan({
     }, 
     n_clicks = 0 
 }) {
+    // 使用统一的状态工具库，如果不可用则使用本地备份
+    const getWiseManBackground = window.StatusUtils?.getWiseManBackground || ((status) => {
+        const backgroundMap = {
+            'yes': '#52e691',
+            'no': '#a41413',
+            'info': '#3caee0',
+            'conditional': 'repeating-linear-gradient(56deg, rgb(82, 230, 145) 0px, rgb(82, 230, 145) 30px, #82cd68 30px, #82cd68 60px)',
+            'error': 'black'
+        };
+        return backgroundMap[status] || '#3caee0';
+    });
+
     const fullName = `${name.toUpperCase()} • ${order_number}`;
-    const color = getColor(answer['status']);
+    const color = getWiseManBackground(answer['status']);
     const processing = question_id !== answer['id'];
 
     const onClick = () => {

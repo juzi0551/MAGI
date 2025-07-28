@@ -1,7 +1,7 @@
 import React from 'react';
 
 const HistoryPanel = ({ id, records = [], setProps }) => {
-    // 使用共享工具函数，如果不可用则使用本地备份
+    // 使用统一的工具库
     const formatTimestamp = window.HistoryUtils?.formatTimestamp || ((timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleString('zh-CN', {
@@ -27,22 +27,19 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         return statusMap[status] || '待 機';
     });
 
-    const getStatusClass = (status) => {
+    const getStatusClass = window.StatusUtils?.getStatusClass || ((status) => {
         return `status-tag status-${status}`;
-    };
+    });
 
     const handleItemClick = (record, event) => {
-        // 阻止事件冒泡
         event.stopPropagation();
         
         if (setProps) {
-            // 触发打开详情modal
             setProps({ onRecordDetail: record });
         }
     };
 
     const handleReaskClick = (record, event) => {
-        // 阻止事件冒泡
         event.stopPropagation();
         
         if (setProps) {

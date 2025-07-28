@@ -43,6 +43,34 @@ body {
     flex-direction: column;
     padding-left: 5px;
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 右侧面板滚动条样式 */
+.right-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.right-panel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.right-panel::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff8d00 0%, #ffb84d 50%, #ff8d00 100%);
+    border-radius: 4px;
+    border: 1px solid #cc7000;
+    box-shadow: 0 0 3px rgba(255, 141, 0, 0.5);
+}
+
+.right-panel::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffb84d 0%, #ffd480 50%, #ffb84d 100%);
+    box-shadow: 0 0 5px rgba(255, 141, 0, 0.8);
+}
+
+.right-panel::-webkit-scrollbar-thumb:active {
+    background: #cc7000;
 }
 
 .wise-answers {
@@ -367,7 +395,7 @@ body {
     margin-top: 15px;
     position: absolute;
     bottom: 5px;
-    left: 5px;
+    left: 0px;
     right: 5px;
     padding: 10px;
     background: rgba(0, 0, 0, 0.9);
@@ -389,11 +417,14 @@ body {
 .history-panel {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     border: 2px solid #ff8d00;
-    border-radius: 8px;
     margin: 10px 0;
     padding: 15px;
-    max-height: 300px;
-    overflow-y: auto;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    margin-bottom: 80px;
 }
 
 /* 标题栏样式 */
@@ -404,6 +435,7 @@ body {
     margin-bottom: 10px;
     padding-bottom: 8px;
     border-bottom: 1px solid #ff8d00;
+    flex-shrink: 0;
 }
 
 .history-title {
@@ -432,8 +464,37 @@ body {
 
 /* 历史记录列表样式 */
 .history-list {
-    max-height: 250px;
+    flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+/* MAGI风格滚动条 */
+.history-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff8d00 0%, #ffb84d 50%, #ff8d00 100%);
+    border-radius: 4px;
+    border: 1px solid #cc7000;
+    box-shadow: 0 0 3px rgba(255, 141, 0, 0.5);
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffb84d 0%, #ffd480 50%, #ffb84d 100%);
+    box-shadow: 0 0 5px rgba(255, 141, 0, 0.8);
+}
+
+.history-list::-webkit-scrollbar-thumb:active {
+    background: #cc7000;
 }
 
 /* 无历史记录提示 */
@@ -458,7 +519,6 @@ body {
 
 .history-item:hover {
     background: rgba(255, 141, 0, 0.2);
-    transform: translateX(5px);
 }
 
 .history-item-header {
