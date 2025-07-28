@@ -88,19 +88,25 @@ app.layout = Div(
         Div(className='right-panel', children=[
             Div(className='wise-answers', children=[
                 Div(id='melchior-answer', className='wise-answer melchior', children=[
-                    Div('MELCHIOR-1 (科学家)', className='wise-answer-title'),
-                    Div(id='melchior-content', className='answer-content', children='待機中...'),
-                    Div(id='melchior-status', children=get_status_element('standby'))
+                    Div(className='wise-answer-title', children=[
+                        'MELCHIOR-1 (科学家)',
+                        Div(id='melchior-status', children=get_status_element('standby'))
+                    ]),
+                    Div(id='melchior-content', className='answer-content', children='待機中...')
                 ]),
                 Div(id='balthasar-answer', className='wise-answer balthasar', children=[
-                    Div('BALTHASAR-2 (母亲)', className='wise-answer-title'),
-                    Div(id='balthasar-content', className='answer-content', children='待機中...'),
-                    Div(id='balthasar-status', children=get_status_element('standby'))
+                    Div(className='wise-answer-title', children=[
+                        'BALTHASAR-2 (母亲)',
+                        Div(id='balthasar-status', children=get_status_element('standby'))
+                    ]),
+                    Div(id='balthasar-content', className='answer-content', children='待機中...')
                 ]),
                 Div(id='casper-answer', className='wise-answer casper', children=[
-                    Div('CASPER-3 (女人)', className='wise-answer-title'),
-                    Div(id='casper-content', className='answer-content', children='待機中...'),
-                    Div(id='casper-status', children=get_status_element('standby'))
+                    Div(className='wise-answer-title', children=[
+                        'CASPER-3 (女人)',
+                        Div(id='casper-status', children=get_status_element('standby'))
+                    ]),
+                    Div(id='casper-content', className='answer-content', children='待機中...')
                 ])
             ])
         ]),

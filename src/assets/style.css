@@ -82,48 +82,82 @@ body {
 
 .wise-answer {
     border: 2px solid #ff8d00;
-    padding: 10px;
-    padding-bottom: 50px; /* 为状态标签预留空间 */
     background: black;
     color: #ff8d00;
     font-family: 'Lucida Console', monospace;
     flex: 1;
-    overflow-y: auto;
     position: relative;
-    min-height: 120px; /* 确保最小高度 */
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .wise-answer-title {
     color: #ff8d00;
     font-size: 0.9em;
-    margin-bottom: 6px;
     text-transform: uppercase;
     border-bottom: 1px solid #ff8d00;
-    padding-bottom: 2px;
+    padding: 10px 10px 8px 10px;
     font-family: 'Lucida Console', monospace;
     font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background: black;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .wise-answer .answer-content {
     font-size: 0.75em;
     line-height: 1.2;
     white-space: pre-wrap;
-    margin-bottom: 40px; /* 确保内容不会覆盖状态标签 */
-    padding-right: 80px; /* 为右下角状态标签留出空间 */
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 答案内容滚动条样式 - 与历史记录相同 */
+.wise-answer .answer-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.wise-answer .answer-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.wise-answer .answer-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff8d00 0%, #ffb84d 50%, #ff8d00 100%);
+    border-radius: 4px;
+    border: 1px solid #cc7000;
+    box-shadow: 0 0 3px rgba(255, 141, 0, 0.5);
+}
+
+.wise-answer .answer-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffb84d 0%, #ffd480 50%, #ffb84d 100%);
+    box-shadow: 0 0 5px rgba(255, 141, 0, 0.8);
+}
+
+.wise-answer .answer-content::-webkit-scrollbar-thumb:active {
+    background: #cc7000;
 }
 
 .wise-answer .answer-status {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    padding: 4px 12px;
+    padding: 2px 8px;
     border: 2px solid;
-    font-size: 12px;
+    font-size: 10px;
     font-family: 'MAGI-Matisse', sans-serif;
     line-height: 0.9;
     text-transform: uppercase;
-    min-width: 60px;
+    min-width: 50px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .magi {
@@ -583,17 +617,15 @@ body {
 
 /* 右侧面板状态框样式 */
 .answer-status {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    padding: 4px 12px;
+    padding: 2px 8px;
     border: 2px solid;
-    font-size: 12px;
+    font-size: 10px;
     font-family: 'MAGI-Matisse', sans-serif;
     line-height: 0.9;
     text-transform: uppercase;
-    min-width: 60px;
+    min-width: 50px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .answer-status.status-yes {
