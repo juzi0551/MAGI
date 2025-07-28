@@ -774,11 +774,234 @@ body {
     color: white; 
 }
 
+/* 历史记录详情modal样式 - 简化结构 */
+.modal-content.history-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid #ff8d00;
+    border-radius: 8px;
+    max-width: 80vw;
+    max-height: 85vh;
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(255, 141, 0, 0.3);
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ff8d00;
+    background: rgba(255, 141, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.close {
+    color: #ff8d00;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    background: rgba(255, 141, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.history-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* MAGI风格滚动条 */
+.history-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid #333;
+}
+
+.history-modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff8d00 0%, #ffb84d 50%, #ff8d00 100%);
+    border-radius: 4px;
+    border: 1px solid #cc7000;
+    box-shadow: 0 0 3px rgba(255, 141, 0, 0.5);
+}
+
+.history-modal-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffb84d 0%, #ffd480 50%, #ffb84d 100%);
+    box-shadow: 0 0 5px rgba(255, 141, 0, 0.8);
+}
+
+.history-modal-body::-webkit-scrollbar-thumb:active {
+    background: #cc7000;
+}
+
+.wise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.wise-name {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.wise-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: 'MAGI-Matisse', monospace;
+}
+
 .wise-response {
     color: #ff8d00;
     font-family: 'MAGI-Matisse', monospace;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.5;
     word-break: break-word;
     white-space: pre-wrap;
+}
+
+/* 新增样式 */
+.wise-conditions {
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px dashed #ff8d00;
+    border-radius: 4px;
+    background: rgba(255, 141, 0, 0.08);
+}
+
+.conditions-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.conditions-list {
+    margin: 0;
+    padding-left: 16px;
+    color: #ffb84d;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+}
+
+.condition-item {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.expand-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 1px solid #ff8d00;
+    color: #ff8d00;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    display: block;
+    width: fit-content;
+}
+
+.expand-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+.no-answers {
+    text-align: center;
+    color: #666;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ff8d00;
+    display: flex;
+    justify-content: center;
+    background: rgba(255, 141, 0, 0.05);
+    flex-shrink: 0;
+}
+
+.modal-close-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 2px solid #ff8d00;
+    color: #ff8d00;
+    padding: 8px 24px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+    transform: scale(1.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .modal-content.history-modal-content {
+        max-width: 95vw;
+        min-width: 300px;
+        max-height: 90vh;
+    }
+    
+    .modal-header, .modal-footer {
+        padding: 10px 15px;
+    }
+    
+    .history-modal-body {
+        padding: 15px;
+        gap: 15px;
+    }
 }
