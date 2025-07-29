@@ -7,18 +7,38 @@ export default function SettingsModal({ id, isOpen, setProps }) {
     const [apiKey, setApiKey] = React.useState('');
     const [apiBase, setApiBase] = React.useState('');
 
+    // 定义每个供应商的默认模型
+    const defaultModels = {
+        'openrouter': 'google/gemini-2.5-flash',
+        'openai': 'gpt-4o',
+        'anthropic': 'claude-3-5-sonnet-20241022',
+        'google': 'gemini-2.5-flash',
+        'cohere': 'command-r-plus-08-2024',
+        'zhipu': 'glm-4-plus',
+        'moonshot': 'moonshot-v1-32k',
+        'alibaba': 'qwen-max',
+        'baidu': 'ernie-4.0-turbo-8k',
+        'deepseek': 'deepseek-chat'
+    };
+
+    // 处理供应商变更时自动更新默认模型
+    const handleProviderChange = (newProvider) => {
+        setProvider(newProvider);
+        setModel(defaultModels[newProvider] || 'gpt-4o');
+    };
+
     React.useEffect(() => {
         if (isOpen) {
             const config = window.ConfigStorage.getUserConfig();
             if (config) {
                 setProvider(config.provider || 'openrouter');
-                setModel(config.model || 'google/gemini-2.5-flash');
+                setModel(config.model || defaultModels[config.provider] || 'google/gemini-2.5-flash');
                 setApiKey(config.apiKey || '');
                 setApiBase(config.apiBase || '');
             } else {
                 // 如果没有配置，则确保面板显示的是默认值
                 setProvider('openrouter');
-                setModel('google/gemini-2.5-flash');
+                setModel(defaultModels['openrouter']);
                 setApiKey('');
                 setApiBase('');
             }
@@ -52,8 +72,9 @@ export default function SettingsModal({ id, isOpen, setProps }) {
         if (window.ConfigStorage) {
             window.ConfigStorage.clearUserConfig();
         }
-        setProvider('openrouter');
-        setModel('google/gemini-2.5-flash');
+        const defaultProvider = 'openrouter';
+        setProvider(defaultProvider);
+        setModel(defaultModels[defaultProvider]);
         setApiKey('');
         setApiBase('');
     };
@@ -67,7 +88,7 @@ export default function SettingsModal({ id, isOpen, setProps }) {
             $('h2', {}, 'API 配置'),
             $('div', { className: 'form-group' },
                 $('label', {}, '服务商 (Provider)'),
-                $('select', { value: provider, onChange: e => setProvider(e.target.value) },
+                $('select', { value: provider, onChange: e => handleProviderChange(e.target.value) },
                     $('option', { value: 'openrouter' }, 'OpenRouter'),
                     $('option', { value: 'openai' }, 'OpenAI'),
                     $('option', { value: 'anthropic' }, 'Anthropic'),
@@ -76,7 +97,8 @@ export default function SettingsModal({ id, isOpen, setProps }) {
                     $('option', { value: 'zhipu' }, 'ZhipuAI (智谱)'),
                     $('option', { value: 'moonshot' }, 'Moonshot (月之暗面)'),
                     $('option', { value: 'alibaba' }, 'Alibaba (通义千问)'),
-                    $('option', { value: 'baidu' }, 'Baidu (文心千帆)')
+                    $('option', { value: 'baidu' }, 'Baidu (文心千帆)'),
+                    $('option', { value: 'deepseek' }, 'DeepSeek (深度求索)')
                 )
             ),
             $('div', { className: 'form-group' },

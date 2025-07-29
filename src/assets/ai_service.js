@@ -6,7 +6,52 @@ window.AiService = {
         }
 
         const { provider, model, apiKey, apiBase } = config;
-        let apiUrl = apiBase || 'https://openrouter.ai/api/v1/chat/completions'; // Default to openrouter
+        let apiUrl;
+        
+        // 根据不同的提供商设置不同的API URL
+        if (apiBase) {
+            // 如果用户提供了自定义API基础URL，优先使用
+            apiUrl = apiBase;
+        } else {
+            // 否则根据提供商选择默认URL
+            switch (provider) {
+                case 'deepseek':
+                    apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+                    break;
+                case 'openai':
+                    apiUrl = 'https://api.openai.com/v1/chat/completions';
+                    break;
+                case 'anthropic':
+                    apiUrl = 'https://api.anthropic.com/v1/messages';
+                    break;
+                case 'google':
+                    apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+                    break;
+                case 'zhipu':
+                    apiUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+                    break;
+                case 'moonshot':
+                    apiUrl = 'https://api.moonshot.cn/v1/chat/completions';
+                    break;
+                case 'alibaba':
+                    apiUrl = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+                    break;
+                case 'baidu':
+                    apiUrl = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions';
+                    break;
+                case 'openrouter':
+                default:
+                    apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+                    break;
+            }
+        }
+        
+        console.log(`使用API端点: ${apiUrl} (提供商: ${provider})`);
+        
+        // 如果是DeepSeek且没有自定义API基础URL，则使用DeepSeek的API端点
+        if (provider === 'deepseek' && !apiBase) {
+            apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+        }
 
         const messages = [
             { role: 'system', content: yesNoPrompt },
@@ -55,7 +100,47 @@ window.AiService = {
         }
 
         const { provider, model, apiKey, apiBase } = config;
-        let apiUrl = apiBase || 'https://openrouter.ai/api/v1/chat/completions'; // Default to openrouter
+        let apiUrl;
+        
+        // 根据不同的提供商设置不同的API URL
+        if (apiBase) {
+            // 如果用户提供了自定义API基础URL，优先使用
+            apiUrl = apiBase;
+        } else {
+            // 否则根据提供商选择默认URL
+            switch (provider) {
+                case 'deepseek':
+                    apiUrl = 'https://api.deepseek.com/v1/chat/completions';
+                    break;
+                case 'openai':
+                    apiUrl = 'https://api.openai.com/v1/chat/completions';
+                    break;
+                case 'anthropic':
+                    apiUrl = 'https://api.anthropic.com/v1/messages';
+                    break;
+                case 'google':
+                    apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+                    break;
+                case 'zhipu':
+                    apiUrl = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+                    break;
+                case 'moonshot':
+                    apiUrl = 'https://api.moonshot.cn/v1/chat/completions';
+                    break;
+                case 'alibaba':
+                    apiUrl = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+                    break;
+                case 'baidu':
+                    apiUrl = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions';
+                    break;
+                case 'openrouter':
+                default:
+                    apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+                    break;
+            }
+        }
+        
+        console.log(`使用API端点: ${apiUrl} (提供商: ${provider})`);
 
         const fetchAnswer = async (personality) => {
             const userContent = isYesNo

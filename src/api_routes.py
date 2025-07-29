@@ -61,16 +61,48 @@ def register_api_callbacks(app):
         casper_content = casper_answer.get('response', 'Error')
         casper_status_element = get_status_element(casper_answer.get('status', 'error'))
 
-        # 2. 最终裁决
-        final_status = 'info'
-        if any(a['status'] == 'error' for a in answers):
-            final_status = 'error'
-        elif any(a['status'] == 'no' for a in answers):
-            final_status = 'no'
-        elif any(a['status'] == 'conditional' for a in answers):
-            final_status = 'conditional'
-        elif all(a['status'] == 'yes' for a in answers):
-            final_status = 'yes'
+        # 2. 最终裁决 - 新的多数决机制
+        def calculate_final_decision(answers):
+            # 找到Casper的回答（第三个贤者）
+            casper_answer = answers[2]  # casper是第三个
+            
+            # Casper的一票否决权：只对"no"状态生效
+            if casper_answer['status'] == 'no':
+                print(f"🚫 Casper行使一票否决权")
+                return 'no'
+            
+            # 错误优先处理
+            if any(a['status'] == 'error' for a in answers):
+                return 'error'
+            
+            # 统计各状态票数
+            status_counts = {}
+            for answer in answers:
+                status = answer['status']
+                status_counts[status] = status_counts.get(status, 0) + 1
+            
+            print(f"📊 投票统计: {status_counts}")
+            
+            # 找到得票最多的状态
+            max_count = max(status_counts.values())
+            
+            # 如果有状态获得2票或以上，采用该状态
+            if max_count >= 2:
+                for status, count in status_counts.items():
+                    if count == max_count:
+                        print(f"✅ 多数决通过: {status} ({count}票)")
+                        return status
+            
+            # 1:1:1的情况，按优先级处理
+            print(f"⚖️  三方各异，按优先级处理")
+            if 'conditional' in status_counts:
+                return 'conditional'
+            elif 'yes' in status_counts:
+                return 'yes'
+            else:
+                return 'info'
+        
+        final_status = calculate_final_decision(answers)
         
         print(f"\n🏛️  MAGI系统综合决策 [ID: {question['id']}] - 状态: {final_status.upper()}")
 
