@@ -598,40 +598,36 @@ app.clientside_callback(
     prevent_initial_call=True
 )
 
-# 监听审议状态变化播放音效
+# 监听决议状态变化播放音效
 app.clientside_callback(
     """
     function(status, audio_enabled) {
-        if (!audio_enabled || !window.MagiAudio) return window.dash_clientside.no_update;
-        
-        console.log('🎵 MAGI状态变化:', status);
-        
-        if (status === 'progress') {
-            // 开始审议 - 播放审议音效
-            window.MagiAudio.play();
-            console.log('🔄 播放审议音效');
-        } else if (status !== 'standby') {
-            // 决议完成 - 播放决议音效
-            let frequency;
-            switch (status) {
-                case 'yes':
-                    frequency = 2000;  // 通过
-                    break;
-                case 'no':
-                case 'error':
-                    frequency = 3400;  // 否决/错误
-                    break;
-                case 'conditional':
-                    frequency = 2700;  // 条件通过
-                    break;
-                case 'info':
-                default:
-                    frequency = 2200;  // 信息
-                    break;
-            }
-            window.MagiAudio.playOscillator(frequency);
-            console.log('✅ 播放决议音效:', status, frequency);
+        if (!audio_enabled || !window.MagiAudio || status === 'progress' || status === 'standby') {
+            return window.dash_clientside.no_update;
         }
+        
+        console.log('🎵 MAGI决议状态变化:', status);
+        
+        // 决议完成 - 播放决议音效
+        let frequency;
+        switch (status) {
+            case 'yes':
+                frequency = 2000;  // 通过
+                break;
+            case 'no':
+            case 'error':
+                frequency = 3400;  // 否决/错误
+                break;
+            case 'conditional':
+                frequency = 2700;  // 条件通过
+                break;
+            case 'info':
+            default:
+                frequency = 2200;  // 信息
+                break;
+        }
+        window.MagiAudio.playOscillator(frequency);
+        console.log('✅ 播放决议音效:', status, frequency);
         
         return window.dash_clientside.no_update;
     }

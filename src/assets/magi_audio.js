@@ -3,8 +3,6 @@
  * 完全按照参考项目实现
  */
 var audioCtx;
-var osc;
-var lfo;    
 var VCO;
 var carrierVolume;
 var sound = true;
@@ -12,9 +10,6 @@ var exMode = false;
 
 // 音效频率配置
 var frequencies = {
-    deliberating: 2080,    // 审议中载波频率
-    lfo_normal: 10,        // 普通LFO频率
-    lfo_urgent: 30,        // 紧急LFO频率
     decision_yes: 2000,    // 通过音效
     decision_no: 3400,     // 否决音效
     decision_conditional: 2700,  // 条件通过
@@ -50,42 +45,6 @@ function load() {
         sound = false;
     }
 }
-
-// 播放审议中音效 - 完全按照参考项目实现
-function play() {
-    if (!sound) return;
-    
-    try {
-        if (!audioCtx) {
-            load();
-        }
-        
-        // 停止之前的音效
-        stopAll();
-        
-        // 创建载波振荡器
-        osc = audioCtx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.value = frequencies.deliberating;
-        
-        // 创建LFO调制器
-        lfo = audioCtx.createOscillator();
-        lfo.type = 'square';
-        lfo.frequency.value = exMode ? frequencies.lfo_urgent : frequencies.lfo_normal;
-        
-        // 连接音频节点
-        lfo.connect(carrierVolume.gain);
-        osc.connect(carrierVolume);
-        
-        // 启动振荡器
-        lfo.start(0);
-        osc.start(0);
-        
-        console.log('MAGI Audio: 开始播放审议音效 (' + (exMode ? '紧急' : '普通') + '模式)');
-    } catch (error) {
-        console.error('MAGI Audio: 播放审议音效失败', error);
-    }
-}
     
 // 播放决议完成音效 - 完全按照参考项目实现
 function playOscillator(hz) {
@@ -116,14 +75,6 @@ function playOscillator(hz) {
 // 停止所有音效 - 完全按照参考项目实现
 function stopAll() {
     try {
-        // 停止审议音效的振荡器
-        try {
-            if (osc) osc.stop(0);
-            if (lfo) lfo.stop(0);
-        } catch (e) {
-            // 忽略已经停止的振荡器错误
-        }
-        
         // 停止决议音效
         try {
             if (VCO) VCO.stop(audioCtx.currentTime);
@@ -206,7 +157,6 @@ document.addEventListener('visibilitychange', function(e) {
 
 // 导出API
 window.MagiAudio = {
-    play: play,
     playOscillator: playOscillator,
     stopAll: stopAll,
     setEnabled: setEnabled,
