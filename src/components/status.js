@@ -1,12 +1,14 @@
 import React from 'react';
 const $ = React.createElement;
 
-export default function Status({ extention = '????' }) {
+export default function Status() {
     const [randomCode, setRandomCode] = React.useState(0);
+    const [extention, setExtention] = React.useState('0000');
 
     React.useEffect(() => {
         setRandomCode(Math.floor(Math.random() * 900) + 100);
-    }, [extention]);
+        setExtention(String(Math.floor(Math.random() * 9000) + 1000));
+    }, []);
 
     const extentionLabel = `EXTENTION:${extention}`;
     const codeLabel = `CODE:${randomCode}`;
