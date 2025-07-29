@@ -174,7 +174,7 @@
 }
 
 .magi>.wise-man.balthasar,
-.magI>.wise-man.balthasar>.inner {
+.magi>.wise-man.balthasar>.inner {
     clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
 }
 

@@ -1,4 +1,5 @@
 import os
+import random
 from dash.dependencies import Input, Output, State, ALL, MATCH
 from dash import dcc
 import ai
@@ -65,7 +66,7 @@ def register_api_callbacks(app):
             print(f"⚠️  ID不匹配，等待同步... (问题ID: {question['id']}, 注释ID: {annotated_question['id']})")
             return '????'
 
-        status_code = '7312' if annotated_question['is_yes_or_no_question'] else '3023'
+        status_code = str(random.randint(1000, 9999)) if annotated_question['is_yes_or_no_question'] else '3023'
         question_type = "是非题" if annotated_question['is_yes_or_no_question'] else "开放性问题"
         print(f"📡 MAGI状态码更新: {status_code} ({question_type})")
         
