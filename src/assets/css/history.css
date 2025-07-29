@@ -1,0 +1,336 @@
+/* 历史记录面板样式 */
+.history-panel {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid #ff8d00;
+    margin: 10px 0;
+    padding: 15px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    margin-bottom: 16px;
+}
+
+/* 标题栏样式 */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ff8d00;
+    flex-shrink: 0;
+}
+
+.history-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* 清空按钮样式 */
+.clear-history-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 1px solid #ff8d00;
+    color: #ff8d00;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clear-history-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+}
+
+/* 历史记录列表样式 */
+.history-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+}
+
+/* 无历史记录提示 */
+.no-history {
+    color: #666;
+    text-align: center;
+    padding: 20px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+}
+
+/* 历史记录项样式 */
+.history-item {
+    background: rgba(255, 141, 0, 0.1);
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    margin: 8px 0;
+    padding: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background: rgba(255, 141, 0, 0.2);
+}
+
+.history-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.history-time {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+}
+
+.history-question {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* 历史记录详情modal样式 */
+.history-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.history-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.history-section {
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    padding: 15px;
+    background: rgba(255, 141, 0, 0.05);
+}
+
+.section-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ff8d00;
+    padding-bottom: 5px;
+}
+
+.section-content {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.question-time {
+    color: #ccc;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+    margin-top: 8px;
+}
+
+.answers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.wise-answer-item {
+    border: 1px solid #ff8d00;
+    border-radius: 4px;
+    padding: 12px;
+    background: rgba(255, 141, 0, 0.03);
+}
+
+.wise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.wise-name {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.wise-response {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.wise-conditions {
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px dashed #ff8d00;
+    border-radius: 4px;
+    background: rgba(255, 141, 0, 0.08);
+}
+
+.conditions-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.conditions-list {
+    margin: 0;
+    padding-left: 16px;
+    color: #ffb84d;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 11px;
+}
+
+.condition-item {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.expand-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 1px solid #ff8d00;
+    color: #ff8d00;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    display: block;
+    width: fit-content;
+}
+
+.expand-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+    transform: translateY(-1px);
+}
+
+.no-answers {
+    text-align: center;
+    color: #666;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ff8d00;
+    display: flex;
+    justify-content: center;
+    background: rgba(255, 141, 0, 0.05);
+    flex-shrink: 0;
+}
+
+.modal-close-btn {
+    background: rgba(255, 141, 0, 0.2);
+    border: 2px solid #ff8d00;
+    color: #ff8d00;
+    padding: 8px 24px;
+    border-radius: 4px;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 141, 0, 0.4);
+    transform: scale(1.05);
+}
+
+/* 历史记录详情modal样式 - 简化结构 */
+.modal-content.history-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid #ff8d00;
+    border-radius: 8px;
+    max-width: 80vw;
+    max-height: 85vh;
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(255, 141, 0, 0.3);
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ff8d00;
+    background: rgba(255, 141, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', monospace;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.close {
+    color: #ff8d00;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.close:hover {
+    background: rgba(255, 141, 0, 0.2);
+    transform: scale(1.1);
+}

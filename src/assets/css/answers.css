@@ -1,0 +1,100 @@
+/* 右侧回答面板容器 */
+.wise-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+}
+
+/* 单个回答面板 */
+.wise-answer {
+    border: 2px solid #ff8d00;
+    background: black;
+    color: #ff8d00;
+    font-family: 'Lucida Console', monospace;
+    flex: 1;
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 回答面板标题 */
+.wise-answer-title {
+    color: #ff8d00;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ff8d00;
+    padding: 10px 10px 8px 10px;
+    font-family: 'Lucida Console', monospace;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background: black;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* 回答内容区域 */
+.wise-answer .answer-content {
+    font-size: 0.75em;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 回答面板中的状态显示 */
+.wise-answer .answer-status {
+    padding: 2px 8px;
+    border: 2px solid;
+    font-size: 10px;
+    font-family: 'MAGI-Matisse', sans-serif;
+    line-height: 0.9;
+    text-transform: uppercase;
+    min-width: 50px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.answer-status.status-yes {
+    background: #52e691;
+    color: black;
+    border-color: #52e691;
+}
+
+.answer-status.status-no {
+    background: #a41413;
+    color: white;
+    border-color: #a41413;
+}
+
+.answer-status.status-conditional {
+    background: #ff8d00;
+    color: black;
+    border-color: #ff8d00;
+}
+
+.answer-status.status-info {
+    background: #3caee0;
+    color: black;
+    border-color: #3caee0;
+}
+
+.answer-status.status-error {
+    background: gray;
+    color: white;
+    border-color: gray;
+}
+
+.answer-status.status-standby {
+    background: #ff8d00;
+    color: black;
+    border-color: #ff8d00;
+}
