@@ -1,7 +1,7 @@
 import React from 'react';
 const $ = React.createElement;
 
-export default function Response({ status = 'info', question_id = 0, answer_id = 0 }) {
+export default function Response({ status = 'info' }) {
     // 使用统一的状态工具库，如果不可用则使用本地备份
     const getStatusText = window.StatusUtils?.getStatusText || ((status) => {
         const statusMap = {
@@ -33,8 +33,9 @@ export default function Response({ status = 'info', question_id = 0, answer_id =
     const color = getStatusColor(status);
 
     let className = 'response';
-    if (question_id !== answer_id)
+    if (status === 'progress') {
         className += ' flicker';
+    }
 
     return $('div', { className, style: { color: color, borderColor: color } },
         $('div', { className: 'inner' }, text)

@@ -211,15 +211,14 @@
 
 /* 闪烁动画 */
 @keyframes flicker-animation {
-    0% {}
-
     50% {
         background: black;
         color: black;
-        border-color: black;
     }
 }
 
-.flicker {
+.magi-in-progress .connection,
+.magi-in-progress .wise-man > .inner,
+.response.flicker > .inner {
     animation: flicker-animation 0.25s infinite step-end;
 }

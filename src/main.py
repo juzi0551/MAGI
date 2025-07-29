@@ -1,11 +1,12 @@
 import os
 from dotenv import load_dotenv
-from dash import Dash, dcc, Input, Output
-from dash.html import Div, Label
+from dash import Dash, dcc, Input, Output, State, ALL
+from dash.html import Div, Label, Button
 from dash_local_react_components import load_react_component
 from api_routes import register_api_callbacks
 from history_manager import register_history_callbacks
 from ui_components import get_status_element
+from prompts import get_personality_prompt, YES_NO_QUESTION_PROMPT
 
 # 加载环境变量
 load_dotenv()
@@ -16,10 +17,11 @@ app = Dash(
     title='MAGI 决策模拟系统',
     meta_tags=[{
         'name': 'description',
-        'content': '一个基于 EVA 中 MAGI 超级计算机系统的网页模拟应用。输入您的问题，见证三贤者（科学家、母亲、女人）的审议过程，并获得最终决议。'
+        'content': '一个基于 EVA 中 MAGI 超级计算机系统的网页模拟应用。输入您的问题，见证三贤人（科学家、母亲、女人）的审议过程，并获得最终决议。'
     }]
 )
 
+# 加载 React 组件
 Magi = load_react_component(app, 'components', 'magi.js')
 WiseMan = load_react_component(app, 'components', 'wise_man.js')
 Response = load_react_component(app, 'components', 'response.js')
@@ -27,13 +29,20 @@ Header = load_react_component(app, 'components', 'header.js')
 Status = load_react_component(app, 'components', 'status.js')
 HistoryPanel = load_react_component(app, 'components', 'history_panel.js')
 HistoryModal = load_react_component(app, 'components', 'history_modal.js')
+SettingsModal = load_react_component(app, 'components', 'settings_modal.js')
 
 app.layout = Div(
     className='system',
     children=[
+        # 全局数据存储
         dcc.Store(id='audio-enabled', data=True),
         dcc.Store(id='audio-volume', data=30),
-        
+        dcc.Store(id='settings-modal-open', data=False),
+        dcc.Store(id='user-config', storage_type='local'),
+        dcc.Store(id='ai-results-store'),
+        dcc.Store(id='yes-no-prompt-store', data=YES_NO_QUESTION_PROMPT),
+
+        # 主界面
         Div(className='left-panel', children=[
             Magi(id='magi', children=[
                 Header(side='left', title='提訴'),
@@ -43,17 +52,17 @@ app.layout = Div(
                     id={'type': 'wise-man', 'name': 'melchior'},
                     name='melchior',
                     order_number=1,
-                    personality='You are a scientist. Your goal is to further our understanding of the universe and advance our technological progress.'),
+                    personality=get_personality_prompt('melchior')),
                 WiseMan(
                     id={'type': 'wise-man', 'name': 'balthasar'},
                     name='balthasar',
                     order_number=2,
-                    personality='You are a mother. Your goal is to protect your children and ensure their well-being.'),
+                    personality=get_personality_prompt('balthasar')),
                 WiseMan(
                     id={'type': 'wise-man', 'name': 'casper'},
                     name='casper',
                     order_number=3,
-                    personality='You are a woman. Your goal is to pursue love, dreams and desires.'),
+                    personality=get_personality_prompt('casper')),
                 Response(id='response', status='standby')
             ]),
             HistoryPanel(
@@ -66,6 +75,7 @@ app.layout = Div(
             Div(className='input-container', children=[
                 Label('问题: '),
                 dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
+                Button('设置', id='open-settings-button', n_clicks=0)
             ]),
         ]),
         
@@ -95,13 +105,19 @@ app.layout = Div(
             ])
         ]),
         
+        # 模态框
         HistoryModal(
             id='history-detail-modal',
             is_open=False,
             question=None,
             answer=None
         ),
+        SettingsModal(
+            id='settings-modal',
+            isOpen=False
+        ),
 
+        # 旧的数据存储（待重构）
         dcc.Store(id='question', data={'id': 0, 'query': ''}),
         dcc.Store(id='annotated-question', data={'id': 0, 'query': '', 'is_yes_or_no_question': False}),
         dcc.Store(id='is_yes_or_no_question', data=False),
@@ -109,8 +125,101 @@ app.layout = Div(
         dcc.Store(id='history-records', data=[]),
     ])
 
+# 注册回调
 register_api_callbacks(app)
 register_history_callbacks(app)
+
+app.clientside_callback(
+    """
+    function(question) {
+        if (question && question.query) {
+            // 立即将最终状态设置为“审议中”
+            return ['progress', 'progress', '思考中...', '思考中...', '思考中...'];
+        }
+        return [window.dash_clientside.no_update] * 5;
+    }
+    """,
+    [
+        Output('response', 'status', allow_duplicate=True),
+        Output('magi', 'status', allow_duplicate=True),
+        Output('melchior-content', 'children', allow_duplicate=True),
+        Output('balthasar-content', 'children', allow_duplicate=True),
+        Output('casper-content', 'children', allow_duplicate=True)
+    ],
+    Input('question', 'data'),
+    prevent_initial_call=True
+)
+
+app.clientside_callback(
+    """
+    async function(question, personalities, yesNoPrompt) {
+        if (!question || !question.query) {
+            return window.dash_clientside.no_update;
+        }
+
+        console.log('🚀 前端开始处理问题:', question.query);
+
+        try {
+            // 1. 判断问题类型
+            const isYesNo = await window.AiService.isYesNoQuestion(question, yesNoPrompt);
+            console.log(`问题类型判断: ${isYesNo ? '是非题' : '开放性问题'}`);
+
+            // 2. 获取回答
+            const answers = await window.AiService.fetchMagiAnswers(question, personalities, isYesNo);
+            console.log('✅ 前端收到所有回答:', answers);
+
+            // 3. 附加问题类型信息
+            const result = {
+                question: { ...question, is_yes_or_no_question: isYesNo },
+                answers: answers
+            };
+            return result;
+
+        } catch (error) {
+            console.error('前端处理失败:', error);
+            const errorResponse = {
+                question: question,
+                answers: personalities.map(p => ({ id: question.id, response: error.message, status: 'error' }))
+            };
+            return errorResponse;
+        }
+    }
+    """,
+    Output('ai-results-store', 'data'),
+    Input('question', 'data'),
+    [State({'type': 'wise-man', 'name': ALL}, 'personality'),
+     State('yes-no-prompt-store', 'data')],
+    prevent_initial_call=True
+)
+
+
+# 设置模态框回调
+@app.callback(
+    Output('settings-modal', 'isOpen'),
+    Input('open-settings-button', 'n_clicks'),
+    State('settings-modal', 'isOpen'),
+    prevent_initial_call=True
+)
+def toggle_settings_modal(n_clicks, is_open):
+    if n_clicks:
+        return not is_open
+    return is_open
+
+
+app.clientside_callback(
+    """
+    function(save_data) {
+        if (save_data && window.ConfigStorage) {
+            window.ConfigStorage.saveUserConfig(save_data);
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('user-config', 'data', allow_duplicate=True),
+    Input('settings-modal', 'onSave'),
+    prevent_initial_call=True
+)
+
 
 # 音效集成 - 客户端回调
 app.clientside_callback(
@@ -176,6 +285,22 @@ app.clientside_callback(
             script.src = '/assets/magi_audio.js';
             script.onload = function() {
                 console.log('🎵 MAGI音频系统已加载');
+            };
+            document.head.appendChild(script);
+        }
+        if (!window.ConfigStorage) {
+            const script = document.createElement('script');
+            script.src = '/assets/config_storage.js';
+            script.onload = function() {
+                console.log('💾 配置存储系统已加载');
+            };
+            document.head.appendChild(script);
+        }
+        if (!window.AiService) {
+            const script = document.createElement('script');
+            script.src = '/assets/ai_service.js';
+            script.onload = function() {
+                console.log('🤖 AI 服务系统已加载');
             };
             document.head.appendChild(script);
         }

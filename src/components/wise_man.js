@@ -5,14 +5,7 @@ export default function WiseMan({
     setProps, 
     name, 
     order_number, 
-    question_id = 0, 
-    answer = {
-        id: 0,
-        status: 'info',
-        error: '',
-        conditions: '',
-        response: 'Waiting for query...'
-    }, 
+    status = 'info',
     n_clicks = 0 
 }) {
     // 使用统一的状态工具库，如果不可用则使用本地备份
@@ -28,8 +21,7 @@ export default function WiseMan({
     });
 
     const fullName = `${name.toUpperCase()} • ${order_number}`;
-    const color = getWiseManBackground(answer['status']);
-    const processing = question_id !== answer['id'];
+    const color = getWiseManBackground(status);
 
     const onClick = () => {
         setProps({ n_clicks: n_clicks + 1 });
@@ -37,8 +29,6 @@ export default function WiseMan({
 
     let outerClassName = `wise-man ${name}`;
     let innerClassName = 'inner';
-    if (processing)
-        innerClassName += ' flicker';
 
     return $('div', { className: outerClassName, onClick: onClick, key: name },
         $('div', { className: innerClassName, style: { background: color } }, fullName)
