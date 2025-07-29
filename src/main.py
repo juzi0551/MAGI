@@ -51,7 +51,7 @@ app.layout = Div(
             Magi(id='magi', children=[
                 Header(side='left', title='提訴'),
                 Header(side='right', title='決議'),
-                Status(id='status'),
+                Status(id='status', refreshTrigger=0),
                 WiseMan(
                     id={'type': 'wise-man', 'name': 'melchior'},
                     name='melchior',
@@ -127,11 +127,21 @@ app.layout = Div(
         dcc.Store(id='is_yes_or_no_question', data=False),
         dcc.Store(id='question-id', data=0),
         dcc.Store(id='history-records', data=[]),
+        dcc.Store(id='status-refresh-trigger', data=0),
     ])
 
 # 注册回调
 register_api_callbacks(app)
 register_history_callbacks(app)
+
+# 状态刷新回调
+@app.callback(
+    Output('status', 'refreshTrigger'),
+    Input('status-refresh-trigger', 'data'),
+    prevent_initial_call=True
+)
+def update_status_refresh(trigger_data):
+    return trigger_data
 
 app.clientside_callback(
     """

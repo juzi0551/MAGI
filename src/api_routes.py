@@ -6,18 +6,36 @@ from ui_components import get_status_element
 
 def register_api_callbacks(app):
     @app.callback(
-        Output('question', 'data'),
+        [
+            Output('question', 'data'),
+            Output({'type': 'wise-man', 'name': 'melchior'}, 'status', allow_duplicate=True),
+            Output({'type': 'wise-man', 'name': 'balthasar'}, 'status', allow_duplicate=True),
+            Output({'type': 'wise-man', 'name': 'casper'}, 'status', allow_duplicate=True),
+            Output('magi', 'status', allow_duplicate=True),
+            Output('status-refresh-trigger', 'data', allow_duplicate=True)
+        ],
         Input('query', 'value'),
         State('question', 'data'),
         prevent_initial_call=True)
     def question(query: str, question: dict):
         if not query:
-            return no_update
+            return [no_update] * 6
         new_id = question.get('id', 0) + 1
         print(f"\n{'='*60}")
         print(f"🔍 新问题 [ID: {new_id}]: {query}")
+        print(f"🔄 重置MAGI系统状态")
         print(f"{'='*60}")
-        return {'id': new_id, 'query': query}
+        
+        # 重置所有核心状态为standby，并触发状态数字刷新
+        import time
+        return [
+            {'id': new_id, 'query': query},
+            'standby',  # melchior
+            'standby',  # balthasar  
+            'standby',  # casper
+            'standby',  # magi
+            int(time.time() * 1000)  # 触发状态刷新的时间戳
+        ]
 
     @app.callback(
         [
