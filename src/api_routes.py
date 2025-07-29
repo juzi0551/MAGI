@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output, State, ALL, MATCH
 from dash import dcc
 import ai
 from ui_components import get_status_element
-
+# 后端通信版本
 def register_api_callbacks(app):
     @app.callback(
         Output('question', 'data'),
