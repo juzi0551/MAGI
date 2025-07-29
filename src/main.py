@@ -608,12 +608,29 @@ app.clientside_callback(
         
         if (status === 'progress') {
             // 开始审议 - 播放审议音效
-            window.MagiAudio.playDeliberating(false);
+            window.MagiAudio.play();
             console.log('🔄 播放审议音效');
         } else if (status !== 'standby') {
             // 决议完成 - 播放决议音效
-            window.MagiAudio.playDecision(status);
-            console.log('✅ 播放决议音效:', status);
+            let frequency;
+            switch (status) {
+                case 'yes':
+                    frequency = 2000;  // 通过
+                    break;
+                case 'no':
+                case 'error':
+                    frequency = 3400;  // 否决/错误
+                    break;
+                case 'conditional':
+                    frequency = 2700;  // 条件通过
+                    break;
+                case 'info':
+                default:
+                    frequency = 2200;  // 信息
+                    break;
+            }
+            window.MagiAudio.playOscillator(frequency);
+            console.log('✅ 播放决议音效:', status, frequency);
         }
         
         return window.dash_clientside.no_update;
@@ -635,15 +652,7 @@ app.clientside_callback(
             script.src = '/assets/magi_audio.js';
             script.onload = function() {
                 console.log('🎵 MAGI音频系统已加载');
-                // 添加用户交互监听器来启动音频上下文
-                const startAudio = function() {
-                    if (window.MagiAudio) {
-                        window.MagiAudio.ensureAudioContext();
-                        console.log('🎵 音频上下文已激活');
-                    }
-                };
-                document.addEventListener('click', startAudio, {once: true});
-                document.addEventListener('keydown', startAudio, {once: true});
+                // 音频系统已在脚本中自动添加用户交互监听器
             };
             document.head.appendChild(script);
         }
