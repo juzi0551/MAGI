@@ -150,3 +150,19 @@ body {
 .modal-actions button:hover {
     background: #ffac4d;
 }
+
+.settings-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: #ff8d00;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.5;
+    z-index: 1001;
+    transition: opacity 0.3s ease;
+}
+
+.settings-icon:hover {
+    opacity: 1;
+}

@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from dash import Dash, dcc, Input, Output, State, ALL
-from dash.html import Div, Label, Button
+from dash.html import Div, Label, Button, I, I
 from dash_local_react_components import load_react_component
 from api_routes import register_api_callbacks
 from history_manager import register_history_callbacks
@@ -14,6 +14,7 @@ load_dotenv()
 app = Dash(
     __name__,
     assets_folder='assets',
+    external_stylesheets=['https://use.fontawesome.com/releases/v5.8.1/css/all.css'],
     title='MAGI 决策模拟系统',
     meta_tags=[{
         'name': 'description',
@@ -73,10 +74,10 @@ app.layout = Div(
                 onRecordDetail=None
             ),
             Div(className='input-container', children=[
-                Label('问题: '),
+                Label('質問: '),
                 dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
-                Button('设置', id='open-settings-button', n_clicks=0)
             ]),
+            Div(children=[I(className='fas fa-cog')], id='open-settings-button', n_clicks=0, className='settings-icon'),
         ]),
         
         Div(className='right-panel', children=[
@@ -277,40 +278,7 @@ app.clientside_callback(
     prevent_initial_call=True
 )
 
-app.clientside_callback(
-    """
-    function(audio_enabled) {
-        if (!window.MagiAudio) {
-            const script = document.createElement('script');
-            script.src = '/assets/magi_audio.js';
-            script.onload = function() {
-                console.log('🎵 MAGI音频系统已加载');
-            };
-            document.head.appendChild(script);
-        }
-        if (!window.ConfigStorage) {
-            const script = document.createElement('script');
-            script.src = '/assets/config_storage.js';
-            script.onload = function() {
-                console.log('💾 配置存储系统已加载');
-            };
-            document.head.appendChild(script);
-        }
-        if (!window.AiService) {
-            const script = document.createElement('script');
-            script.src = '/assets/ai_service.js';
-            script.onload = function() {
-                console.log('🤖 AI 服务系统已加载');
-            };
-            document.head.appendChild(script);
-        }
-        return window.dash_clientside.no_update;
-    }
-    """,
-    Output('audio-enabled', 'data', allow_duplicate=True),
-    Input('audio-enabled', 'data'),
-    prevent_initial_call='initial_duplicate'
-)
+
 
 if __name__ == '__main__':
     app.run(debug=False, host='127.0.0.1', port=8050)

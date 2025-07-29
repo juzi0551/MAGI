@@ -8,17 +8,7 @@ export default function WiseMan({
     status = 'info',
     n_clicks = 0 
 }) {
-    // 使用统一的状态工具库，如果不可用则使用本地备份
-    const getWiseManBackground = window.StatusUtils?.getWiseManBackground || ((status) => {
-        const backgroundMap = {
-            'yes': '#52e691',
-            'no': '#a41413',
-            'info': '#3caee0',
-            'conditional': 'repeating-linear-gradient(56deg, rgb(82, 230, 145) 0px, rgb(82, 230, 145) 30px, #82cd68 30px, #82cd68 60px)',
-            'error': 'black'
-        };
-        return backgroundMap[status] || '#3caee0';
-    });
+    const getWiseManBackground = window.StatusUtils.getWiseManBackground;
 
     const fullName = `${name.toUpperCase()} • ${order_number}`;
     const color = getWiseManBackground(status);

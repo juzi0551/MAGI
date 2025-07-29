@@ -27,9 +27,7 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         return statusMap[status] || '待 機';
     });
 
-    const getStatusClass = window.StatusUtils?.getStatusClass || ((status) => {
-        return `status-tag status-${status}`;
-    });
+    const getStatusClass = window.StatusUtils.getStatusClass;
 
     const handleItemClick = (record, event) => {
         event.stopPropagation();
