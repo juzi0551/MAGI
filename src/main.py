@@ -8,12 +8,19 @@ import ai
 # 加载环境变量
 load_dotenv()
 
-app = Dash(__name__, assets_folder='assets')
+app = Dash(
+    __name__, 
+    assets_folder='assets',
+    title='MAGI 决策模拟系统',
+    meta_tags=[{
+        'name': 'description',
+        'content': '一个基于 EVA 中 MAGI 超级计算机系统的网页模拟应用。输入您的问题，见证三贤人（科学家、母亲、女人）的审议过程，并获得最终决议。'
+    }]
+)
 
 Magi = load_react_component(app, 'components', 'magi.js')
 WiseMan = load_react_component(app, 'components', 'wise_man.js')
 Response = load_react_component(app, 'components', 'response.js')
-Modal = load_react_component(app, 'components', 'modal.js')
 Header = load_react_component(app, 'components', 'header.js')
 Status = load_react_component(app, 'components', 'status.js')
 HistoryPanel = load_react_component(app, 'components', 'history_panel.js')
@@ -114,10 +121,6 @@ app.layout = Div(
                 ])
             ])
         ]),
-        
-        Modal(id={'type': 'modal', 'name': 'melchior'}, name='melchior'),
-        Modal(id={'type': 'modal', 'name': 'balthasar'}, name='balthasar'),
-        Modal(id={'type': 'modal', 'name': 'casper'}, name='casper'),
         
         # 历史记录详情modal
         HistoryModal(
@@ -345,25 +348,6 @@ def response_status(answers: list, question: dict):
     print(f"{'='*60}\n")
 
     return status, answer_id
-
-
-@callback(
-    Output({'type': 'modal', 'name': MATCH}, 'is_open'),
-    Input({'type': 'wise-man', 'name': MATCH}, 'n_clicks'),
-    prevent_initial_call=True)
-def modal_visibility(n_clicks):
-    if n_clicks and n_clicks > 0:
-        return True
-    return False
-
-
-@callback(
-    Output({'type': 'modal', 'name': MATCH}, 'question'),
-    Output({'type': 'modal', 'name': MATCH}, 'answer'),
-    Input('question', 'data'),
-    Input({'type': 'wise-man', 'name': MATCH}, 'answer'))
-def modal_content(question: dict, answer: dict):
-    return question, answer
 
 
 @callback(

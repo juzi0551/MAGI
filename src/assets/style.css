@@ -307,7 +307,6 @@ body {
     display: flex;
     background: #ff8d00;
     padding: 2px;
-    cursor: pointer;
 }
 
 .magi>.wise-man>.inner {
