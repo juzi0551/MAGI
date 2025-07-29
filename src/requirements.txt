@@ -5,3 +5,4 @@ litellm==1.52.14
 dash-mantine-components==0.14.5
 dataclass-wizard==0.22.2
 python-dotenv==1.0.0
+gunicorn
