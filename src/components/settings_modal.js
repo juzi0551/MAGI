@@ -8,16 +8,32 @@ export default function SettingsModal({ id, isOpen, setProps }) {
     const [apiBase, setApiBase] = React.useState('');
 
     React.useEffect(() => {
-        if (isOpen && window.ConfigStorage) {
+        if (isOpen) {
             const config = window.ConfigStorage.getUserConfig();
             if (config) {
                 setProvider(config.provider || 'openrouter');
                 setModel(config.model || 'google/gemini-2.5-flash');
                 setApiKey(config.apiKey || '');
                 setApiBase(config.apiBase || '');
+            } else {
+                // 如果没有配置，则确保面板显示的是默认值
+                setProvider('openrouter');
+                setModel('google/gemini-2.5-flash');
+                setApiKey('');
+                setApiBase('');
             }
         }
     }, [isOpen]);
+
+    // 页面加载时检查配置
+    React.useEffect(() => {
+        const config = window.ConfigStorage.getUserConfig();
+        if (!config || !config.apiKey) {
+            if (setProps) {
+                setProps({ isOpen: true });
+            }
+        }
+    }, []);
 
     const handleSave = () => {
         const config = { provider, model, apiKey, apiBase };

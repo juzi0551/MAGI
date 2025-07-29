@@ -33,6 +33,7 @@ HistoryModal = load_react_component(app, 'components', 'history_modal.js')
 SettingsModal = load_react_component(app, 'components', 'settings_modal.js')
 
 app.layout = Div(
+    id='app-container',
     className='system',
     children=[
         # 全局数据存储
@@ -40,6 +41,7 @@ app.layout = Div(
         dcc.Store(id='audio-volume', data=30),
         dcc.Store(id='settings-modal-open', data=False),
         dcc.Store(id='user-config', storage_type='local'),
+        
         dcc.Store(id='ai-results-store'),
         dcc.Store(id='yes-no-prompt-store', data=YES_NO_QUESTION_PROMPT),
 
@@ -308,3 +310,5 @@ app.clientside_callback(
 
 if __name__ == '__main__':
     app.run(debug=False, host='127.0.0.1', port=8050)
+
+
