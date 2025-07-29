@@ -13,6 +13,13 @@ window.AiService = {
             { role: 'user', content: question.query }
         ];
 
+        const requestBody = {
+            model: model,
+            messages: messages,
+            max_tokens: 1
+        };
+        console.log('Request (isYesNoQuestion):', requestBody);
+
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -20,11 +27,7 @@ window.AiService = {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`
                 },
-                body: JSON.stringify({
-                    model: model,
-                    messages: messages,
-                    max_tokens: 1
-                })
+                body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
@@ -34,6 +37,7 @@ window.AiService = {
             }
 
             const data = await response.json();
+            console.log('Original response (isYesNoQuestion):', data);
             const result = data.choices[0].message.content.trim().toLowerCase();
             return result === 'yes';
 
@@ -54,14 +58,24 @@ window.AiService = {
         let apiUrl = apiBase || 'https://openrouter.ai/api/v1/chat/completions'; // Default to openrouter
 
         const fetchAnswer = async (personality) => {
-            const systemPrompt = isYesNo 
-                ? `${personality}\n\n重要提示：这是一个是非题，请按照JSON格式输出。`
-                : `${personality}\n\n重要提示：这是一个开放性问题，请直接输出自然语言回答。`;
+            const userContent = isYesNo
+                ? `问题类型：是非题。
+
+${question.query}`
+                : `问题类型：开放题。
+
+${question.query}`;
 
             const messages = [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: question.query }
+                { role: 'system', content: personality },
+                { role: 'user', content: userContent }
             ];
+
+            const requestBody = {
+                model: model,
+                messages: messages
+            };
+            console.log('Request (fetchMagiAnswers):', requestBody);
 
             try {
                 const response = await fetch(apiUrl, {
@@ -70,10 +84,7 @@ window.AiService = {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${apiKey}`
                     },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: messages
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 if (!response.ok) {
@@ -83,6 +94,7 @@ window.AiService = {
                 }
 
                 const data = await response.json();
+                console.log('Original response (fetchMagiAnswers):', data);
                 const wiseManResponse = data.choices[0].message.content;
 
                 if (isYesNo) {
