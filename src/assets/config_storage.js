@@ -21,5 +21,14 @@ window.ConfigStorage = {
             console.error('加载配置失败:', e);
             return null;
         }
+    },
+
+    clearUserConfig: function() {
+        try {
+            localStorage.removeItem('magi_user_config');
+            console.log('🗑️ 配置已清除');
+        } catch (e) {
+            console.error('清除配置失败:', e);
+        }
     }
 };

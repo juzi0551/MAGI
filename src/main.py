@@ -133,6 +133,11 @@ register_history_callbacks(app)
 app.clientside_callback(
     """
     function(question) {
+        const config = window.ConfigStorage.getUserConfig();
+        if (!config || !config.apiKey) {
+            return [window.dash_clientside.no_update] * 5;
+        }
+
         if (question && question.query) {
             // 立即将最终状态设置为“审议中”
             return ['progress', 'progress', '思考中...', '思考中...', '思考中...'];
@@ -155,7 +160,13 @@ app.clientside_callback(
     """
     async function(question, personalities, yesNoPrompt) {
         if (!question || !question.query) {
-            return window.dash_clientside.no_update;
+            return [window.dash_clientside.no_update] * 2;
+        }
+
+        const config = window.ConfigStorage.getUserConfig();
+        if (!config || !config.apiKey) {
+            alert('请先在“设置”中配置您的 API 密钥。');
+            return [window.dash_clientside.no_update, true];
         }
 
         console.log('🚀 前端开始处理问题:', question.query);
@@ -174,7 +185,7 @@ app.clientside_callback(
                 question: { ...question, is_yes_or_no_question: isYesNo },
                 answers: answers
             };
-            return result;
+            return [result, window.dash_clientside.no_update];
 
         } catch (error) {
             console.error('前端处理失败:', error);
@@ -182,11 +193,12 @@ app.clientside_callback(
                 question: question,
                 answers: personalities.map(p => ({ id: question.id, response: error.message, status: 'error' }))
             };
-            return errorResponse;
+            return [errorResponse, window.dash_clientside.no_update];
         }
     }
     """,
-    Output('ai-results-store', 'data'),
+    [Output('ai-results-store', 'data'),
+     Output('settings-modal', 'isOpen', allow_duplicate=True)],
     Input('question', 'data'),
     [State({'type': 'wise-man', 'name': ALL}, 'personality'),
      State('yes-no-prompt-store', 'data')],
@@ -218,6 +230,20 @@ app.clientside_callback(
     """,
     Output('user-config', 'data', allow_duplicate=True),
     Input('settings-modal', 'onSave'),
+    prevent_initial_call=True
+)
+
+app.clientside_callback(
+    """
+    function(clear_data) {
+        if (clear_data && window.ConfigStorage) {
+            window.ConfigStorage.clearUserConfig();
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output('user-config', 'data', allow_duplicate=True),
+    Input('settings-modal', 'onClear'),
     prevent_initial_call=True
 )
 

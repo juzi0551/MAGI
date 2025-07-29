@@ -32,6 +32,16 @@ export default function SettingsModal({ id, isOpen, setProps }) {
         }
     };
 
+    const handleClear = () => {
+        if (window.ConfigStorage) {
+            window.ConfigStorage.clearUserConfig();
+        }
+        setProvider('openrouter');
+        setModel('google/gemini-2.5-flash');
+        setApiKey('');
+        setApiBase('');
+    };
+
     if (!isOpen) {
         return null;
     }
@@ -66,6 +76,7 @@ export default function SettingsModal({ id, isOpen, setProps }) {
                 $('input', { type: 'password', value: apiKey, onChange: e => setApiKey(e.target.value) })
             ),
             $('div', { className: 'modal-actions' },
+                $('button', { onClick: handleClear, className: 'clear-button' }, '清除'),
                 $('button', { onClick: handleSave }, '保存'),
                 $('button', { onClick: handleClose }, '取消')
             )
