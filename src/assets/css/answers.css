@@ -8,9 +8,9 @@
 
 /* 单个回答面板 */
 .wise-answer {
-    border: 2px solid #ff8d00;
+    border: 2px solid #965200;
     background: black;
-    color: #ff8d00;
+    color: #965200;
     font-family: 'Lucida Console', monospace;
     flex: 1;
     position: relative;
@@ -22,10 +22,10 @@
 
 /* 回答面板标题 */
 .wise-answer-title {
-    color: #ff8d00;
+    color: #965200;
     font-size: 0.9em;
     text-transform: uppercase;
-    border-bottom: 1px solid #ff8d00;
+    border-bottom: 1px solid #965200;
     padding: 10px 10px 8px 10px;
     font-family: 'Lucida Console', monospace;
     font-weight: bold;
@@ -33,7 +33,7 @@
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    background: black;
+    background: #1f1203;
     position: sticky;
     top: 0;
     z-index: 10;

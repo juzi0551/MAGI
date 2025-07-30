@@ -190,13 +190,50 @@ ${question.query}`;
                         jsonString = jsonString.substring(3, jsonString.length - 3).trim();
                     }
 
+                    // 预处理JSON字符串，修复常见格式错误
+                    function preprocessJsonString(jsonStr) {
+                        // 修复多余的引号问题（如 ""classification" 变为 "classification"）
+                        jsonStr = jsonStr.replace(/""+/g, '"');
+                        
+                        // 修复缺少引号的键
+                        jsonStr = jsonStr.replace(/([{,]\s*)([a-zA-Z0-9_]+)(\s*:)/g, '$1"$2"$3');
+                        
+                        // 修复常见的转义问题
+                        jsonStr = jsonStr.replace(/\\+([^"\\])/g, '\\$1');
+                        
+                        return jsonStr;
+                    }
+
                     let parsedResponse;
                     try {
-                        // 尝试解析JSON
-                        parsedResponse = JSON.parse(jsonString);
+                        // 预处理并尝试解析JSON
+                        const processedJsonString = preprocessJsonString(jsonString);
+                        console.log('处理后的JSON字符串:', processedJsonString);
+                        parsedResponse = JSON.parse(processedJsonString);
                     } catch (e) {
-                        console.warn('JSON解析失败，将原始文本作为错误信息处理:', wiseManResponse);
-                        return { id: question.id, response: wiseManResponse, status: 'error', error: 'Invalid JSON format' };
+                        // 如果仍然失败，尝试更激进的修复
+                        try {
+                            console.warn('标准JSON解析失败，尝试提取关键信息:', e.message);
+                            
+                            // 使用正则表达式提取关键信息
+                            const answerMatch = jsonString.match(/"answer"\s*:\s*"([^"]+)"/);
+                            const statusMatch = jsonString.match(/"status"\s*:\s*"([^"]+)"/);
+                            
+                            if (answerMatch && statusMatch) {
+                                parsedResponse = {
+                                    answer: answerMatch[1].replace(/\\"/g, '"'),
+                                    classification: {
+                                        status: statusMatch[1]
+                                    }
+                                };
+                                console.log('通过正则提取成功:', parsedResponse);
+                            } else {
+                                throw new Error("无法提取关键信息");
+                            }
+                        } catch (innerError) {
+                            console.warn('JSON解析完全失败，将原始文本作为错误信息处理:', innerError.message);
+                            return { id: question.id, response: wiseManResponse, status: 'error', error: 'Invalid JSON format' };
+                        }
                     }
 
                     // 验证解析后的结构

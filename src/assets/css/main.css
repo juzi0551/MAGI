@@ -32,7 +32,7 @@ body {
     width: 60%;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #ff8d00;
+    border-right: 0px solid #ff8d00;
     padding-right: 5px;
     position: relative;
     
