@@ -13,18 +13,23 @@
     left: 0;
     right: 5px;
     z-index: 10;
-    /* 展开状态的高度 */
-    height: calc(100% - 90px);
     /* 平滑过渡 */
     transition: all 0.3s ease-in-out;
     /* 变换原点设置在底部，确保从底部展开 */
     transform-origin: bottom;
 }
 
+/* 非折叠状态下，顶部距离MAGI 10px */
+.history-panel:not(.collapsed) {
+    top: calc(50vw * 0.59 + 10px); /* MAGI高度(宽度的30%) + 10px间距 */
+    height: auto;
+    bottom: 67px;
+}
+
 /* 折叠状态样式 */
 .history-panel.collapsed {
-    max-height: 40px; /* 只显示标题栏的高度 */
-    height: 40px;
+    max-height: 34px; /* 只显示标题栏的高度 */
+    height: 34px !important; /* 使用!important确保覆盖内联样式 */
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     overflow: hidden;
