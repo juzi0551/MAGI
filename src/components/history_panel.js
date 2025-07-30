@@ -1,6 +1,14 @@
 import React from 'react';
 
 const HistoryPanel = ({ id, records = [], setProps }) => {
+    // 使用React.useState代替解构导入，默认为收缩状态
+    const [collapsed, setCollapsed] = React.useState(true);
+    
+    // 切换折叠状态
+    const toggleCollapse = () => {
+        setCollapsed(!collapsed);
+    };
+    
     // 使用统一的工具库
     const formatTimestamp = window.HistoryUtils?.formatTimestamp || ((timestamp) => {
         const date = new Date(timestamp);
@@ -52,25 +60,40 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
 
     return React.createElement('div', {
         id: id,
-        className: 'history-panel'
+        className: `history-panel ${collapsed ? 'collapsed' : ''}`
     }, [
         React.createElement('div', {
             key: 'header',
-            className: 'history-header'
+            className: 'history-header',
+            onClick: collapsed ? toggleCollapse : undefined, // 折叠状态下点击标题栏可展开
+            style: collapsed ? { cursor: 'pointer' } : {}
         }, [
             React.createElement('span', {
                 key: 'title',
                 className: 'history-title'
             }, '📚 履歴'),
-            React.createElement('button', {
-                key: 'clear-btn',
-                className: 'clear-history-btn',
-                onClick: handleClearHistory,
-                title: '清空历史记录'
-            }, '清空')
+            React.createElement('div', {
+                key: 'header-actions',
+                className: 'header-actions'
+            }, [
+                // 添加折叠/展开按钮
+                React.createElement('button', {
+                    key: 'toggle-btn',
+                    className: 'toggle-history-btn',
+                    onClick: toggleCollapse,
+                    title: collapsed ? '展开历史记录' : '收起历史记录'
+                }, collapsed ? '▲' : '▼'),
+                React.createElement('button', {
+                    key: 'clear-btn',
+                    className: 'clear-history-btn',
+                    onClick: handleClearHistory,
+                    title: '清空历史记录'
+                }, '清空')
+            ])
         ]),
         
-        React.createElement('div', {
+        // 只在非折叠状态下显示列表内容
+        !collapsed && React.createElement('div', {
             key: 'list',
             className: 'history-list'
         }, records.length === 0 ? 
