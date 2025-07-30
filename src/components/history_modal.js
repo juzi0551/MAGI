@@ -1,3 +1,5 @@
+import React from 'react';
+
 const HistoryModal = ({ id, is_open, question, answer, setProps }) => {
     const [expandedAnswers, setExpandedAnswers] = React.useState({});
 
@@ -250,10 +252,5 @@ const HistoryModal = ({ id, is_open, question, answer, setProps }) => {
     ]);
 };
 
-// 导出组件
-window.dash_clientside = window.dash_clientside || {};
-window.dash_clientside.history_modal = HistoryModal;
-
-// 添加默认导出以兼容ES6模块导入
-const HistoryModalDefault = HistoryModal;
-export default HistoryModalDefault;
+// 使用单一导出方式
+export default HistoryModal;
