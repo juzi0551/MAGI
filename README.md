@@ -1,6 +1,28 @@
 ## 中文
 
 
+### 技术架构
+
+本项目采用前后端分离的架构设计：
+
+* **前端技术:**
+  * 基于React和Dash框架构建的交互式界面
+  * 纯CSS实现的动画和过渡效果
+  * 本地存储(localStorage)实现的配置和历史记录管理
+  * 原生JavaScript实现的音效系统
+
+* **后端技术:**
+  * Python Flask提供API服务
+  * 异步处理机制实现并行请求多个AI模型
+  * 安全的API密钥管理和请求转发
+  * 历史记录的持久化存储
+
+* **AI集成:**
+  * 支持OpenAI、Anthropic Claude等多种大型语言模型
+  * 自定义提示词工程实现三重人格模拟
+  * 基于规则的决策汇总机制
+  * 由于系统需要同时并发请求三个模型实例，不支持OpenRouter等免费/共享配额的API服务
+
 ### 关于项目
 
 本项目是一个基于大型语言模型（LLM）实现的《新世纪福音战士》(Neon Genesis Evangelion) 中的 **MAGI 超级计算机系统** 的概念模拟器。
@@ -42,6 +64,28 @@
 
 ## English
 
+
+### Technical Architecture
+
+This project employs a frontend-backend separated architecture:
+
+* **Frontend Technologies:**
+  * Interactive interface built with React and Dash framework
+  * Pure CSS animations and transitions
+  * Configuration and history management using localStorage
+  * Native JavaScript audio system
+
+* **Backend Technologies:**
+  * Python Flask for API services
+  * Asynchronous processing for parallel AI model requests
+  * Secure API key management and request forwarding
+  * Persistent storage for history records
+
+* **AI Integration:**
+  * Support for multiple LLMs including OpenAI, Anthropic Claude
+  * Custom prompt engineering for triple personality simulation
+  * Rule-based decision aggregation mechanism
+  * Due to concurrent requests to three model instances, OpenRouter and other free/shared quota API services are not supported
 
 ### About the Project
 
