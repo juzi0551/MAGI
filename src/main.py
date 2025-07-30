@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 from dash import Dash, dcc, Input, Output, State, ALL
 from dash.html import Div, Label, Img
@@ -10,9 +11,15 @@ from prompts import get_personality_prompt, YES_NO_QUESTION_PROMPT
 # 加载环境变量
 load_dotenv()
 
+# --- 解决部署时 assets 路径问题 ---
+# 获取当前文件(main.py)所在的目录的绝对路径
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# 构造 assets 文件夹的绝对路径
+assets_path = os.path.join(current_dir, 'assets')
+
 app = Dash(
     __name__,
-    assets_folder='assets',
+    assets_folder=assets_path,
     title='MAGI 决策模拟系统',
     meta_tags=[{
         'name': 'description',
