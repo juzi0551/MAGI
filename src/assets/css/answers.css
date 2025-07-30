@@ -33,7 +33,7 @@
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
-    background: black;
+    background: #1f1203;
     position: sticky;
     top: 0;
     z-index: 10;

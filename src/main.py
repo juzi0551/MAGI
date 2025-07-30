@@ -21,6 +21,7 @@ app = Dash(
     __name__,
     assets_folder=assets_path,
     title='MAGI 决策模拟系统',
+    eager_loading=True,
     meta_tags=[{
         'name': 'description',
         'content': '一个基于 EVA 中 MAGI 超级计算机系统的网页模拟应用。输入您的问题，见证三贤人（科学家、母亲、女人）的审议过程，并获得最终决议。'
