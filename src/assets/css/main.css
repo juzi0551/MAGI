@@ -53,9 +53,8 @@ body {
     font-family: 'MAGI-Matisse', sans-serif;
     column-gap: 10px;
     row-gap: 5px;
-    margin-top: 15px;
     position: absolute;
-    bottom: 5px;
+    bottom: 0px;
     left: 0px;
     right: 5px;
     padding: 10px;

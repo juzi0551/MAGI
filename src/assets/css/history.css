@@ -2,14 +2,13 @@
 .history-panel {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     border: 2px solid #ff8d00;
-    margin: 10px 0;
-    padding: 15px;
+    padding: 10px;
     flex: 1;
+    margin-top: 10px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-height: 200px;
-    margin-bottom: 16px;
+    margin-bottom: 67px;
 }
 
 /* 标题栏样式 */
