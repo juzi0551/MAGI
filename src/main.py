@@ -1,7 +1,6 @@
-import os
 from dotenv import load_dotenv
 from dash import Dash, dcc, Input, Output, State, ALL
-from dash.html import Div, Label, Button, I, I
+from dash.html import Div, Label, Img
 from dash_local_react_components import load_react_component
 from api_routes import register_api_callbacks
 from history_manager import register_history_callbacks
@@ -14,7 +13,6 @@ load_dotenv()
 app = Dash(
     __name__,
     assets_folder='assets',
-    external_stylesheets=['https://use.fontawesome.com/releases/v5.8.1/css/all.css'],
     title='MAGI 决策模拟系统',
     meta_tags=[{
         'name': 'description',
@@ -80,10 +78,12 @@ app.layout = Div(
                 Label('質問: '),
                 dcc.Input(id='query', type='text', value='', debounce=True, autoComplete='off', autoFocus=True),
             ]),
-            Div(children=[I(className='fas fa-cog')], id='open-settings-button', n_clicks=0, className='settings-icon'),
         ]),
         
         Div(className='right-panel', children=[
+            Div(id='open-settings-button', n_clicks=0, className='settings-icon', children=[
+                Img(src='assets/setting.svg', style={'width': '28px', 'height': '28px'})
+            ]),
             Div(className='wise-answers', children=[
                 Div(id='melchior-answer', className='wise-answer melchior', children=[
                     Div(className='wise-answer-title', children=[
