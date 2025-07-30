@@ -14,7 +14,7 @@
     right: 5px;
     z-index: 10;
     /* 展开状态的高度 */
-    height: calc(100% - 100px);
+    height: calc(100% - 90px);
     /* 平滑过渡 */
     transition: all 0.3s ease-in-out;
     /* 变换原点设置在底部，确保从底部展开 */
@@ -47,11 +47,12 @@
     flex-shrink: 0;
 }
 
-/* 标题栏操作区域 */
-.header-actions {
+/* 标题栏左侧区域 */
+.header-left-section {
     display: flex;
-    gap: 8px;
     align-items: center;
+    gap: 8px;
+    cursor: pointer;
 }
 
 /* 折叠/展开按钮样式 */
@@ -77,35 +78,12 @@
     transform: translateY(-1px);
 }
 
-/* 折叠状态下的标题栏可点击 */
-.history-panel.collapsed .history-header {
+/* 标题栏始终可点击 */
+.history-header {
     cursor: pointer;
 }
 
-/* 添加提示效果 */
-.toggle-history-btn::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: #ff8d00;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s;
-    pointer-events: none;
-    z-index: 100;
-}
-
-.toggle-history-btn:hover::after {
-    opacity: 1;
-    visibility: visible;
-}
+/* 提示效果已移除 */
 
 .history-title {
     color: #ff8d00;

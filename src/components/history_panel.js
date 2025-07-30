@@ -65,31 +65,37 @@ const HistoryPanel = ({ id, records = [], setProps }) => {
         React.createElement('div', {
             key: 'header',
             className: 'history-header',
-            onClick: collapsed ? toggleCollapse : undefined, // 折叠状态下点击标题栏可展开
-            style: collapsed ? { cursor: 'pointer' } : {}
+            onClick: toggleCollapse // 点击整个标题栏可以切换折叠状态
         }, [
-            React.createElement('span', {
-                key: 'title',
-                className: 'history-title'
-            }, '📚 履歴'),
+            // 左侧区域：箭头和标题
             React.createElement('div', {
-                key: 'header-actions',
-                className: 'header-actions'
+                key: 'left-section',
+                className: 'header-left-section',
+                onClick: toggleCollapse // 点击左侧区域（包括标题）可以切换折叠状态
             }, [
-                // 添加折叠/展开按钮
+                // 折叠/展开按钮放在标题左侧
                 React.createElement('button', {
                     key: 'toggle-btn',
                     className: 'toggle-history-btn',
-                    onClick: toggleCollapse,
-                    title: collapsed ? '展开历史记录' : '收起历史记录'
+                    onClick: (e) => {
+                        e.stopPropagation(); // 防止事件冒泡
+                        toggleCollapse();
+                    }
                 }, collapsed ? '▲' : '▼'),
-                React.createElement('button', {
-                    key: 'clear-btn',
-                    className: 'clear-history-btn',
-                    onClick: handleClearHistory,
-                    title: '清空历史记录'
-                }, '清空')
-            ])
+                React.createElement('span', {
+                    key: 'title',
+                    className: 'history-title'
+                }, '📚 履歴')
+            ]),
+            // 右侧区域：清空按钮
+            React.createElement('button', {
+                key: 'clear-btn',
+                className: 'clear-history-btn',
+                onClick: (e) => {
+                    e.stopPropagation(); // 防止事件冒泡到标题栏
+                    handleClearHistory();
+                }
+            }, '清空')
         ]),
         
         // 只在非折叠状态下显示列表内容
