@@ -15,9 +15,14 @@
   z-index: 10;
   /* 使用height来实现从底部向上滑出的动画 */
   height: 50px; /* 默认折叠高度 */
-  transition: height 0.6s ease-in-out;
+  transition: height 0.6s ease-in-out, right 0.6s ease-in-out; /* 添加right过渡 */
   /* 变换原点设置在底部，确保从底部展开 */
   transform-origin: bottom;
+}
+
+/* 左侧面板全屏时，历史面板调整 */
+.left-panel.fullscreen .history-panel {
+  right: 0; /* 相对于左侧面板的右边缘 */
 }
 
 /* 非折叠状态下，扩展高度但保持底部位置 */

@@ -23,6 +23,9 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   
   // 设置面板状态
   const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
+  
+  // 右侧面板显示状态
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
 
   const handleQuestionChange = (value: string) => {
     setQuestion(value);
@@ -161,9 +164,14 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     setIsSettingsPanelOpen(false);
   };
 
+  // 右侧面板显示/隐藏事件处理
+  const handleRightPanelToggle = () => {
+    setIsRightPanelVisible(!isRightPanelVisible);
+  };
+
   return (
-    <div className={`system ${className}`}>
-      <div className="left-panel">
+    <div className={`system ${className} ${!isRightPanelVisible ? 'right-panel-hidden' : ''}`}>
+      <div className={`left-panel ${!isRightPanelVisible ? 'fullscreen' : ''}`}>
         {/* 左侧面板内容 - 传递状态给子组件 */}
         <div data-system-status={systemStatus}>
           {children}
@@ -185,7 +193,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         />
       </div>
       
-      <div className="right-panel">
+      <div className={`right-panel ${!isRightPanelVisible ? 'hidden' : ''}`}>
         {/* 右侧面板 - 贤者回答 */}
         <div className="wise-answers">
           <WiseAnswerDisplay
@@ -204,6 +212,20 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
             name="casper"
             status={getWiseAnswerContent('casper').status as any}
             response={getWiseAnswerContent('casper').response}
+          />
+        </div>
+      </div>
+
+      {/* 控制按钮区域 - 独立于右侧面板 */}
+      <div className="control-buttons">
+        {/* 展开/收缩按钮 */}
+        <div className="panel-toggle-btn" title={isRightPanelVisible ? "收缩右侧面板" : "展开右侧面板"} onClick={handleRightPanelToggle}>
+          <img 
+            src={isRightPanelVisible ? "/src/assets/images/hide.svg" : "/src/assets/images/hide.svg"} 
+            alt={isRightPanelVisible ? "隐藏" : "展开"} 
+            width="24" 
+            height="24"
+            style={{ transform: isRightPanelVisible ? 'none' : 'rotate(180deg)' }}
           />
         </div>
         

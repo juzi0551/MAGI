@@ -12,6 +12,12 @@
   position: relative;
   margin: 0;
   box-sizing: border-box;
+  transition: padding-right 0.6s ease-in-out; /* 添加右侧padding过渡 */
+}
+
+/* 右侧面板隐藏时，系统容器去掉右侧padding */
+.system.right-panel-hidden {
+  padding-right: 0;
 }
 
 /* 左侧面板 */
@@ -22,6 +28,7 @@
   border-right: 0px solid var(--color-border);
   padding-right: var(--spacing-sm);
   position: relative;
+  transition: width 0.6s ease-in-out, padding-right 0.6s ease-in-out; /* 添加padding过渡效果 */
 }
 
 /* 右侧面板 */
@@ -33,34 +40,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-}
-
-/* 设置按钮 */
-.settings-icon {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  color: var(--color-primary);
-  font-size: 24px;
-  cursor: pointer;
-  opacity: 0.6;
-  z-index: var(--z-index-fixed);
-  transition: var(--transition-normal);
-  user-select: none;
-  background: rgba(0, 0, 0, 0.8);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.settings-icon:hover {
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out, width 0.6s ease-in-out; /* 添加宽度过渡 */
+  transform: translateX(0);
   opacity: 1;
-  background: rgba(255, 141, 0, 0.1);
-  transform: rotate(90deg);
 }
+
+/* 设置按钮 - 移除原有重复的样式定义 */
 
 /* MAGI 核心显示区网格布局 */
 .magi {
@@ -74,6 +59,13 @@
   border: var(--border-width) solid var(--color-border);
   position: relative;
   background: radial-gradient(ellipse at center, rgba(255, 141, 0, 0.05) 0%, transparent 70%);
+  margin-right: 0; /* 默认右边距 */
+  transition: margin-right 0.6s ease-in-out; /* 右边距过渡 */
+}
+
+/* 左侧面板全屏时，MAGI组件调整 */
+.left-panel.fullscreen .magi {
+  margin-right: 0; /* 不需要负边距了，因为面板居中 */
 }
 
 /* 网格调试辅助 (开发时可启用) */
@@ -549,5 +541,123 @@
   50% {
     opacity: 0.5;
     transform: scale(1.2);
+  }
+}
+
+/* 面板展开/收缩功能样式 */
+
+.right-panel.hidden {
+  width: 0; /* 宽度设为0，不占据flex空间 */
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden; /* 隐藏溢出内容 */
+}
+
+/* 左侧面板全屏效果 - 最大1200px居中显示 */
+.left-panel.fullscreen {
+  width: 100% !important; /* 先占据全宽 */
+  max-width: 1200px !important; /* 最大宽度限制 */
+  margin: 0 auto !important; /* 居中显示 */
+  padding-right: 0 !important; /* 确保去掉右侧padding */
+}
+
+/* 控制按钮区域 - 使用flex布局with space-between */
+.control-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: auto;
+  min-width: 100px;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between; /* 改为space-between确保分散对齐 */
+  z-index: 9999;
+  /* 临时调试 - 可以看到容器边界 */
+  padding: 5px;
+}
+
+/* 展开/收缩按钮 - 添加边框样式 */
+.panel-toggle-btn {
+  position: relative;
+  background: rgba(0, 0, 0, 0.8); /* 添加背景 */
+  border: 2px solid var(--color-primary); /* 添加边框 */
+  color: var(--color-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.6; /* 改为与设置按钮一致的透明度 */
+  transition: var(--transition-normal);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* 设置按钮 - 回到flex item */
+.settings-icon {
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: var(--transition-normal);
+  user-select: none;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.panel-toggle-btn:hover {
+  opacity: 1;
+  background: rgba(255, 141, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.panel-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* 设置按钮hover效果 */
+.settings-icon:hover {
+  opacity: 1;
+  background: rgba(255, 141, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+.settings-icon:active {
+  transform: scale(0.95);
+}
+
+/* 当右侧面板隐藏时，按钮的特殊样式 */
+.right-panel.hidden ~ .control-buttons .panel-toggle-btn {
+  background: rgba(255, 141, 0, 0.9);
+  color: var(--color-background);
+  opacity: 0.8;
+  animation: pulse-glow 2s infinite;
+}
+
+.right-panel.hidden ~ .control-buttons .settings-icon {
+  background: rgba(255, 141, 0, 0.9);
+  color: var(--color-background);
+  opacity: 0.8;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 141, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 141, 0, 0.6);
   }
 }
