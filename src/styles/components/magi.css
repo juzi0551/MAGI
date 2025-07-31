@@ -29,7 +29,8 @@
   border-right: 0px solid var(--color-border);
   padding-right: var(--spacing-sm);
   position: relative;
-  transition: width 0.6s ease-in-out, padding-right 0.6s ease-in-out;
+  transform: translateX(0); /* 添加默认transform */
+  transition: width 0.6s ease-in-out, padding-right 0.6s ease-in-out, transform 0.6s ease-out;
 }
 
 /* 右侧面板 */
@@ -64,11 +65,6 @@
   position: relative;
   background: radial-gradient(ellipse at center, rgba(255, 141, 0, 0.05) 0%, transparent 70%);
   width: 100%;
-}
-
-/* 左侧面板全屏时，MAGI组件调整 */
-.left-panel.fullscreen .magi {
-  /* 在全屏状态下不需要特殊调整，让它自然适应父容器 */
 }
 
 /* 网格调试辅助 (开发时可启用) */
@@ -226,7 +222,7 @@
 
 .magi>.wise-man.balthasar,
 .magi>.wise-man.balthasar>.inner {
-  clip-path: polygon(0 0, 100% 0, 100% 85%, 75% 100%, 25% 100%, 0 84.5%);
+  clip-path: polygon(0 0, 100% 0, 100% 84%, 75% 100%, 25% 100%, 0 84%);
 }
 
 .magi>.wise-man.casper {
@@ -589,11 +585,11 @@
   padding: 5px;
 }
 
-/* 展开/收缩按钮 - 添加边框样式 */
+/* 展开/收缩按钮 - 默认转180度 */
 .panel-toggle-btn {
   position: relative;
-  background: rgba(0, 0, 0, 0.8); /* 添加背景 */
-  border: 2px solid var(--color-primary); /* 添加边框 */
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--color-primary);
   color: var(--color-primary);
   width: 40px;
   height: 40px;
@@ -602,10 +598,11 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0.6; /* 改为与设置按钮一致的透明度 */
+  opacity: 0.6;
   transition: var(--transition-normal);
   user-select: none;
   flex-shrink: 0;
+  transform: rotate(180deg); /* 默认转180度 */
 }
 
 /* 设置按钮 - 回到flex item */
@@ -631,11 +628,11 @@
 .panel-toggle-btn:hover {
   opacity: 1;
   background: rgba(255, 141, 0, 0.1);
-  transform: scale(1.1);
+  /* 移除transform，让按钮保持当前的旋转状态 */
 }
 
 .panel-toggle-btn:active {
-  transform: scale(0.95);
+  /* 移除transform，让按钮保持当前的旋转状态 */
 }
 
 /* 设置按钮hover效果 */
@@ -651,16 +648,11 @@
 
 /* 当右侧面板隐藏时，按钮的特殊样式 */
 .right-panel.hidden ~ .control-buttons .panel-toggle-btn {
-  background: rgba(255, 141, 0, 0.9);
-  color: var(--color-background);
-  opacity: 0.8;
-  animation: pulse-glow 2s infinite;
+  transform: rotate(0deg); /* 隐藏面板后正常角度 */
 }
 
 .right-panel.hidden ~ .control-buttons .settings-icon {
-  background: rgba(255, 141, 0, 0.9);
-  color: var(--color-background);
-  opacity: 0.8;
+  /* 设置按钮保持不变 */
 }
 
 @keyframes pulse-glow {
@@ -670,4 +662,86 @@
   50% {
     box-shadow: 0 0 20px rgba(255, 141, 0, 0.6);
   }
+}
+
+/* 启动动画样式 */
+/* 启动画面容器 */
+.startup-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+.startup-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 启动文字容器 */
+.startup-text {
+  font-family: var(--font-family-primary);
+  font-size: 8rem;
+  color: var(--color-primary);
+  text-align: center;
+  letter-spacing: 0.2em;
+}
+
+/* 打字机效果 */
+.typewriter {
+  overflow: hidden;
+  border-right: 3px solid var(--color-primary);
+  white-space: nowrap;
+  animation: 
+    typing 2s steps(6, end),
+    blink-caret 1s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: var(--color-primary); }
+}
+
+/* 系统容器初始状态 - 启动时隐藏 */
+.system.startup-mode {
+  opacity: 0;
+}
+
+/* 面板初始滑入状态 - 提高特定性 */
+.system.startup-mode .left-panel.left-panel {
+  transform: translateX(-100%) !important;
+  transition: transform 1s ease-out !important;
+}
+
+.system.startup-mode .right-panel.right-panel {
+  transform: translateX(100%) !important;
+  transition: transform 1s ease-out !important;
+}
+
+/* 启动完成状态 - 面板滑入 */
+.system.startup-complete {
+  opacity: 1;
+  transition: opacity 0.6s ease-out;
+}
+
+/* 启动完成后，只设置初始位置，不再控制过渡 - 提高特定性 */
+.system.startup-complete .left-panel.left-panel {
+  transform: translateX(0) !important;
+}
+
+.system.startup-complete .right-panel.right-panel {
+  transform: translateX(0) !important;
 }

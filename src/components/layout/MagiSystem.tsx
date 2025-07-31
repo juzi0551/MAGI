@@ -6,12 +6,17 @@ import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
 import HistoryPanel from '../common/HistoryPanel';
 import HistoryModal from '../common/HistoryModal';
 import SettingsPanel from '../common/SettingsPanel';
+import StartupScreen from '../common/StartupScreen';
 
 /**
  * MAGI系统根组件
  * 负责整体布局和状态协调
  */
 const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
+  // 启动动画状态
+  const [isStartupComplete, setIsStartupComplete] = useState(false);
+  const [showStartupScreen, setShowStartupScreen] = useState(true);
+
   const [question, setQuestion] = useState('');
   const [systemStatus, setSystemStatus] = useState<SystemStatus>('standby');
   const [processingStage, setProcessingStage] = useState(0);
@@ -26,6 +31,15 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   
   // 右侧面板显示状态
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
+
+  // 启动动画完成处理
+  const handleStartupComplete = () => {
+    setIsStartupComplete(true);
+    // 稍微延迟隐藏启动画面，让面板滑入动画开始
+    setTimeout(() => {
+      setShowStartupScreen(false);
+    }, 100);
+  };
 
   const handleQuestionChange = (value: string) => {
     setQuestion(value);
@@ -170,84 +184,93 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   };
 
   return (
-    <div className={`system ${className} ${!isRightPanelVisible ? 'right-panel-hidden' : ''}`}>
-      <div className={`left-panel ${!isRightPanelVisible ? 'fullscreen' : ''}`}>
-        {/* 左侧面板内容 - 传递状态给子组件 */}
-        <div data-system-status={systemStatus}>
-          {children}
-        </div>
-        
-        {/* 历史记录面板 */}
-        <HistoryPanel
-          records={historyRecords}
-          onRecordDetail={handleRecordDetail}
-          onClearHistory={handleClearHistory}
-        />
-        
-        {/* 输入容器 */}
-        <InputContainer
-          value={question}
-          onChange={handleQuestionChange}
-          onSubmit={handleQuestionSubmit}
-          disabled={systemStatus === 'processing'}
-        />
-      </div>
+    <>
+      {/* 启动画面 */}
+      {showStartupScreen && (
+        <StartupScreen onComplete={handleStartupComplete} />
+      )}
       
-      <div className={`right-panel ${!isRightPanelVisible ? 'hidden' : ''}`}>
-        {/* 右侧面板 - 贤者回答 */}
-        <div className="wise-answers">
-          <WiseAnswerDisplay
-            name="melchior"
-            status={getWiseAnswerContent('melchior').status as any}
-            response={getWiseAnswerContent('melchior').response}
+      {/* 主系统界面 */}
+      <div className={`system ${className} ${!isRightPanelVisible ? 'right-panel-hidden' : ''} ${
+        !isStartupComplete ? 'startup-mode' : 'startup-complete'
+      }`}>
+        <div className={`left-panel ${!isRightPanelVisible ? 'fullscreen' : ''}`}>
+          {/* 左侧面板内容 - 传递状态给子组件 */}
+          <div data-system-status={systemStatus}>
+            {children}
+          </div>
+          
+          {/* 历史记录面板 */}
+          <HistoryPanel
+            records={historyRecords}
+            onRecordDetail={handleRecordDetail}
+            onClearHistory={handleClearHistory}
           />
           
-          <WiseAnswerDisplay
-            name="balthasar"
-            status={getWiseAnswerContent('balthasar').status as any}
-            response={getWiseAnswerContent('balthasar').response}
-          />
-          
-          <WiseAnswerDisplay
-            name="casper"
-            status={getWiseAnswerContent('casper').status as any}
-            response={getWiseAnswerContent('casper').response}
-          />
-        </div>
-      </div>
-
-      {/* 控制按钮区域 - 独立于右侧面板 */}
-      <div className="control-buttons">
-        {/* 展开/收缩按钮 */}
-        <div className="panel-toggle-btn" title={isRightPanelVisible ? "收缩右侧面板" : "展开右侧面板"} onClick={handleRightPanelToggle}>
-          <img 
-            src={isRightPanelVisible ? "/src/assets/images/hide.svg" : "/src/assets/images/hide.svg"} 
-            alt={isRightPanelVisible ? "隐藏" : "展开"} 
-            width="24" 
-            height="24"
-            style={{ transform: isRightPanelVisible ? 'none' : 'rotate(180deg)' }}
+          {/* 输入容器 */}
+          <InputContainer
+            value={question}
+            onChange={handleQuestionChange}
+            onSubmit={handleQuestionSubmit}
+            disabled={systemStatus === 'processing'}
           />
         </div>
         
-        {/* 设置图标 */}
-        <div className="settings-icon" title="设置" onClick={handleSettingsClick}>
-          <img src="/src/assets/images/setting.svg" alt="设置" width="20" height="20" />
+        <div className={`right-panel ${!isRightPanelVisible ? 'hidden' : ''}`}>
+          {/* 右侧面板 - 贤者回答 */}
+          <div className="wise-answers">
+            <WiseAnswerDisplay
+              name="melchior"
+              status={getWiseAnswerContent('melchior').status as any}
+              response={getWiseAnswerContent('melchior').response}
+            />
+            
+            <WiseAnswerDisplay
+              name="balthasar"
+              status={getWiseAnswerContent('balthasar').status as any}
+              response={getWiseAnswerContent('balthasar').response}
+            />
+            
+            <WiseAnswerDisplay
+              name="casper"
+              status={getWiseAnswerContent('casper').status as any}
+              response={getWiseAnswerContent('casper').response}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* 历史记录详情模态框 */}
-      <HistoryModal
-        isOpen={isHistoryModalOpen}
-        record={selectedRecord}
-        onClose={handleHistoryModalClose}
-      />
-      
-      {/* 设置面板 */}
-      <SettingsPanel
-        isOpen={isSettingsPanelOpen}
-        onClose={handleSettingsClose}
-      />
-    </div>
+        {/* 控制按钮区域 - 独立于右侧面板 */}
+        <div className="control-buttons">
+          {/* 展开/收缩按钮 */}
+          <div className="panel-toggle-btn" title={isRightPanelVisible ? "收缩右侧面板" : "展开右侧面板"} onClick={handleRightPanelToggle}>
+            <img 
+              src="/src/assets/images/hide.svg"
+              alt={isRightPanelVisible ? "隐藏" : "展开"} 
+              width="24" 
+              height="24"
+            />
+          </div>
+          
+          {/* 设置图标 */}
+          <div className="settings-icon" title="设置" onClick={handleSettingsClick}>
+            <img src="/src/assets/images/setting.svg" alt="设置" width="20" height="20" />
+          </div>
+        </div>
+
+        {/* 历史记录详情模态框 */}
+        <HistoryModal
+          isOpen={isHistoryModalOpen}
+          record={selectedRecord}
+          onClose={handleHistoryModalClose}
+        />
+        
+        {/* 设置面板 */}
+        <SettingsPanel
+          isOpen={isSettingsPanelOpen}
+          onClose={handleSettingsClose}
+        />
+      </div>
+    </>
   );
 };
 
