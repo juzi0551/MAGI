@@ -41,9 +41,6 @@
     [left-header-start] 20px [casper-start status] 2fr [left-header-end balthasar-start casper-balthasar-connection] 0.5fr [casper-end title casper-melchior-connection] 1fr [balthasar-melchior-connection melchior-start] 0.5fr [right-header-start balthasar-end response] 2fr [melchior-end] 20px [right-header-end];
   grid-template-rows:
     20px [header balthasar-start] 2fr [status response] 2fr [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1fr [balthasar-end title casper-melchior-connection] 3fr [casper-end melchior-end] 20px;
-  width: 100%;
-  height: 100%;
-  min-height: 300px;
   aspect-ratio: 2 / 1;
   container-type: size;
   border: var(--border-width) solid var(--color-border);
@@ -147,7 +144,7 @@
 }
 
 .magi>.system-status>div {
-  font-size: var(--font-size-cq-xs);
+  font-size: 3cqh;
   margin-left: 4cqw;
   transform: scaleX(1.2);
   transform-origin: left;
@@ -157,7 +154,7 @@
 }
 
 .magi>.system-status>div:first-child {
-  font-size: var(--font-size-cq-md);
+  font-size: 8cqh;
   margin-left: 0;
 }
 
@@ -174,7 +171,7 @@
   white-space: nowrap;
   border: solid var(--border-width);
   padding: var(--spacing-xs) var(--spacing-md);
-  font-size: var(--font-size-cq-md);
+  font-size: 8cqh;
   font-family: var(--font-family-primary);
   line-height: 0.9;
 }
@@ -238,7 +235,7 @@
   width: 100%;
   height: 100%;
   font-family: var(--font-family-secondary);
-  font-size: var(--font-size-cq-sm);
+  font-size: 8cqh;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -250,56 +247,76 @@
   background: #4a90e2;
 }
 
-.magi>.wise-man.melchior {
-  grid-area: melchior-start / melchior-start / melchior-end / melchior-end;
-}
-
-.magi>.wise-man.melchior,
+/* 各核心文字居中调整 */
 .magi>.wise-man.melchior>.inner {
-  clip-path: polygon(29% 0, 100% 0, 100% 100%, 0 100%, 0 44%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.magi>.wise-man.balthasar {
-  grid-area: balthasar-start / balthasar-start / balthasar-end / balthasar-end;
-}
-
-.magi>.wise-man.balthasar,
 .magi>.wise-man.balthasar>.inner {
-  clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.magi>.wise-man.casper {
-  grid-area: casper-start / casper-start / casper-end / casper-end;
-}
-
-.magi>.wise-man.casper,
 .magi>.wise-man.casper>.inner {
-  clip-path: polygon(0 0, 71% 0, 100% 44%, 100% 100%, 0 100%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 /* 贤者状态颜色 */
+.magi>.wise-man.status-yes {
+  background: var(--color-primary);
+}
+
 .magi>.wise-man.status-yes>.inner {
   background: var(--color-yes);
+}
+
+.magi>.wise-man.status-no {
+  background: var(--color-primary);
 }
 
 .magi>.wise-man.status-no>.inner {
   background: var(--color-no);
 }
 
+.magi>.wise-man.status-conditional {
+  background: var(--color-primary);
+}
+
 .magi>.wise-man.status-conditional>.inner {
   background: var(--color-conditional);
+}
+
+.magi>.wise-man.status-info {
+  background: var(--color-primary);
 }
 
 .magi>.wise-man.status-info>.inner {
   background: var(--color-info);
 }
 
+.magi>.wise-man.status-error {
+  background: var(--color-primary);
+}
+
 .magi>.wise-man.status-error>.inner {
   background: var(--color-error);
 }
 
+.magi>.wise-man.status-standby {
+  background: var(--color-primary);
+}
+
 .magi>.wise-man.status-standby>.inner {
   background: #4a90e2;
+}
+
+.magi>.wise-man.status-processing {
+  background: var(--color-primary);
 }
 
 .magi>.wise-man.status-processing>.inner {

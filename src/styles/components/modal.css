@@ -127,6 +127,7 @@
   border-radius: 3px;
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-group input[type="range"]::-webkit-slider-thumb {
@@ -286,11 +287,11 @@
     width: 95vw;
     padding: var(--spacing-lg);
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
-  
+
   .modal-actions button {
     width: 100%;
   }

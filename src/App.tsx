@@ -36,12 +36,12 @@ function App() {
           alignItems: 'flex-end', // 右对齐
           justifyContent: 'flex-start' // 顶部对齐
         }}>
-          {/* MAGI面板 - 16:9比例 */}
+          {/* MAGI面板 - 2:1比例 */}
           <div style={{
             width: '100%',
-            aspectRatio: '16 / 9',
+            aspectRatio: '2 / 1',
             maxHeight: 'calc(100% - 60px)', // 为按钮留出空间
-            maxWidth: 'calc((100vh - 160px) * 16 / 9)', // 基于高度计算最大宽度
+            maxWidth: 'calc((100vh - 160px) * 2 / 1)', // 基于高度计算最大宽度
           }}>
             <MagiContainer status={demoStatus} />
           </div>
