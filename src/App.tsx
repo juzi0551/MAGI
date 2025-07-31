@@ -24,23 +24,15 @@ function App() {
       <MagiSystem>
         {/* MAGI核心界面容器 */}
         <div style={{ 
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '80px', // 为输入框留出空间
-          width: '100%',
-          height: '100%'
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: '80px', // 为输入框留出空间
+          padding: 0,
+          margin: 0
         }}>
-          <div style={{
-            width: '98%',
-            height: '65vh',
-            minHeight: '450px',
-            maxHeight: '600px'
-          }}>
-            <MagiContainer status={demoStatus} />
-          </div>
+          <MagiContainer status={demoStatus} />
           
           {/* 演示按钮 */}
           <button 
