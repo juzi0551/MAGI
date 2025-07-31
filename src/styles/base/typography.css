@@ -1,0 +1,40 @@
+/* 字体样式定义 */
+@font-face {
+  font-family: 'MAGI-Matisse';
+  src: url('/fonts/MAGI-Matisse.woff2') format('woff2'),
+       url('/fonts/MAGI-Matisse.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 基础字体样式 */
+body {
+  font-family: var(--font-family-primary), var(--font-family-fallback);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-primary), var(--font-family-fallback);
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+/* 代码字体 */
+code, pre {
+  font-family: var(--font-family-fallback);
+}

@@ -1,0 +1,215 @@
+/* 右侧回答面板样式 */
+
+/* 回答面板容器 */
+.wise-answers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  height: 100%;
+}
+
+/* 单个回答面板 */
+.wise-answer {
+  border: var(--border-width) solid var(--color-border-secondary);
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  flex: 1;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.wise-answer:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 回答面板标题 */
+.wise-answer-title {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border-secondary);
+  padding: var(--spacing-md) var(--spacing-md) 8px var(--spacing-md);
+  font-family: var(--font-family-mono);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--color-background-tertiary);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-dropdown);
+}
+
+/* 回答内容区域 */
+.wise-answer .answer-content {
+  font-size: var(--font-size-xs);
+  line-height: 1.2;
+  white-space: pre-wrap;
+  padding: var(--spacing-md);
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-word;
+}
+
+/* 回答面板中的状态显示 */
+.wise-answer .answer-status {
+  padding: var(--spacing-xs) 8px;
+  border: var(--border-width) solid;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-primary);
+  line-height: 0.9;
+  text-transform: uppercase;
+  min-width: 50px;
+  text-align: center;
+  flex-shrink: 0;
+  border-radius: var(--border-radius);
+}
+
+/* 状态颜色样式 */
+.answer-status.status-yes {
+  background: var(--color-yes);
+  color: var(--color-background);
+  border-color: var(--color-yes);
+}
+
+.answer-status.status-no {
+  background: var(--color-no);
+  color: white;
+  border-color: var(--color-no);
+}
+
+.answer-status.status-conditional {
+  background: var(--color-conditional);
+  color: var(--color-background);
+  border-color: var(--color-conditional);
+}
+
+.answer-status.status-info {
+  background: var(--color-info);
+  color: var(--color-background);
+  border-color: var(--color-info);
+}
+
+.answer-status.status-error {
+  background: var(--color-error);
+  color: white;
+  border-color: var(--color-error);
+}
+
+.answer-status.status-standby {
+  background: var(--color-standby);
+  color: var(--color-background);
+  border-color: var(--color-standby);
+}
+
+.answer-status.status-processing {
+  background: var(--color-processing);
+  color: var(--color-background);
+  border-color: var(--color-processing);
+  animation: var(--animation-flicker);
+}
+
+/* 贤者名称样式 */
+.wise-answer.melchior .wise-answer-title {
+  color: var(--color-text);
+}
+
+.wise-answer.balthasar .wise-answer-title {
+  color: var(--color-text);
+}
+
+.wise-answer.casper .wise-answer-title {
+  color: var(--color-text);
+}
+
+/* 条件列表样式 */
+.answer-conditions {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  background: rgba(255, 141, 0, 0.08);
+}
+
+.conditions-title {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.conditions-list {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--color-primary-light);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+}
+
+.condition-item {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* 展开/折叠按钮 */
+.expand-btn {
+  background: rgba(255, 141, 0, 0.2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 6px var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  margin-top: 8px;
+  display: block;
+  width: fit-content;
+}
+
+.expand-btn:hover {
+  background: rgba(255, 141, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* 无回答状态 */
+.no-answers {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  padding: var(--spacing-xl);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+}
+
+/* 加载状态 */
+.answer-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+}
+
+.answer-loading::after {
+  content: '...';
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}

@@ -1,0 +1,481 @@
+/* MAGI 核心界面样式 */
+
+/* 系统容器 */
+.system {
+  background: var(--color-background);
+  border: var(--border-width) solid var(--color-border);
+  padding: var(--spacing-sm);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* 左侧面板 */
+.left-panel {
+  width: var(--panel-left-width);
+  display: flex;
+  flex-direction: column;
+  border-right: 0px solid var(--color-border);
+  padding-right: var(--spacing-sm);
+  position: relative;
+}
+
+/* 右侧面板 */
+.right-panel {
+  width: var(--panel-right-width);
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--spacing-sm);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* MAGI 核心显示区网格布局 */
+.magi {
+  display: grid;
+  grid-template-columns:
+    [left-header-start] 20px
+    [casper-start status] 2fr
+    [left-header-end balthasar-start casper-balthasar-connection] 0.5fr
+    [casper-end title casper-melchior-connection] 1fr
+    [balthasar-melchior-connection melchior-start] 0.5fr
+    [right-header-start balthasar-end response] 2fr
+    [melchior-end] 20px
+    [right-header-end];
+  grid-template-rows:
+    20px
+    [header balthasar-start] 2fr
+    [status response] 2fr
+    [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1fr
+    [balthasar-end title casper-melchior-connection] 3fr
+    [casper-end melchior-end] 20px;
+  aspect-ratio: 2 / 1;
+  container-type: size;
+  border: var(--border-width) solid var(--color-border);
+  position: relative;
+  background: radial-gradient(ellipse at center, rgba(255, 141, 0, 0.05) 0%, transparent 70%);
+}
+
+/* 网格调试辅助 (开发时可启用) */
+.magi.debug-grid {
+  background-image: 
+    linear-gradient(rgba(255, 141, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 141, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* 三角形几何增强 */
+.magi::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(255, 141, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--transition-slow);
+}
+
+.magi.magi-in-progress::after {
+  opacity: 1;
+  animation: triangle-outline 3s infinite;
+}
+
+@keyframes triangle-outline {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+/* MAGI 标题 */
+.magi > .title {
+  grid-area: title / title;
+  color: var(--color-text);
+  text-align: center;
+  font-size: var(--font-size-cq-sm);
+  font-family: var(--font-family-primary);
+}
+
+/* 提诉/决议 标题头 */
+.magi > .header > hr {
+  border: var(--border-width) solid #277547;
+  height: 4px;
+  margin: 0 2px 2px 2px;
+}
+
+.magi > .header > span {
+  color: var(--color-text);
+  font-size: var(--font-size-cq-lg);
+  display: flex;
+  justify-content: center;
+  transform: scaleY(0.6);
+  transform-origin: center;
+  font-family: var(--font-family-primary);
+  line-height: 1;
+  margin-top: -20px;
+  margin-bottom: -20px;
+  position: relative;
+}
+
+.magi > .header.left {
+  grid-area: header / left-header-start / auto / left-header-end;
+}
+
+.magi > .header.right {
+  grid-area: header / right-header-start / auto / right-header-end;
+}
+
+/* 系统状态 */
+.magi > .system-status {
+  grid-area: status;
+  color: var(--color-text);
+  font-family: var(--font-family-secondary);
+  font-weight: 400;
+  padding-left: var(--spacing-md);
+  margin-bottom: 8px;
+}
+
+.magi > .system-status > div {
+  font-size: var(--font-size-cq-xs);
+  margin-left: 4cqw;
+  transform: scaleX(1.2);
+  transform-origin: left;
+  font-weight: 500;
+  margin-top: -2px;
+  margin-bottom: -2px;
+}
+
+.magi > .system-status > div:first-child {
+  font-size: var(--font-size-cq-md);
+  margin-left: 0;
+}
+
+/* 最终响应状态 */
+.magi > .response {
+  grid-area: response;
+  justify-self: flex-end;
+  align-self: center;
+  border: solid var(--border-width);
+  padding: var(--spacing-xs);
+}
+
+.magi > .response > .inner {
+  white-space: nowrap;
+  border: solid var(--border-width);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-cq-md);
+  font-family: var(--font-family-primary);
+  line-height: 0.9;
+}
+
+/* 贤者核心 */
+.magi > .wise-man {
+  display: flex;
+  background: var(--color-primary);
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  position: relative;
+  border: 1px solid var(--color-primary-dark);
+}
+
+/* 贤者网格定位和形状 */
+.magi > .wise-man.melchior {
+  grid-area: melchior-start / melchior-start / melchior-end / melchior-end;
+}
+
+.magi > .wise-man.melchior,
+.magi > .wise-man.melchior > .inner {
+  clip-path: polygon(29% 0, 100% 0, 100% 100%, 0 100%, 0 44%);
+}
+
+.magi > .wise-man.balthasar {
+  grid-area: balthasar-start / balthasar-start / balthasar-end / balthasar-end;
+}
+
+.magi > .wise-man.balthasar,
+.magi > .wise-man.balthasar > .inner {
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
+}
+
+.magi > .wise-man.casper {
+  grid-area: casper-start / casper-start / casper-end / casper-end;
+}
+
+.magi > .wise-man.casper,
+.magi > .wise-man.casper > .inner {
+  clip-path: polygon(0 0, 71% 0, 100% 44%, 100% 100%, 0 100%);
+}
+
+.magi > .wise-man::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-primary-light));
+  z-index: -1;
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+
+.magi > .wise-man:hover::before {
+  opacity: 0.3;
+}
+
+.magi > .wise-man > .inner {
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-cq-md);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.magi > .wise-man.melchior {
+  grid-area: melchior-start / melchior-start / melchior-end / melchior-end;
+}
+
+.magi > .wise-man.melchior,
+.magi > .wise-man.melchior > .inner {
+  clip-path: polygon(29% 0, 100% 0, 100% 100%, 0 100%, 0 44%);
+}
+
+.magi > .wise-man.balthasar {
+  grid-area: balthasar-start / balthasar-start / balthasar-end / balthasar-end;
+}
+
+.magi > .wise-man.balthasar,
+.magi > .wise-man.balthasar > .inner {
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
+}
+
+.magi > .wise-man.casper {
+  grid-area: casper-start / casper-start / casper-end / casper-end;
+}
+
+.magi > .wise-man.casper,
+.magi > .wise-man.casper > .inner {
+  clip-path: polygon(0 0, 71% 0, 100% 44%, 100% 100%, 0 100%);
+}
+
+/* 贤者状态颜色 */
+.magi > .wise-man.status-yes {
+  background: var(--color-yes);
+}
+
+.magi > .wise-man.status-no {
+  background: var(--color-no);
+}
+
+.magi > .wise-man.status-conditional {
+  background: var(--color-conditional);
+}
+
+.magi > .wise-man.status-info {
+  background: var(--color-info);
+}
+
+.magi > .wise-man.status-error {
+  background: var(--color-error);
+}
+
+.magi > .wise-man.status-standby {
+  background: var(--color-standby);
+}
+
+.magi > .wise-man.status-processing {
+  background: var(--color-processing);
+}
+
+/* 处理中状态的连接线动画 */
+.magi-in-progress .connection {
+  animation: connection-pulse 2s infinite;
+}
+
+/* 连接线 */
+.connection {
+  height: var(--connection-height);
+  background: var(--color-connection);
+  align-self: center;
+  margin: -10%;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.connection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--color-primary-light), transparent);
+  transition: var(--transition-normal);
+}
+
+.connection.active::before {
+  animation: connection-flow 1.5s infinite;
+}
+
+.connection.casper-balthasar {
+  grid-area: casper-balthasar-connection;
+  transform: rotate(-54deg);
+  transform-origin: center;
+}
+
+.connection.casper-melchior {
+  grid-area: casper-melchior-connection;
+}
+
+.connection.balthasar-melchior {
+  grid-area: balthasar-melchior-connection;
+  transform: rotate(54deg);
+  transform-origin: center;
+}
+
+/* 连接线动画 */
+@keyframes connection-pulse {
+  0%, 100% { 
+    background: var(--color-connection);
+    box-shadow: none;
+  }
+  50% { 
+    background: var(--color-primary-light);
+    box-shadow: 0 0 10px var(--color-primary);
+  }
+}
+
+@keyframes connection-flow {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* 响应状态颜色 */
+.response.status-yes,
+.response.status-yes > .inner {
+  color: var(--color-background);
+  background: var(--color-yes);
+  border-color: var(--color-yes);
+}
+
+.response.status-no,
+.response.status-no > .inner {
+  color: white;
+  background: var(--color-no);
+  border-color: var(--color-no);
+}
+
+.response.status-conditional,
+.response.status-conditional > .inner {
+  color: var(--color-background);
+  background: var(--color-conditional);
+  border-color: var(--color-conditional);
+}
+
+.response.status-info,
+.response.status-info > .inner {
+  color: var(--color-background);
+  background: var(--color-info);
+  border-color: var(--color-info);
+}
+
+.response.status-error,
+.response.status-error > .inner {
+  color: white;
+  background: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.response.status-standby,
+.response.status-standby > .inner {
+  color: var(--color-text);
+  background: var(--color-background);
+  border-color: var(--color-border);
+}
+
+.response.status-processing,
+.response.status-processing > .inner {
+  color: var(--color-text);
+  background: var(--color-background);
+  border-color: var(--color-border);
+}
+
+/* 闪烁动画 */
+@keyframes flicker-animation {
+  50% {
+    background: var(--color-background);
+    color: var(--color-background);
+  }
+}
+
+.magi-in-progress .connection,
+.magi-in-progress .wise-man > .inner,
+.response.flicker > .inner {
+  animation: var(--animation-flicker);
+}
+
+/* 悬停效果 */
+.magi > .wise-man:hover {
+  opacity: var(--opacity-hover);
+  transform: scale(1.02);
+}
+
+.magi > .wise-man:active {
+  opacity: var(--opacity-active);
+  transform: scale(0.98);
+}
+
+/* 动画状态 */
+.magi > .wise-man.animating {
+  animation: var(--animation-flicker);
+}
+
+/* 键盘导航支持 */
+.magi > .wise-man:focus {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* 状态指示器 */
+.magi > .wise-man::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-standby);
+  border: 1px solid var(--color-background);
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+
+.magi > .wise-man.status-processing::after {
+  opacity: 1;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}

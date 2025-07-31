@@ -1,0 +1,94 @@
+/* CSS变量定义 - EVA MAGI系统配色方案 */
+:root {
+  /* 主色调 */
+  --color-primary: #ff8d00;        /* EVA橙色 */
+  --color-primary-light: #ffb84d;  /* 浅橙色 */
+  --color-primary-dark: #cc7000;   /* 深橙色 */
+  --color-background: #000000;     /* 纯黑背景 */
+  --color-background-secondary: #1a1a1a; /* 次要背景 */
+  --color-background-tertiary: #1f1203;  /* 输入框背景 */
+  --color-text: #ff8d00;           /* 主文字颜色 */
+  --color-text-secondary: #874a00; /* 次要文字颜色 */
+  --color-text-muted: #666666;     /* 静音文字颜色 */
+  
+  /* 状态颜色 */
+  --color-yes: #52e691;            /* 绿色 - 同意 */
+  --color-no: #a41413;             /* 红色 - 拒绝 */
+  --color-conditional: #ff8d00;    /* 橙色 - 条件 */
+  --color-info: #3caee0;           /* 蓝色 - 信息 */
+  --color-error: #808080;          /* 灰色 - 错误 */
+  --color-standby: #ff8d00;        /* 待机状态 */
+  --color-processing: #ff8d00;     /* 处理中状态 */
+  
+  /* 边框和连接线 */
+  --color-border: #ff8d00;         /* 主边框颜色 */
+  --color-border-secondary: #874a00; /* 次要边框颜色 */
+  --color-connection: #ff8d00;     /* 连接线颜色 */
+  
+  /* 字体 */
+  --font-family-primary: 'MAGI-Matisse', monospace;
+  --font-family-secondary: 'Neue Helvetica', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-mono: 'Lucida Console', monospace;
+  --font-family-fallback: monospace;
+  
+  /* 字体大小 */
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  
+  /* 容器查询字体大小 */
+  --font-size-cq-xs: 3cqh;
+  --font-size-cq-sm: 7cqh;
+  --font-size-cq-md: 8cqh;
+  --font-size-cq-lg: 28cqh;
+  
+  /* 尺寸 */
+  --border-radius: 4px;
+  --border-width: 2px;
+  --spacing-xs: 2px;
+  --spacing-sm: 5px;
+  --spacing-md: 10px;
+  --spacing-lg: 15px;
+  --spacing-xl: 20px;
+  
+  /* 布局尺寸 */
+  --panel-left-width: 60%;
+  --panel-right-width: 40%;
+  --input-height: 40px;
+  --connection-height: 6px;
+  
+  /* 动画 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --animation-flicker: flicker-animation 0.25s infinite step-end;
+  
+  /* 阴影 */
+  --shadow-sm: 0 2px 10px rgba(255, 141, 0, 0.2);
+  --shadow-md: 0 4px 20px rgba(255, 141, 0, 0.3);
+  --shadow-lg: 0 0 5px rgba(255, 141, 0, 0.8);
+  
+  /* 渐变 */
+  --gradient-background: repeating-linear-gradient(45deg, rgb(0 0 0) 0px, rgb(0 0 0) 20px, #140b02 20px, #140b02 40px);
+  --gradient-panel: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --gradient-scrollbar: linear-gradient(180deg, #ff8d00 0%, #ffb84d 50%, #ff8d00 100%);
+  --gradient-scrollbar-hover: linear-gradient(180deg, #ffb84d 0%, #ffd480 50%, #ffb84d 100%);
+  
+  /* 透明度 */
+  --opacity-disabled: 0.5;
+  --opacity-hover: 0.8;
+  --opacity-active: 1;
+  
+  /* Z-index层级 */
+  --z-index-base: 1;
+  --z-index-dropdown: 10;
+  --z-index-sticky: 100;
+  --z-index-modal-backdrop: 1000;
+  --z-index-modal: 1001;
+  --z-index-tooltip: 1002;
+}

@@ -1,0 +1,388 @@
+/* 历史记录面板样式 */
+
+.history-panel {
+  background: var(--gradient-panel);
+  border: var(--border-width) solid var(--color-border);
+  padding: var(--spacing-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  position: absolute;
+  bottom: 67px;
+  left: 0;
+  right: var(--spacing-sm);
+  z-index: var(--z-index-dropdown);
+  transition: var(--transition-normal);
+  transform-origin: bottom;
+}
+
+/* 非折叠状态下，顶部距离MAGI 10px */
+.history-panel:not(.collapsed) {
+  top: calc(50vw * 0.59 + var(--spacing-md));
+  height: auto;
+  bottom: 67px;
+}
+
+/* 折叠状态样式 */
+.history-panel.collapsed {
+  max-height: 34px;
+  height: 34px !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  overflow: hidden;
+}
+
+.history-panel.collapsed .history-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* 标题栏样式 */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* 标题栏左侧区域 */
+.header-left-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* 折叠/展开按钮样式 */
+.toggle-history-btn {
+  background: rgba(255, 141, 0, 0.2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.toggle-history-btn:hover {
+  background: rgba(255, 141, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.history-title {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-md);
+  font-weight: bold;
+}
+
+/* 清空按钮样式 */
+.clear-history-btn {
+  background: rgba(255, 141, 0, 0.2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 4px var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.clear-history-btn:hover {
+  background: rgba(255, 141, 0, 0.4);
+}
+
+/* 历史记录列表样式 */
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  height: calc(100% - 40px);
+  transition: var(--transition-normal);
+  opacity: 1;
+}
+
+/* 无历史记录提示 */
+.no-history {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--spacing-xl);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+}
+
+/* 历史记录项样式 */
+.history-item {
+  background: rgba(255, 141, 0, 0.1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  margin: 8px 0;
+  padding: var(--spacing-md);
+  transition: var(--transition-normal);
+  cursor: pointer;
+}
+
+.history-item:hover {
+  background: rgba(255, 141, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.history-item.selected {
+  background: rgba(255, 141, 0, 0.3);
+  border-color: var(--color-primary-light);
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.history-time {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+}
+
+.history-question {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+  word-break: break-word;
+  margin-top: var(--spacing-sm);
+}
+
+.history-status {
+  padding: var(--spacing-xs) 6px;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-primary);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.history-status.status-yes {
+  background: var(--color-yes);
+  color: var(--color-background);
+}
+
+.history-status.status-no {
+  background: var(--color-no);
+  color: white;
+}
+
+.history-status.status-conditional {
+  background: var(--color-conditional);
+  color: var(--color-background);
+}
+
+.history-status.status-info {
+  background: var(--color-info);
+  color: var(--color-background);
+}
+
+.history-status.status-error {
+  background: var(--color-error);
+  color: white;
+}
+
+/* 历史记录详情模态框样式 */
+.history-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-index-modal-backdrop);
+}
+
+.history-modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--gradient-panel);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 8px;
+  max-width: 80vw;
+  max-height: 85vh;
+  min-width: 600px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-index-modal);
+  backdrop-filter: blur(2px);
+}
+
+.modal-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 141, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+.close {
+  color: var(--color-text);
+  font-size: var(--font-size-2xl);
+  font-weight: bold;
+  cursor: pointer;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
+  transition: var(--transition-normal);
+}
+
+.close:hover {
+  background: rgba(255, 141, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.history-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.history-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  background: rgba(255, 141, 0, 0.05);
+}
+
+.section-title {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-sm);
+}
+
+.section-content {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.question-time {
+  color: #ccc;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-sm);
+  margin-top: 8px;
+}
+
+.answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.wise-answer-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  background: rgba(255, 141, 0, 0.03);
+}
+
+.wise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.wise-name {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: bold;
+}
+
+.wise-response {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.wise-conditions {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  background: rgba(255, 141, 0, 0.08);
+}
+
+.modal-footer {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: center;
+  background: rgba(255, 141, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.modal-close-btn {
+  background: rgba(255, 141, 0, 0.2);
+  border: var(--border-width) solid var(--color-border);
+  color: var(--color-text);
+  padding: 8px var(--spacing-2xl);
+  border-radius: var(--border-radius);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 141, 0, 0.4);
+  transform: scale(1.05);
+}

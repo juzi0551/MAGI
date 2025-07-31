@@ -1,0 +1,142 @@
+/* MAGI系统样式入口文件 */
+
+/* 基础样式 */
+@import './base/reset.css';
+@import './base/variables.css';
+@import './base/typography.css';
+
+/* 组件样式 */
+@import './components/layout.css';
+@import './components/magi.css';
+@import './components/input.css';
+@import './components/answers.css';
+@import './components/history.css';
+@import './components/modal.css';
+@import './components/utilities.css';
+
+/* 全局样式 */
+html {
+  background: var(--gradient-background);
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-fallback);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* 应用根容器 */
+.app {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 开发时的临时样式 */
+.app.development {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.app.development h1 {
+  color: var(--color-primary);
+  font-family: var(--font-family-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.app.development p {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  text-align: center;
+  font-size: var(--font-size-lg);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .system {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-right: 0;
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .right-panel {
+    width: 100%;
+    padding-left: 0;
+    padding-top: var(--spacing-sm);
+  }
+
+  .magi {
+    aspect-ratio: 1.5 / 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .system {
+    padding: var(--spacing-xs);
+  }
+
+  .magi {
+    aspect-ratio: 1.2 / 1;
+  }
+
+  .input-container {
+    position: relative;
+    margin-top: var(--spacing-md);
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+
+  .history-panel {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: var(--spacing-md);
+  }
+
+  .settings-icon {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .magi {
+    aspect-ratio: 1 / 1;
+  }
+
+  .wise-answers {
+    gap: var(--spacing-sm);
+  }
+
+  .wise-answer {
+    min-height: 100px;
+  }
+
+  .modal-content {
+    width: 95vw;
+    padding: var(--spacing-lg);
+  }
+}

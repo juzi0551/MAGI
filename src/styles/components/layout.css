@@ -1,0 +1,75 @@
+/* 布局组件样式 */
+
+/* MAGI占位符样式 */
+.magi-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  border: var(--border-width) solid var(--color-border);
+  background: rgba(255, 141, 0, 0.1);
+  margin-bottom: var(--spacing-xl);
+}
+
+.magi-placeholder h2 {
+  color: var(--color-text);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.magi-placeholder p {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+/* 开发时的布局辅助 */
+.development-layout {
+  border: 1px dashed var(--color-border);
+  background: rgba(255, 141, 0, 0.05);
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm);
+}
+
+.development-layout::before {
+  content: attr(data-component);
+  display: block;
+  color: var(--color-text-muted);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+}
+
+/* 组件边界可视化 */
+.debug-border {
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+}
+
+.debug-border * {
+  border: 1px solid rgba(0, 255, 0, 0.2) !important;
+}
+
+/* 响应式布局调试 */
+@media (max-width: 1024px) {
+  .magi-placeholder {
+    height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .magi-placeholder {
+    height: 120px;
+  }
+  
+  .magi-placeholder h2 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .magi-placeholder p {
+    font-size: var(--font-size-sm);
+  }
+}
