@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HistoryModalProps, HistoryRecord } from '../../types';
+import { HistoryModalProps } from '../../types';
 import { WiseManAnswer } from '../../types/ai';
 
 // 为了保持代码一致性，创建WiseAnswer别名

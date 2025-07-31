@@ -5,6 +5,7 @@ import InputContainer from '../common/InputContainer';
 import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
 import HistoryPanel from '../common/HistoryPanel';
 import HistoryModal from '../common/HistoryModal';
+import SettingsPanel from '../common/SettingsPanel';
 
 /**
  * MAGI系统根组件
@@ -19,6 +20,9 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   const [historyRecords, setHistoryRecords] = useState<HistoryRecord[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<HistoryRecord | null>(null);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  
+  // 设置面板状态
+  const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
 
   const handleQuestionChange = (value: string) => {
     setQuestion(value);
@@ -51,7 +55,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         id: `record-${Date.now()}`,
         timestamp: Date.now(),
         question: question,
-        questionType: 'general', // 简化处理
+        questionType: 'info', // 使用有效的问题类型
         finalStatus: 'conditional', // 模拟决策结果
         answers: [
           {
@@ -148,6 +152,15 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     setSelectedRecord(null);
   };
 
+  // 设置面板事件处理
+  const handleSettingsClick = () => {
+    setIsSettingsPanelOpen(true);
+  };
+
+  const handleSettingsClose = () => {
+    setIsSettingsPanelOpen(false);
+  };
+
   return (
     <div className={`system ${className}`}>
       <div className="left-panel">
@@ -194,9 +207,9 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
           />
         </div>
         
-        {/* 设置图标占位 */}
-        <div className="settings-icon" title="设置">
-          ⚙️
+        {/* 设置图标 */}
+        <div className="settings-icon" title="设置" onClick={handleSettingsClick}>
+          <img src="/src/assets/images/setting.svg" alt="设置" width="20" height="20" />
         </div>
       </div>
 
@@ -205,6 +218,12 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         isOpen={isHistoryModalOpen}
         record={selectedRecord}
         onClose={handleHistoryModalClose}
+      />
+      
+      {/* 设置面板 */}
+      <SettingsPanel
+        isOpen={isSettingsPanelOpen}
+        onClose={handleSettingsClose}
       />
     </div>
   );

@@ -90,13 +90,15 @@ const HistoryPanel = ({
           <span className="history-title">📚 履歴</span>
         </div>
 
-        {/* 右侧区域：清空按钮 */}
-        <button
-          className="clear-history-btn"
-          onClick={handleClearHistory}
-        >
-          清空
-        </button>
+        {/* 右侧区域：清空按钮 - 只在展开状态下显示 */}
+        {!collapsed && (
+          <button
+            className="clear-history-btn"
+            onClick={handleClearHistory}
+          >
+            清空
+          </button>
+        )}
       </div>
 
       {/* 历史记录列表 - 只在非折叠状态下显示 */}

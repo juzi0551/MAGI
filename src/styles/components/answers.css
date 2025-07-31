@@ -1,4 +1,4 @@
-/* 右侧回答面板样式 */
+/* 右侧回答面板样式 - 基于原项目风格 */
 
 /* 回答面板容器 */
 .wise-answers {
@@ -6,13 +6,14 @@
   flex-direction: column;
   gap: var(--spacing-md);
   height: 100%;
+  flex: 1;
 }
 
 /* 单个回答面板 */
 .wise-answer {
-  border: var(--border-width) solid var(--color-border-secondary);
+  border: 2px solid #874a00;
   background: var(--color-background);
-  color: var(--color-text-secondary);
+  color: #874a00;
   font-family: var(--font-family-mono);
   flex: 1;
   position: relative;
@@ -24,16 +25,16 @@
 }
 
 .wise-answer:hover {
-  border-color: var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(255, 141, 0, 0.3);
 }
 
 /* 回答面板标题 */
 .wise-answer-title {
-  color: var(--color-text-secondary);
+  color: #874a00;
   font-size: var(--font-size-sm);
   text-transform: uppercase;
-  border-bottom: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid #874a00;
   padding: var(--spacing-md) var(--spacing-md) 8px var(--spacing-md);
   font-family: var(--font-family-mono);
   font-weight: bold;
@@ -41,7 +42,7 @@
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  background: var(--color-background-tertiary);
+  background: #1f1203;
   position: sticky;
   top: 0;
   z-index: var(--z-index-dropdown);
@@ -49,7 +50,7 @@
 
 /* 回答内容区域 */
 .wise-answer .answer-content {
-  font-size: var(--font-size-xs);
+  font-size: 0.75em;
   line-height: 1.2;
   white-space: pre-wrap;
   padding: var(--spacing-md);
@@ -57,63 +58,63 @@
   overflow-y: auto;
   overflow-x: hidden;
   word-break: break-word;
+  color: #874a00;
 }
 
 /* 回答面板中的状态显示 */
 .wise-answer .answer-status {
-  padding: var(--spacing-xs) 8px;
-  border: var(--border-width) solid;
-  font-size: var(--font-size-xs);
+  padding: 2px 8px;
+  border: 2px solid;
+  font-size: 10px;
   font-family: var(--font-family-primary);
   line-height: 0.9;
   text-transform: uppercase;
   min-width: 50px;
   text-align: center;
   flex-shrink: 0;
-  border-radius: var(--border-radius);
 }
 
-/* 状态颜色样式 */
+/* 状态颜色样式 - 参考原项目 */
 .answer-status.status-yes {
-  background: var(--color-yes);
-  color: var(--color-background);
-  border-color: var(--color-yes);
+  background: #52e691;
+  color: black;
+  border-color: #52e691;
 }
 
 .answer-status.status-no {
-  background: var(--color-no);
+  background: #a41413;
   color: white;
-  border-color: var(--color-no);
+  border-color: #a41413;
 }
 
 .answer-status.status-conditional {
-  background: var(--color-conditional);
-  color: var(--color-background);
-  border-color: var(--color-conditional);
+  background: #ff8d00;
+  color: black;
+  border-color: #ff8d00;
 }
 
 .answer-status.status-info {
-  background: var(--color-info);
-  color: var(--color-background);
-  border-color: var(--color-info);
+  background: #3caee0;
+  color: black;
+  border-color: #3caee0;
 }
 
 .answer-status.status-error {
-  background: var(--color-error);
+  background: gray;
   color: white;
-  border-color: var(--color-error);
+  border-color: gray;
 }
 
 .answer-status.status-standby {
-  background: var(--color-standby);
-  color: var(--color-background);
-  border-color: var(--color-standby);
+  background: #ff8d00;
+  color: black;
+  border-color: #ff8d00;
 }
 
 .answer-status.status-processing {
-  background: var(--color-processing);
-  color: var(--color-background);
-  border-color: var(--color-processing);
+  background: #3caee0;
+  color: black;
+  border-color: #3caee0;
   animation: var(--animation-flicker);
 }
 

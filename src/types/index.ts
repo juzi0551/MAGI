@@ -88,7 +88,6 @@ export type {
   ConfirmDialogProps,
   WiseAnswerDisplayProps,
   SystemStatusIndicatorProps,
-  HistoryPanelProps,
   HistoryModalProps,
 } from './components';
 

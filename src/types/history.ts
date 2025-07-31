@@ -59,9 +59,7 @@ export interface HistoryStatistics {
 // 历史记录面板Props接口
 export interface HistoryPanelProps {
   records: HistoryRecord[];
-  isOpen: boolean;
-  onToggle: () => void;
-  onRecordSelect: (record: HistoryRecord) => void;
+  onRecordDetail: (record: HistoryRecord & { _clickTimestamp?: number }) => void;
   onClearHistory: () => void;
   className?: string;
 }

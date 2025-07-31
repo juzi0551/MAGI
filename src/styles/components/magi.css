@@ -32,6 +32,34 @@
   padding-left: var(--spacing-sm);
   overflow-y: auto;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* 设置按钮 */
+.settings-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  color: var(--color-primary);
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0.6;
+  z-index: var(--z-index-fixed);
+  transition: var(--transition-normal);
+  user-select: none;
+  background: rgba(0, 0, 0, 0.8);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-icon:hover {
+  opacity: 1;
+  background: rgba(255, 141, 0, 0.1);
+  transform: rotate(90deg);
 }
 
 /* MAGI 核心显示区网格布局 */

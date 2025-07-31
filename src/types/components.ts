@@ -4,6 +4,7 @@
 
 import { ReactNode } from 'react';
 import { WiseManName, WiseManStatus, SystemStatus, FinalStatus } from './ai';
+import { HistoryRecord } from './history';
 
 // 基础组件Props
 export interface BaseComponentProps {
@@ -201,14 +202,6 @@ export interface SystemStatusIndicatorProps {
   status: SystemStatus;
   size?: 'small' | 'medium' | 'large';
   showText?: boolean;
-  className?: string;
-}
-
-// 历史记录面板Props
-export interface HistoryPanelProps {
-  records: HistoryRecord[];
-  onRecordDetail?: (record: HistoryRecord & { _clickTimestamp?: number }) => void;
-  onClearHistory?: () => void;
   className?: string;
 }
 

@@ -496,8 +496,8 @@ const zh_CN = {
   'wise_man.melchior': 'MELCHIOR-1 (科学家)',
   'wise_man.balthasar': 'BALTHASAR-2 (母亲)',
   'wise_man.casper': 'CASPER-3 (女人)',
-  'status.standby': '待机中...',
-  'status.processing': '处理中...',
+  'status.standby': '待機中...',
+  'status.processing': '審議中...',
   // 更多翻译...
 };
 ```

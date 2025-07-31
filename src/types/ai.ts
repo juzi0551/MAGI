@@ -36,6 +36,7 @@ export interface WiseManAnswer {
   response: string;
   conditions?: string[];
   timestamp?: number;
+  processingTime?: number; // 处理时长（毫秒）
 }
 
 // AI请求参数接口

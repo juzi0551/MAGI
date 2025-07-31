@@ -38,20 +38,20 @@ const WiseAnswerDisplay = ({
   const getStatusText = (status: string): string => {
     switch (status) {
       case 'yes':
-        return '同意';
+        return '可 決';
       case 'no':
-        return '拒绝';
+        return '否 決';
       case 'conditional':
-        return '条件';
+        return '條 件';
       case 'info':
-        return '信息';
+        return '';
       case 'error':
-        return '错误';
+        return '錯 誤';
       case 'processing':
-        return '处理中';
+        return '審議中';
       case 'standby':
       default:
-        return '待机';
+        return '待 機';
     }
   };
 
