@@ -34,10 +34,10 @@ function App() {
           height: '100%'
         }}>
           <div style={{
-            width: '95%',
-            height: '60vh',
-            minHeight: '400px',
-            maxHeight: '500px'
+            width: '98%',
+            height: '65vh',
+            minHeight: '450px',
+            maxHeight: '600px'
           }}>
             <MagiContainer status={demoStatus} />
           </div>

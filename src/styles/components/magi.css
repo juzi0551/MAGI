@@ -38,21 +38,21 @@
 .magi {
   display: grid;
   grid-template-columns:
-    [left-header-start] 30px
-    [casper-start status] 3fr
-    [left-header-end balthasar-start casper-balthasar-connection] 1fr
-    [casper-end title casper-melchior-connection] 1.5fr
-    [balthasar-melchior-connection melchior-start] 1fr
-    [right-header-start balthasar-end response] 3fr
-    [melchior-end] 30px
+    [left-header-start] 10px
+    [casper-start status] 2.5fr
+    [left-header-end balthasar-start casper-balthasar-connection] 1.2fr
+    [casper-end title casper-melchior-connection] 1.6fr
+    [balthasar-melchior-connection melchior-start] 1.2fr
+    [right-header-start balthasar-end response] 2.5fr
+    [melchior-end] 10px
     [right-header-end];
   grid-template-rows:
-    30px
-    [header balthasar-start] 2fr
-    [status response] 2fr
-    [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1.5fr
-    [balthasar-end title casper-melchior-connection] 4fr
-    [casper-end melchior-end] 30px;
+    15px
+    [header balthasar-start] 1.5fr
+    [status response] 1.5fr
+    [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 2fr
+    [balthasar-end title casper-melchior-connection] 5fr
+    [casper-end melchior-end] 15px;
   width: 100%;
   height: 100%;
   min-height: 300px;
@@ -187,11 +187,13 @@
 .magi > .wise-man {
   display: flex;
   background: var(--color-primary);
-  padding: var(--spacing-xs);
+  padding: var(--spacing-sm);
   cursor: pointer;
   transition: var(--transition-normal);
   position: relative;
   border: 1px solid var(--color-primary-dark);
+  min-width: 60px;
+  min-height: 60px;
 }
 
 /* 贤者网格定位和形状 */
