@@ -16,12 +16,11 @@
   border: 2px solid #ff8d00;
   z-index: 100;
   align-items: center;
-  transition: right 0.6s ease-in-out; /* 添加right过渡 */
 }
 
 /* 左侧面板全屏时，输入容器调整 */
 .left-panel.fullscreen .input-container {
-  right: 0; /* 相对于左侧面板的右边缘 */
+  right: 0; /* 全屏时紧贴右边缘 */
 }
 
 .input-container > input {

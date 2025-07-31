@@ -23,12 +23,13 @@
 /* 左侧面板 */
 .left-panel {
   width: var(--panel-left-width);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   border-right: 0px solid var(--color-border);
   padding-right: var(--spacing-sm);
   position: relative;
-  transition: width 0.6s ease-in-out, padding-right 0.6s ease-in-out; /* 添加padding过渡效果 */
+  transition: width 0.6s ease-in-out, padding-right 0.6s ease-in-out;
 }
 
 /* 右侧面板 */
@@ -59,13 +60,12 @@
   border: var(--border-width) solid var(--color-border);
   position: relative;
   background: radial-gradient(ellipse at center, rgba(255, 141, 0, 0.05) 0%, transparent 70%);
-  margin-right: 0; /* 默认右边距 */
-  transition: margin-right 0.6s ease-in-out; /* 右边距过渡 */
+  width: 100%;
 }
 
 /* 左侧面板全屏时，MAGI组件调整 */
 .left-panel.fullscreen .magi {
-  margin-right: 0; /* 不需要负边距了，因为面板居中 */
+  /* 在全屏状态下不需要特殊调整，让它自然适应父容器 */
 }
 
 /* 网格调试辅助 (开发时可启用) */
@@ -547,19 +547,22 @@
 /* 面板展开/收缩功能样式 */
 
 .right-panel.hidden {
-  width: 0; /* 宽度设为0，不占据flex空间 */
-  transform: translateX(100%);
+  width: 0; /* 宽度变为0而不是完全隐藏 */
+  min-width: 0; /* 防止flex最小宽度限制 */
+  transform: translateX(0); /* 不需要translateX */
   opacity: 0;
   pointer-events: none;
-  overflow: hidden; /* 隐藏溢出内容 */
+  overflow: hidden;
+  padding-left: 0; /* 隐藏时去掉左侧padding */
 }
 
-/* 左侧面板全屏效果 - 最大1200px居中显示 */
+/* 左侧面板全屏效果 - 不改变panel宽度，改变内部元素 */
 .left-panel.fullscreen {
-  width: 100% !important; /* 先占据全宽 */
-  max-width: 1200px !important; /* 最大宽度限制 */
-  margin: 0 auto !important; /* 居中显示 */
-  padding-right: 0 !important; /* 确保去掉右侧padding */
+  /* 移除所有宽度相关设置，让flex自然扩展 */
+  flex-grow: 1; /* 让左侧面板占据剩余空间 */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-right: 0;
 }
 
 /* 控制按钮区域 - 使用flex布局with space-between */
