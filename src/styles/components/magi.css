@@ -41,9 +41,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out, width 0.6s ease-in-out; /* 添加宽度过渡 */
   transform: translateX(0);
   opacity: 1;
+  /* 展开时：宽度瞬间变化，transform和透明度有动画 */
+  transition: 
+    transform 0.6s ease-in-out,
+    opacity 0.6s ease-in-out;
 }
 
 /* 设置按钮 - 移除原有重复的样式定义 */
@@ -547,19 +550,23 @@
 /* 面板展开/收缩功能样式 */
 
 .right-panel.hidden {
-  width: 0; /* 宽度变为0而不是完全隐藏 */
-  min-width: 0; /* 防止flex最小宽度限制 */
-  transform: translateX(0); /* 不需要translateX */
+  width: 0;
+  min-width: 0;
+  transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
   overflow: hidden;
-  padding-left: 0; /* 隐藏时去掉左侧padding */
+  padding-left: 0;
+  /* 收缩时：先transform和opacity变化，然后width变化 */
+  transition: 
+    transform 0.6s ease-in-out,
+    opacity 0.6s ease-in-out,
+    width 0.6s ease-in-out 0.1s; /* width延迟0.1s */
 }
 
-/* 左侧面板全屏效果 - 不改变panel宽度，改变内部元素 */
+/* 左侧面板全屏效果 - 当右侧面板隐藏时扩展 */
 .left-panel.fullscreen {
-  /* 移除所有宽度相关设置，让flex自然扩展 */
-  flex-grow: 1; /* 让左侧面板占据剩余空间 */
+  flex-grow: 1; /* 占据剩余空间 */
   max-width: 1200px;
   margin: 0 auto;
   padding-right: 0;
