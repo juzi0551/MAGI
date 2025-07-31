@@ -29,9 +29,18 @@ function App() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          marginBottom: '80px' // 为输入框留出空间
+          marginBottom: '80px', // 为输入框留出空间
+          width: '100%',
+          height: '100%'
         }}>
-          <MagiContainer status={demoStatus} />
+          <div style={{
+            width: '95%',
+            height: '60vh',
+            minHeight: '400px',
+            maxHeight: '500px'
+          }}>
+            <MagiContainer status={demoStatus} />
+          </div>
           
           {/* 演示按钮 */}
           <button 

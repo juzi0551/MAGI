@@ -42,10 +42,10 @@
   --font-size-3xl: 32px;
   
   /* 容器查询字体大小 */
-  --font-size-cq-xs: 3cqh;
-  --font-size-cq-sm: 7cqh;
-  --font-size-cq-md: 8cqh;
-  --font-size-cq-lg: 28cqh;
+  --font-size-cq-xs: 4cqh;
+  --font-size-cq-sm: 8cqh;
+  --font-size-cq-md: 10cqh;
+  --font-size-cq-lg: 20cqh;
   
   /* 尺寸 */
   --border-radius: 4px;
@@ -60,7 +60,7 @@
   --panel-left-width: 60%;
   --panel-right-width: 40%;
   --input-height: 40px;
-  --connection-height: 6px;
+  --connection-height: 8px;
   
   /* 动画 */
   --transition-fast: 0.15s ease;

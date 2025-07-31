@@ -38,21 +38,24 @@
 .magi {
   display: grid;
   grid-template-columns:
-    [left-header-start] 20px
-    [casper-start status] 2fr
-    [left-header-end balthasar-start casper-balthasar-connection] 0.5fr
-    [casper-end title casper-melchior-connection] 1fr
-    [balthasar-melchior-connection melchior-start] 0.5fr
-    [right-header-start balthasar-end response] 2fr
-    [melchior-end] 20px
+    [left-header-start] 30px
+    [casper-start status] 3fr
+    [left-header-end balthasar-start casper-balthasar-connection] 1fr
+    [casper-end title casper-melchior-connection] 1.5fr
+    [balthasar-melchior-connection melchior-start] 1fr
+    [right-header-start balthasar-end response] 3fr
+    [melchior-end] 30px
     [right-header-end];
   grid-template-rows:
-    20px
+    30px
     [header balthasar-start] 2fr
     [status response] 2fr
-    [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1fr
-    [balthasar-end title casper-melchior-connection] 3fr
-    [casper-end melchior-end] 20px;
+    [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1.5fr
+    [balthasar-end title casper-melchior-connection] 4fr
+    [casper-end melchior-end] 30px;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
   aspect-ratio: 2 / 1;
   container-type: size;
   border: var(--border-width) solid var(--color-border);
