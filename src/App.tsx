@@ -30,9 +30,21 @@ function App() {
           right: 0,
           bottom: '80px', // 为输入框留出空间
           padding: 0,
-          margin: 0
+          margin: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
-          <MagiContainer status={demoStatus} />
+          {/* MAGI面板 - 16:9比例 */}
+          <div style={{
+            width: '100%',
+            aspectRatio: '16 / 9',
+            maxHeight: 'calc(100% - 60px)', // 为按钮留出空间
+            maxWidth: 'calc((100vh - 160px) * 16 / 9)', // 基于高度计算最大宽度
+          }}>
+            <MagiContainer status={demoStatus} />
+          </div>
           
           {/* 演示按钮 */}
           <button 
