@@ -1,0 +1,168 @@
+@font-face {
+    font-family: 'MAGI-Matisse';
+    src: url('../fonts/MatissePro-EB.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    background: repeating-linear-gradient(45deg, rgb(0 0 0) 0px, rgb(0 0 0) 20px, #140b02 20px, #140b02 40px);
+    min-height: 100vh;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.system {
+    background: black;
+    border: 2px solid #ff8d00;
+    padding: 5px;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.left-panel {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    border-right: 0px solid #ff8d00;
+    padding-right: 5px;
+    position: relative;
+    
+}
+
+.right-panel {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.input-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', sans-serif;
+    column-gap: 10px;
+    row-gap: 5px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 5px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #ff8d00;
+    z-index: 100;
+    align-items: center;
+}
+
+.input-container>input {
+    background: #1f1203;
+    border: 2px solid #ff8d00;
+    color: #ff8d00;
+    font-family: monospace;
+    height: 40px;
+}
+
+/* Settings Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    border: 2px solid #ff8d00;
+    padding: 20px;
+    color: #ff8d00;
+    font-family: 'MAGI-Matisse', sans-serif;
+    width: 400px;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    background: #1f1203;
+    border: 2px solid #ff8d00;
+    color: #ff8d00;
+    padding: 8px;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%23ff8d00%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%27%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 10px auto;
+    padding-right: 30px;
+}
+
+.modal-actions {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    background: #ff8d00;
+    color: black;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-family: 'MAGI-Matisse', sans-serif;
+}
+
+.modal-actions button:hover {
+    background: #ffac4d;
+}
+
+.settings-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: #ff8d00;
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.5;
+    z-index: 1001;
+    transition: opacity 0.3s ease;
+}
+
+.settings-icon:hover {
+    opacity: 1;
+}

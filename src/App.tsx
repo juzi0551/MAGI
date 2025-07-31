@@ -7,12 +7,12 @@ function App() {
 
   const handleDemo = () => {
     if (demoStatus !== 'standby') return;
-    
+
     setDemoStatus('processing');
-    
+
     setTimeout(() => {
       setDemoStatus('completed');
-      
+
       setTimeout(() => {
         setDemoStatus('standby');
       }, 5000);
@@ -23,18 +23,18 @@ function App() {
     <div className="app">
       <MagiSystem>
         {/* MAGI核心界面容器 */}
-        <div style={{ 
+        <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
-          right: 0,
+          right: '5px', // 与input-container右边对齐 (var(--spacing-sm) = 5px)
           bottom: '80px', // 为输入框留出空间
           padding: 0,
           margin: 0,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
+          alignItems: 'flex-end', // 右对齐
+          justifyContent: 'flex-start' // 顶部对齐
         }}>
           {/* MAGI面板 - 16:9比例 */}
           <div style={{
@@ -45,19 +45,19 @@ function App() {
           }}>
             <MagiContainer status={demoStatus} />
           </div>
-          
+
           {/* 演示按钮 */}
-          <button 
+          <button
             className="btn"
             onClick={handleDemo}
             disabled={demoStatus !== 'standby'}
-            style={{ 
+            style={{
               marginTop: '20px',
               opacity: demoStatus !== 'standby' ? 0.5 : 1
             }}
           >
-            {demoStatus === 'standby' ? '演示决策流程' : 
-             demoStatus === 'processing' ? '处理中...' : '决策完成'}
+            {demoStatus === 'standby' ? '演示决策流程' :
+              demoStatus === 'processing' ? '处理中...' : '决策完成'}
           </button>
         </div>
       </MagiSystem>

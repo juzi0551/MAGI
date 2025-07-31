@@ -8,7 +8,10 @@ const Header = ({ side, title, className = '' }: HeaderProps) => {
   return (
     <div className={`header ${side} ${className}`}>
       <hr />
+      <hr />
       <span>{title}</span>
+      <hr />
+      <hr />
     </div>
   );
 };

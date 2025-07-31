@@ -27,7 +27,7 @@ const WiseMan = ({
       title={`${getWiseManTitle(name)} - ${getStatusText(status)}`}
     >
       <div className="inner">
-        {orderNumber}
+        {name.toUpperCase()} • {orderNumber}
       </div>
     </div>
   );

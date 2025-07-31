@@ -7,29 +7,34 @@ import { StatusProps } from '../../types';
 const Status = ({ 
   refreshTrigger = 0, 
   systemStatus, 
-  currentQuestion, 
   className = '' 
 }: StatusProps) => {
   const getStatusDisplay = () => {
     switch (systemStatus) {
       case 'processing':
         return {
-          main: 'SYSTEM',
-          status: 'STATUS: PROCESSING',
-          detail: currentQuestion ? `ANALYZING: ${currentQuestion.substring(0, 30)}${currentQuestion.length > 30 ? '...' : ''}` : 'ANALYZING QUERY'
+          main: 'CODE:561',
+          status: 'FILE:MAGI_SYS',
+          detail: 'EXTENTION:6804',
+          extra: 'EX_MODE:ON',
+          priority: 'PRIORITY:AAA'
         };
       case 'completed':
         return {
-          main: 'SYSTEM',
-          status: 'STATUS: COMPLETED',
-          detail: 'DECISION READY'
+          main: 'CODE:561',
+          status: 'FILE:MAGI_SYS',
+          detail: 'EXTENTION:6804',
+          extra: 'EX_MODE:OFF',
+          priority: 'PRIORITY:AAA'
         };
       case 'standby':
       default:
         return {
-          main: 'SYSTEM',
-          status: 'STATUS: STANDBY',
-          detail: 'READY'
+          main: 'CODE:561',
+          status: 'FILE:MAGI_SYS',
+          detail: 'EXTENTION:6804',
+          extra: 'EX_MODE:OFF',
+          priority: 'PRIORITY:AAA'
         };
     }
   };
@@ -41,6 +46,8 @@ const Status = ({
       <div>{statusDisplay.main}</div>
       <div>{statusDisplay.status}</div>
       <div>{statusDisplay.detail}</div>
+      <div>{statusDisplay.extra}</div>
+      <div>{statusDisplay.priority}</div>
     </div>
   );
 };
