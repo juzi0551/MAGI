@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { InputContainerProps } from '../../types';
 
 /**
- * 输入容器组件
+ * 输入容器组件 - 参考原MAGI项目设计
  * 处理用户问题输入
  */
 const InputContainer = ({ 
@@ -10,7 +10,7 @@ const InputContainer = ({
   onChange, 
   onSubmit, 
   disabled = false, 
-  placeholder = "请输入您的问题...", 
+  placeholder = "", 
   className = '' 
 }: InputContainerProps) => {
   const [inputValue, setInputValue] = useState(value);
@@ -21,24 +21,16 @@ const InputContainer = ({
     onChange(newValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputValue.trim() && !disabled) {
-      onSubmit(inputValue.trim());
-    }
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !disabled) {
-      handleSubmit(e);
+    if (e.key === 'Enter' && !disabled && inputValue.trim()) {
+      onSubmit(inputValue.trim());
     }
   };
 
   return (
     <div className={`input-container ${className}`}>
-      <label htmlFor="question-input">質問:</label>
+      <label>質問: </label>
       <input
-        id="question-input"
         type="text"
         value={inputValue}
         onChange={handleInputChange}
@@ -48,14 +40,6 @@ const InputContainer = ({
         autoComplete="off"
         autoFocus
       />
-      <button
-        type="submit"
-        className="input-submit-btn"
-        onClick={handleSubmit}
-        disabled={disabled || !inputValue.trim()}
-      >
-        提交
-      </button>
     </div>
   );
 };

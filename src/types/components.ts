@@ -203,3 +203,19 @@ export interface SystemStatusIndicatorProps {
   showText?: boolean;
   className?: string;
 }
+
+// 历史记录面板Props
+export interface HistoryPanelProps {
+  records: HistoryRecord[];
+  onRecordDetail?: (record: HistoryRecord & { _clickTimestamp?: number }) => void;
+  onClearHistory?: () => void;
+  className?: string;
+}
+
+// 历史记录模态框Props
+export interface HistoryModalProps {
+  isOpen: boolean;
+  record: HistoryRecord | null;
+  onClose: () => void;
+  className?: string;
+}

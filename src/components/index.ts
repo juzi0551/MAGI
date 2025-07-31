@@ -8,6 +8,8 @@ export { default as MagiSystem } from './layout/MagiSystem';
 
 // 通用组件
 export { default as InputContainer } from './common/InputContainer';
+export { default as HistoryPanel } from './common/HistoryPanel';
+export { default as HistoryModal } from './common/HistoryModal';
 
 // MAGI系统组件
 export { default as MagiContainer } from './magi/MagiContainer';

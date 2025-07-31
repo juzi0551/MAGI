@@ -1,33 +1,35 @@
-/* 历史记录面板样式 */
-
+/* 历史记录面板样式 - 参考原MAGI项目 */
 .history-panel {
-  background: var(--gradient-panel);
-  border: var(--border-width) solid var(--color-border);
-  padding: var(--spacing-md);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 2px solid #ff8d00;
+  padding: 10px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(255, 141, 0, 0.2);
+  /* 固定定位，底边与input-container顶边重合 */
   position: absolute;
-  bottom: 67px;
+  bottom: 62px; /* input-container高度 + 边框 + padding = ~78px */
   left: 0;
-  right: var(--spacing-sm);
-  z-index: var(--z-index-dropdown);
-  transition: var(--transition-normal);
+  right: 5px;
+  z-index: 10;
+  /* 平滑过渡 */
+  transition: all 0.3s ease-in-out;
+  /* 变换原点设置在底部，确保从底部展开 */
   transform-origin: bottom;
 }
 
 /* 非折叠状态下，顶部距离MAGI 10px */
 .history-panel:not(.collapsed) {
-  top: calc(50vw * 0.59 + var(--spacing-md));
+  top: calc(50vw * 0.59 + 10px); /* MAGI高度(宽度的30%) + 10px间距 */
   height: auto;
-  bottom: 67px;
+  bottom: 62px;
 }
 
 /* 折叠状态样式 */
 .history-panel.collapsed {
-  max-height: 34px;
-  height: 34px !important;
+  max-height: 50px; /* 增加高度以完全显示标题栏 */
+  height: 50px !important; /* 使用!important确保覆盖内联样式 */
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   overflow: hidden;
@@ -44,9 +46,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #ff8d00;
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -62,15 +64,15 @@
 /* 折叠/展开按钮样式 */
 .toggle-history-btn {
   background: rgba(255, 141, 0, 0.2);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
+  border: 1px solid #ff8d00;
+  color: #ff8d00;
   width: 28px;
   height: 28px;
-  border-radius: var(--border-radius);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  border-radius: 4px;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   cursor: pointer;
-  transition: var(--transition-normal);
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,23 +85,23 @@
 }
 
 .history-title {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-md);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 14px;
   font-weight: bold;
 }
 
 /* 清空按钮样式 */
 .clear-history-btn {
   background: rgba(255, 141, 0, 0.2);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  padding: 4px var(--spacing-md);
-  border-radius: var(--border-radius);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  border: 1px solid #ff8d00;
+  color: #ff8d00;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   cursor: pointer;
-  transition: var(--transition-normal);
+  transition: all 0.3s ease;
 }
 
 .clear-history-btn:hover {
@@ -112,40 +114,33 @@
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  height: calc(100% - 40px);
-  transition: var(--transition-normal);
+  height: calc(100% - 50px); /* 减去标题栏高度，调整为新的标题栏高度 */
+  transition: all 0.3s ease;
   opacity: 1;
 }
 
 /* 无历史记录提示 */
 .no-history {
-  color: var(--color-text-muted);
+  color: #666;
   text-align: center;
-  padding: var(--spacing-xl);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  padding: 20px;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
 }
 
 /* 历史记录项样式 */
 .history-item {
   background: rgba(255, 141, 0, 0.1);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
+  border: 1px solid #ff8d00;
+  border-radius: 4px;
   margin: 8px 0;
-  padding: var(--spacing-md);
-  transition: var(--transition-normal);
+  padding: 12px;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .history-item:hover {
   background: rgba(255, 141, 0, 0.2);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-.history-item.selected {
-  background: rgba(255, 141, 0, 0.3);
-  border-color: var(--color-primary-light);
 }
 
 .history-item-header {
@@ -156,83 +151,79 @@
 }
 
 .history-time {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 11px;
 }
 
 .history-question {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   line-height: 1.4;
   word-break: break-word;
-  margin-top: var(--spacing-sm);
 }
 
-.history-status {
-  padding: var(--spacing-xs) 6px;
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-family-primary);
+/* 状态标签样式 */
+.status-tag {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: bold;
-  text-transform: uppercase;
+  font-family: 'MAGI-Matisse', monospace;
 }
 
-.history-status.status-yes {
-  background: var(--color-yes);
-  color: var(--color-background);
+.status-yes {
+  background: #52e691;
+  color: #000;
 }
 
-.history-status.status-no {
-  background: var(--color-no);
-  color: white;
+.status-no {
+  background: #a41413;
+  color: #fff;
 }
 
-.history-status.status-conditional {
-  background: var(--color-conditional);
-  color: var(--color-background);
+.status-conditional {
+  background: #ff8d00;
+  color: #000;
 }
 
-.history-status.status-info {
-  background: var(--color-info);
-  color: var(--color-background);
+.status-info {
+  background: #3caee0;
+  color: #000;
 }
 
-.history-status.status-error {
-  background: var(--color-error);
-  color: white;
+.status-error {
+  background: #000;
+  color: #fff;
 }
 
-/* 历史记录详情模态框样式 */
-.history-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: var(--z-index-modal-backdrop);
+.status-standby {
+  background: #3caee0;
+  color: #000;
 }
 
-.history-modal-content {
+.status-progress {
+  background: #ff8d00;
+  color: #000;
+}
+
+/* 历史记录详情modal样式 */
+.modal-content.history-modal-content {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--gradient-panel);
-  border: var(--border-width) solid var(--color-border);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 2px solid #ff8d00;
   border-radius: 8px;
   max-width: 80vw;
   max-height: 85vh;
   min-width: 600px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-md);
-  z-index: var(--z-index-modal);
+  box-shadow: 0 4px 20px rgba(255, 141, 0, 0.3);
+  z-index: 1000;
   backdrop-filter: blur(2px);
 }
 
@@ -247,27 +238,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-bottom: 1px solid var(--color-border);
+  padding: 15px 20px;
+  border-bottom: 1px solid #ff8d00;
   background: rgba(255, 141, 0, 0.1);
   flex-shrink: 0;
 }
 
 .modal-title {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-lg);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 16px;
   font-weight: bold;
 }
 
 .close {
-  color: var(--color-text);
-  font-size: var(--font-size-2xl);
+  color: #ff8d00;
+  font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius);
-  transition: var(--transition-normal);
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 .close:hover {
@@ -278,54 +269,63 @@
 .history-modal-body {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
-  padding: var(--spacing-xl);
+  gap: 20px;
+  padding: 20px;
   max-height: 70vh;
   overflow-y: auto;
 }
 
 .history-section {
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
+  border: 1px solid #ff8d00;
+  border-radius: 4px;
+  padding: 15px;
   background: rgba(255, 141, 0, 0.05);
 }
 
 .section-title {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-md);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 14px;
   font-weight: bold;
-  margin-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--spacing-sm);
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ff8d00;
+  padding-bottom: 5px;
 }
 
 .section-content {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 13px;
   line-height: 1.4;
   word-break: break-word;
 }
 
 .question-time {
   color: #ccc;
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-sm);
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 11px;
   margin-top: 8px;
+}
+
+.decision-status {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: 'MAGI-Matisse', monospace;
+  text-align: center;
 }
 
 .answers-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 15px;
 }
 
 .wise-answer-item {
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md);
+  border: 1px solid #ff8d00;
+  border-radius: 4px;
+  padding: 12px;
   background: rgba(255, 141, 0, 0.03);
 }
 
@@ -337,32 +337,91 @@
 }
 
 .wise-name {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   font-weight: bold;
 }
 
+.wise-status {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'MAGI-Matisse', monospace;
+}
+
 .wise-response {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   line-height: 1.5;
   word-break: break-word;
   white-space: pre-wrap;
 }
 
 .wise-conditions {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--border-radius);
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px dashed #ff8d00;
+  border-radius: 4px;
   background: rgba(255, 141, 0, 0.08);
 }
 
+.conditions-title {
+  color: #ff8d00;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.conditions-list {
+  margin: 0;
+  padding-left: 16px;
+  color: #ffb84d;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 11px;
+}
+
+.condition-item {
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.expand-btn {
+  background: rgba(255, 141, 0, 0.2);
+  border: 1px solid #ff8d00;
+  color: #ff8d00;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  display: block;
+  width: fit-content;
+}
+
+.expand-btn:hover {
+  background: rgba(255, 141, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.no-answers {
+  text-align: center;
+  color: #666;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
 .modal-footer {
-  padding: var(--spacing-lg) var(--spacing-xl);
-  border-top: 1px solid var(--color-border);
+  padding: 15px 20px;
+  border-top: 1px solid #ff8d00;
   display: flex;
   justify-content: center;
   background: rgba(255, 141, 0, 0.05);
@@ -371,15 +430,15 @@
 
 .modal-close-btn {
   background: rgba(255, 141, 0, 0.2);
-  border: var(--border-width) solid var(--color-border);
-  color: var(--color-text);
-  padding: 8px var(--spacing-2xl);
-  border-radius: var(--border-radius);
-  font-family: var(--font-family-primary);
-  font-size: var(--font-size-base);
+  border: 2px solid #ff8d00;
+  color: #ff8d00;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-family: 'MAGI-Matisse', monospace;
+  font-size: 12px;
   font-weight: bold;
   cursor: pointer;
-  transition: var(--transition-normal);
+  transition: all 0.3s ease;
 }
 
 .modal-close-btn:hover {

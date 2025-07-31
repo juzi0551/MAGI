@@ -26,20 +26,20 @@ const Response = ({
 function getDefaultStatusText(status: string): string {
   switch (status) {
     case 'yes':
-      return '承認';
+      return '可 決';
     case 'no':
-      return '拒否';
+      return '否 決';
     case 'conditional':
-      return '条件付';
+      return '條 件';
     case 'info':
-      return '情報';
+      return '情 報';
     case 'error':
       return 'エラー';
     case 'processing':
-      return '処理中';
+      return '審議中';
     case 'standby':
     default:
-      return '待機';
+      return '待 機';
   }
 }
 

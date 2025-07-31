@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { MagiSystemProps, SystemStatus } from '../../types';
+import { HistoryRecord } from '../../types/history';
 import InputContainer from '../common/InputContainer';
 import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
+import HistoryPanel from '../common/HistoryPanel';
+import HistoryModal from '../common/HistoryModal';
 
 /**
  * MAGI系统根组件
@@ -11,6 +14,11 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   const [question, setQuestion] = useState('');
   const [systemStatus, setSystemStatus] = useState<SystemStatus>('standby');
   const [processingStage, setProcessingStage] = useState(0);
+
+  // 历史记录相关状态
+  const [historyRecords, setHistoryRecords] = useState<HistoryRecord[]>([]);
+  const [selectedRecord, setSelectedRecord] = useState<HistoryRecord | null>(null);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
   const handleQuestionChange = (value: string) => {
     setQuestion(value);
@@ -37,6 +45,43 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     // 完成处理
     setTimeout(() => {
       setSystemStatus('completed');
+      
+      // 创建历史记录
+      const newRecord: HistoryRecord = {
+        id: `record-${Date.now()}`,
+        timestamp: Date.now(),
+        question: question,
+        questionType: 'general', // 简化处理
+        finalStatus: 'conditional', // 模拟决策结果
+        answers: [
+          {
+            name: 'melchior',
+            status: 'yes',
+            response: '从逻辑角度分析，该方案具有可行性。数据支持这一决策，风险可控。',
+            timestamp: Date.now(),
+            processingTime: 3000
+          },
+          {
+            name: 'balthasar',
+            status: 'conditional',
+            response: '在道德层面需要谨慎考虑。建议在确保人员安全的前提下执行。',
+            timestamp: Date.now(),
+            processingTime: 3200,
+            conditions: ['确保人员安全', '制定应急预案', '获得上级批准']
+          },
+          {
+            name: 'casper',
+            status: 'no',
+            response: '直觉告诉我这个方案存在隐患。建议重新评估或寻找替代方案。',
+            timestamp: Date.now(),
+            processingTime: 2800
+          }
+        ],
+        duration: 4000
+      };
+      
+      // 添加到历史记录
+      setHistoryRecords(prev => [...prev, newRecord]);
       setQuestion('');
       
       // 5秒后重置为待机状态
@@ -88,11 +133,35 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     return { status: 'standby', response: '待機中...' };
   };
 
+  // 历史记录事件处理
+  const handleRecordDetail = (record: HistoryRecord & { _clickTimestamp?: number }) => {
+    setSelectedRecord(record);
+    setIsHistoryModalOpen(true);
+  };
+
+  const handleClearHistory = () => {
+    setHistoryRecords([]);
+  };
+
+  const handleHistoryModalClose = () => {
+    setIsHistoryModalOpen(false);
+    setSelectedRecord(null);
+  };
+
   return (
     <div className={`system ${className}`}>
       <div className="left-panel">
-        {/* 左侧面板内容 */}
-        {children}
+        {/* 左侧面板内容 - 传递状态给子组件 */}
+        <div data-system-status={systemStatus}>
+          {children}
+        </div>
+        
+        {/* 历史记录面板 */}
+        <HistoryPanel
+          records={historyRecords}
+          onRecordDetail={handleRecordDetail}
+          onClearHistory={handleClearHistory}
+        />
         
         {/* 输入容器 */}
         <InputContainer
@@ -100,7 +169,6 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
           onChange={handleQuestionChange}
           onSubmit={handleQuestionSubmit}
           disabled={systemStatus === 'processing'}
-          placeholder="请输入您的问题..."
         />
       </div>
       
@@ -131,6 +199,13 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
           ⚙️
         </div>
       </div>
+
+      {/* 历史记录详情模态框 */}
+      <HistoryModal
+        isOpen={isHistoryModalOpen}
+        record={selectedRecord}
+        onClose={handleHistoryModalClose}
+      />
     </div>
   );
 };

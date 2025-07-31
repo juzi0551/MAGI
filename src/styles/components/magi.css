@@ -40,7 +40,7 @@
   grid-template-columns:
     [left-header-start] 20px [casper-start status] 2fr [left-header-end balthasar-start casper-balthasar-connection] 0.5fr [casper-end title casper-melchior-connection] 1fr [balthasar-melchior-connection melchior-start] 0.5fr [right-header-start balthasar-end response] 2fr [melchior-end] 20px [right-header-end];
   grid-template-rows:
-    20px [header balthasar-start] 2fr [status response] 2fr [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1fr [balthasar-end title casper-melchior-connection] 3fr [casper-end melchior-end] 20px;
+    20px [header balthasar-start] 1.8fr [status response] 1.8fr [casper-start melchior-start casper-balthasar-connection balthasar-melchior-connection] 1fr [balthasar-end title casper-melchior-connection] 3.4fr [casper-end melchior-end] 20px;
   aspect-ratio: 2 / 1;
   container-type: size;
   border: var(--border-width) solid var(--color-border);
@@ -184,6 +184,7 @@
   cursor: pointer;
   transition: var(--transition-normal);
   position: relative;
+  z-index: 2;
 }
 
 /* 贤者网格定位和形状 */
@@ -202,7 +203,7 @@
 
 .magi>.wise-man.balthasar,
 .magi>.wise-man.balthasar>.inner {
-  clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 75% 100%, 25% 100%, 0 84.5%);
 }
 
 .magi>.wise-man.casper {
@@ -272,7 +273,8 @@
 }
 
 .magi>.wise-man.status-yes>.inner {
-  background: var(--color-yes);
+  background: #52e691;
+  color: #000;
 }
 
 .magi>.wise-man.status-no {
@@ -280,7 +282,8 @@
 }
 
 .magi>.wise-man.status-no>.inner {
-  background: var(--color-no);
+  background: #a41413;
+  color: #fff;
 }
 
 .magi>.wise-man.status-conditional {
@@ -288,7 +291,8 @@
 }
 
 .magi>.wise-man.status-conditional>.inner {
-  background: var(--color-conditional);
+  background: repeating-linear-gradient(56deg, rgb(82, 230, 145) 0px, rgb(82, 230, 145) 30px, #82cd68 30px, #82cd68 60px);
+  color: #000;
 }
 
 .magi>.wise-man.status-info {
@@ -296,7 +300,8 @@
 }
 
 .magi>.wise-man.status-info>.inner {
-  background: var(--color-info);
+  background: #3caee0;
+  color: #000;
 }
 
 .magi>.wise-man.status-error {
@@ -304,7 +309,8 @@
 }
 
 .magi>.wise-man.status-error>.inner {
-  background: var(--color-error);
+  background: #000;
+  color: #fff;
 }
 
 .magi>.wise-man.status-standby {
@@ -312,7 +318,8 @@
 }
 
 .magi>.wise-man.status-standby>.inner {
-  background: #4a90e2;
+  background: #3caee0;
+  color: #000;
 }
 
 .magi>.wise-man.status-processing {
@@ -320,7 +327,8 @@
 }
 
 .magi>.wise-man.status-processing>.inner {
-  background: var(--color-processing);
+  background: #3caee0;
+  color: #000;
 }
 
 /* 处理中状态的连接线动画 */
@@ -337,6 +345,7 @@
   position: relative;
   overflow: hidden;
   transition: var(--transition-normal);
+  z-index: 1;
 }
 
 .connection::before {
@@ -398,37 +407,37 @@
 /* 响应状态颜色 */
 .response.status-yes,
 .response.status-yes>.inner {
-  color: var(--color-background);
-  background: var(--color-yes);
-  border-color: var(--color-yes);
+  color: #000;
+  background: #52e691;
+  border-color: #52e691;
 }
 
 .response.status-no,
 .response.status-no>.inner {
-  color: white;
-  background: var(--color-no);
-  border-color: var(--color-no);
+  color: #fff;
+  background: #a41413;
+  border-color: #a41413;
 }
 
 .response.status-conditional,
 .response.status-conditional>.inner {
-  color: var(--color-background);
-  background: var(--color-conditional);
-  border-color: var(--color-conditional);
+  color: #000;
+  background: #ff8d00;
+  border-color: #ff8d00;
 }
 
 .response.status-info,
 .response.status-info>.inner {
-  color: var(--color-background);
-  background: var(--color-info);
-  border-color: var(--color-info);
+  color: #000;
+  background: #3caee0;
+  border-color: #3caee0;
 }
 
 .response.status-error,
 .response.status-error>.inner {
-  color: white;
-  background: var(--color-error);
-  border-color: var(--color-error);
+  color: #fff;
+  background: #000;
+  border-color: #000;
 }
 
 .response.status-standby,

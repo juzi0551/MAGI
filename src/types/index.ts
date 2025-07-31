@@ -88,6 +88,8 @@ export type {
   ConfirmDialogProps,
   WiseAnswerDisplayProps,
   SystemStatusIndicatorProps,
+  HistoryPanelProps,
+  HistoryModalProps,
 } from './components';
 
 // Context相关类型
