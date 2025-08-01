@@ -1,8 +1,9 @@
 import { AIService } from './aiService';
 import { MagiQuestion, MagiDecision, WiseManAnswer } from '../../types/ai';
+import { UserConfig } from '../../types/config';
 import { 
   YES_NO_QUESTION_PROMPT, 
-  PERSONALITY_PROMPTS
+  generateFinalPrompt
 } from '../../config/prompts';
 
 /**
@@ -14,9 +15,10 @@ export class MagiQueryService {
   /**
    * 处理MAGI问题查询的完整流程
    * @param question 用户问题
+   * @param userConfig 用户配置（包含自定义设置）
    * @returns MAGI决策结果
    */
-  static async processQuestion(question: MagiQuestion): Promise<MagiDecision> {
+  static async processQuestion(question: MagiQuestion, userConfig?: UserConfig): Promise<MagiDecision> {
     try {
       console.log('🚀 开始MAGI决策流程');
       console.log('❓ 问题详情:', {
@@ -31,17 +33,24 @@ export class MagiQueryService {
       const isYesNo = await AIService.isYesNoQuestion(question, YES_NO_QUESTION_PROMPT);
       console.log(`✅ 问题类型判断完成: ${isYesNo ? '是非题' : '开放题'}`);
 
-      // 步骤2: 获取三贤者人格提示词
-      console.log('📋 步骤2: 准备三贤者人格');
-      const personalities = [
-        PERSONALITY_PROMPTS.melchior,
-        PERSONALITY_PROMPTS.balthasar,
-        PERSONALITY_PROMPTS.casper
-      ];
-      console.log('✅ 三贤者人格准备完成:', {
+      // 步骤2: 生成三贤者的完整提示词（考虑用户自定义设置）
+      console.log('📋 步骤2: 生成三贤者提示词');
+      const personalityNames = ['melchior', 'balthasar', 'casper'];
+      const personalities = personalityNames.map(name => {
+        const customPrompt = userConfig?.customPrompts?.[name as keyof typeof userConfig.customPrompts];
+        return generateFinalPrompt(
+          name,
+          userConfig?.customBackground,
+          customPrompt
+        );
+      });
+      
+      console.log('✅ 三贤者提示词生成完成:', {
         melchiorLength: personalities[0].length,
         balthasarLength: personalities[1].length,
-        casperLength: personalities[2].length
+        casperLength: personalities[2].length,
+        hasCustomBackground: !!userConfig?.customBackground,
+        customPromptsCount: Object.keys(userConfig?.customPrompts || {}).length
       });
 
       // 步骤3: 并行查询三贤者

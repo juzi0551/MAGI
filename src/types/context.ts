@@ -52,6 +52,14 @@ export interface ConfigContextType {
   // 音频设置状态
   audioSettings: AudioSettings;
   
+  // 自定义设置状态
+  customBackground?: string;
+  customPrompts?: {
+    melchior?: string;
+    balthasar?: string;
+    casper?: string;
+  };
+  
   // 配置状态
   isConfigValid: boolean;
   isLoading: boolean;

@@ -10,6 +10,12 @@ interface ConfigState {
   apiKey: string;
   apiBase?: string;
   audioSettings: AudioSettings;
+  customBackground?: string;
+  customPrompts?: {
+    melchior?: string;
+    balthasar?: string;
+    casper?: string;
+  };
   isConfigValid: boolean;
   isLoading: boolean;
   error: string | null;
@@ -31,6 +37,8 @@ const initialState: ConfigState = {
   apiKey: DEFAULT_CONFIG.userConfig.apiKey,
   apiBase: DEFAULT_CONFIG.userConfig.apiBase,
   audioSettings: DEFAULT_CONFIG.audioSettings,
+  customBackground: DEFAULT_CONFIG.userConfig.customBackground,
+  customPrompts: DEFAULT_CONFIG.userConfig.customPrompts,
   isConfigValid: false,
   isLoading: false,
   error: null,
@@ -51,6 +59,8 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         model: action.payload.model,
         apiKey: action.payload.apiKey,
         apiBase: action.payload.apiBase,
+        customBackground: action.payload.customBackground,
+        customPrompts: action.payload.customPrompts,
         isConfigValid: !!(action.payload.provider && action.payload.model && action.payload.apiKey?.trim()),
       };
     
@@ -66,6 +76,8 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         model: action.payload.model || state.model,
         apiKey: action.payload.apiKey !== undefined ? action.payload.apiKey : state.apiKey,
         apiBase: action.payload.apiBase !== undefined ? action.payload.apiBase : state.apiBase,
+        customBackground: action.payload.customBackground !== undefined ? action.payload.customBackground : state.customBackground,
+        customPrompts: action.payload.customPrompts !== undefined ? action.payload.customPrompts : state.customPrompts,
       };
       
       return {
@@ -91,6 +103,8 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         model: DEFAULT_CONFIG.userConfig.model,
         apiKey: DEFAULT_CONFIG.userConfig.apiKey,
         apiBase: DEFAULT_CONFIG.userConfig.apiBase,
+        customBackground: DEFAULT_CONFIG.userConfig.customBackground,
+        customPrompts: DEFAULT_CONFIG.userConfig.customPrompts,
         isConfigValid: false,
       };
     
@@ -233,6 +247,8 @@ export function ConfigProvider({ children }: ContextProviderProps) {
     apiKey: state.apiKey,
     apiBase: state.apiBase,
     audioSettings: state.audioSettings,
+    customBackground: state.customBackground,
+    customPrompts: state.customPrompts,
     isConfigValid: state.isConfigValid,
     isLoading: state.isLoading,
     error: state.error,

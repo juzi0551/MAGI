@@ -11,6 +11,7 @@ import {
   MagiDecision 
 } from '../types/ai';
 import MagiAIService from '../services/ai';
+import { useConfig } from './ConfigContext';
 
 interface MagiState {
   question: string;
@@ -158,6 +159,7 @@ const MagiContext = createContext<MagiContextType | undefined>(undefined);
 
 export function MagiProvider({ children }: ContextProviderProps) {
   const [state, dispatch] = useReducer(magiReducer, initialState);
+  const config = useConfig();
 
   // 设置问题
   const setQuestion = useCallback((question: string) => {
@@ -204,8 +206,17 @@ export function MagiProvider({ children }: ContextProviderProps) {
         timestamp: new Date()
       };
 
-      // 使用AI服务处理问题
-      const decision: MagiDecision = await MagiAIService.processQuestion(magiQuestion);
+      // 使用AI服务处理问题，传入用户配置
+      const userConfig = {
+        provider: config.provider,
+        model: config.model,
+        apiKey: config.apiKey,
+        apiBase: config.apiBase,
+        customBackground: config.customBackground,
+        customPrompts: config.customPrompts
+      };
+      
+      const decision: MagiDecision = await MagiAIService.processQuestion(magiQuestion, userConfig);
       
       // 更新问题类型
       dispatch({ 
@@ -255,7 +266,7 @@ export function MagiProvider({ children }: ContextProviderProps) {
       dispatch({ type: 'SET_SYSTEM_STATUS', payload: 'standby' });
       dispatch({ type: 'SET_PROCESSING', payload: false });
     }
-  }, [state.question]);
+  }, [state.question, config]);
 
   // 重置系统
   const resetSystem = useCallback(() => {

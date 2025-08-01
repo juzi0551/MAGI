@@ -1,6 +1,7 @@
 import { AIService } from './aiService';
 import { MagiQueryService } from './magiQueryService';
 import { MagiQuestion, MagiDecision } from '../../types/ai';
+import { UserConfig } from '../../types/config';
 
 /**
  * API调用错误类型
@@ -80,12 +81,14 @@ export class MagiAIService {
 
   /**
    * 处理MAGI问题（带重试机制）
+   * @param question 用户问题
+   * @param userConfig 用户配置（包含自定义设置）
    */
-  static async processQuestion(question: MagiQuestion): Promise<MagiDecision> {
+  static async processQuestion(question: MagiQuestion, userConfig?: UserConfig): Promise<MagiDecision> {
     return this.withRetry(
       async () => {
         try {
-          return await MagiQueryService.processQuestion(question);
+          return await MagiQueryService.processQuestion(question, userConfig);
         } catch (error) {
           throw this.categorizeError(error);
         }

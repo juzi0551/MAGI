@@ -158,3 +158,4 @@ pip-delete-this-directory.txt
 *.tar.gz
 *.rar
 *.7z
+docs/自定义设置与提示词系统优化方案.md

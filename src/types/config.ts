@@ -10,6 +10,12 @@ export interface UserConfig {
   model: string;
   apiKey: string;
   apiBase?: string;
+  customBackground?: string;
+  customPrompts?: {
+    melchior?: string;
+    balthasar?: string;
+    casper?: string;
+  };
 }
 
 // 音频设置接口
@@ -42,6 +48,12 @@ export interface ConfigContextType {
   apiKey: string;
   apiBase?: string;
   audioSettings: AudioSettings;
+  customBackground?: string;
+  customPrompts?: {
+    melchior?: string;
+    balthasar?: string;
+    casper?: string;
+  };
   
   // 操作方法
   updateConfig: (config: Partial<UserConfig>) => void;
