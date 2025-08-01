@@ -90,4 +90,72 @@ coverage/
 
 # Legacy project files
 /references
-/src_bak
+src_bak/
+
+# Kiro IDE files
+.kiro/
+
+# Claude AI files
+.claude/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Jest coverage
+coverage/
+*.lcov
+
+# Vite specific
+.vite/
+vite.config.ts.timestamp-*
+
+# Test files
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+.tmp/
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# Editor specific
+*.sublime-project
+*.sublime-workspace
+.history/
+
+# Python virtual environment (for src_bak)
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Additional OS files
+*.lnk
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Backup files
+*.bak
+*.backup
+*.old
+*~.nib
+*.orig
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+package-lock.json
