@@ -71,8 +71,8 @@ const HistoryUtils = {
     // 获取贤者名称
     getWiseManName: (name) => {
         const nameMap = {
-            'melchior': 'MELCHIOR-1 (科学家)',
-            'balthasar': 'BALTHASAR-2 (母亲)',
+            'melchior': 'MELCHIOR-1 (科學家)',
+            'balthasar': 'MELCHIOR-1 (母親)',
             'casper': 'CASPER-3 (女人)'
         };
         return nameMap[name] || name.toUpperCase();

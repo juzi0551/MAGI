@@ -426,50 +426,50 @@
 /* 响应状态颜色 */
 .response.status-yes,
 .response.status-yes>.inner {
-  color: #000;
-  background: #52e691;
+  color: #52e691;
+  background: transparent;
   border-color: #52e691;
 }
 
 .response.status-no,
 .response.status-no>.inner {
-  color: #fff;
-  background: #a41413;
+  color: #a41413;
+  background: transparent;
   border-color: #a41413;
 }
 
 .response.status-conditional,
 .response.status-conditional>.inner {
-  color: #000;
-  background: #ff8d00;
+  color: #ff8d00;
+  background: transparent;
   border-color: #ff8d00;
 }
 
 .response.status-info,
 .response.status-info>.inner {
-  color: #000;
-  background: #3caee0;
+  color: #3caee0;
+  background: transparent;
   border-color: #3caee0;
 }
 
 .response.status-error,
 .response.status-error>.inner {
   color: #fff;
-  background: #000;
-  border-color: #000;
+  background: transparent;
+  border-color: #fff;
 }
 
 .response.status-standby,
 .response.status-standby>.inner {
   color: var(--color-text);
-  background: var(--color-background);
+  background: transparent;
   border-color: var(--color-border);
 }
 
 .response.status-processing,
 .response.status-processing>.inner {
   color: var(--color-text);
-  background: var(--color-background);
+  background: transparent;
   border-color: var(--color-border);
 }
 

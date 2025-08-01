@@ -95,14 +95,14 @@ app.layout = Div(
             Div(className='wise-answers', children=[
                 Div(id='melchior-answer', className='wise-answer melchior', children=[
                     Div(className='wise-answer-title', children=[
-                        'MELCHIOR-1 (科学家)',
+                        'MELCHIOR-1 (科學家)',
                         Div(id='melchior-status', children=get_status_element('standby'))
                     ]),
                     Div(id='melchior-content', className='answer-content', children='待機中...')
                 ]),
                 Div(id='balthasar-answer', className='wise-answer balthasar', children=[
                     Div(className='wise-answer-title', children=[
-                        'BALTHASAR-2 (母亲)',
+                        'MELCHIOR-1 (母親)',
                         Div(id='balthasar-status', children=get_status_element('standby'))
                     ]),
                     Div(id='balthasar-content', className='answer-content', children='待機中...')

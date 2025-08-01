@@ -4,7 +4,8 @@
     "allow": [
       "Bash(npx tsc --noEmit)",
       "Bash(npm run build)",
-      "Bash(npm run)"
+      "Bash(npm run)",
+      "Bash(npm run dev)"
     ],
     "deny": []
   }

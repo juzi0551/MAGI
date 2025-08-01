@@ -18,29 +18,44 @@ export class MagiQueryService {
    */
   static async processQuestion(question: MagiQuestion): Promise<MagiDecision> {
     try {
-      console.log('开始处理MAGI问题:', question);
+      console.log('🚀 开始MAGI决策流程');
+      console.log('❓ 问题详情:', {
+        id: question.id,
+        query: question.query,
+        timestamp: question.timestamp.toISOString()
+      });
 
       // 步骤1: 判断问题类型（是非题 vs 开放题）
+      console.log('📋 步骤1: 判断问题类型');
+      const startTimeTotal = Date.now();
       const isYesNo = await AIService.isYesNoQuestion(question, YES_NO_QUESTION_PROMPT);
-      console.log('问题类型判断结果:', isYesNo ? '是非题' : '开放题');
+      console.log(`✅ 问题类型判断完成: ${isYesNo ? '是非题' : '开放题'}`);
 
       // 步骤2: 获取三贤者人格提示词
+      console.log('📋 步骤2: 准备三贤者人格');
       const personalities = [
         PERSONALITY_PROMPTS.melchior,
         PERSONALITY_PROMPTS.balthasar,
         PERSONALITY_PROMPTS.casper
       ];
+      console.log('✅ 三贤者人格准备完成:', {
+        melchiorLength: personalities[0].length,
+        balthasarLength: personalities[1].length,
+        casperLength: personalities[2].length
+      });
 
       // 步骤3: 并行查询三贤者
-      console.log('开始并行查询三贤者...');
+      console.log('📋 步骤3: 并行查询三贤者');
       const rawResponses = await AIService.fetchMagiAnswers(question, personalities, isYesNo);
+      console.log('✅ 三贤者查询完成，开始解析回答');
       
       // 步骤4: 解析贤者回答
+      console.log('📋 步骤4: 解析贤者回答');
       const wiseManAnswers: WiseManAnswer[] = rawResponses.map((response, index) => {
         const wiseManNames = ['Melchior-1', 'Balthasar-2', 'Casper-3'];
         const wiseManTypes = ['scientist', 'mother', 'woman'];
         
-        return {
+        const answer: WiseManAnswer = {
           id: `${question.id}-${wiseManNames[index].toLowerCase()}`,
           name: wiseManNames[index],
           type: wiseManTypes[index] as 'scientist' | 'mother' | 'woman',
@@ -50,11 +65,29 @@ export class MagiQueryService {
           error: response.error || null,
           timestamp: new Date()
         };
+
+        console.log(`🎯 ${wiseManNames[index]} 回答解析:`, {
+          status: answer.status,
+          responseLength: answer.response.length,
+          hasConditions: (answer.conditions || []).length > 0,
+          hasError: !!answer.error
+        });
+
+        return answer;
       });
 
       // 步骤5: 计算最终决策
+      console.log('📋 步骤5: 计算最终决策');
       const finalDecision = this.calculateFinalDecision(wiseManAnswers, isYesNo);
+      console.log('✅ 最终决策计算完成:', {
+        result: finalDecision.result,
+        confidence: finalDecision.confidence,
+        consensusLevel: finalDecision.consensusLevel
+      });
       
+      const endTimeTotal = Date.now();
+      const totalProcessingTime = endTimeTotal - startTimeTotal;
+
       const result: MagiDecision = {
         id: question.id,
         question: question.query,
@@ -62,14 +95,22 @@ export class MagiQueryService {
         wiseManAnswers,
         finalDecision,
         timestamp: new Date(),
-        processingTime: Date.now() - question.timestamp.getTime()
+        processingTime: totalProcessingTime
       };
 
-      console.log('MAGI决策完成:', result);
+      console.log('🎉 MAGI決策流程全部完成');
+      console.log('📊 処理統計:', {
+        总耗时: `${totalProcessingTime}ms`,
+        问题类型: result.questionType,
+        贤者回答数: result.wiseManAnswers.length,
+        最终决策: result.finalDecision.result,
+        置信度: `${Math.round(result.finalDecision.confidence * 100)}%`
+      });
+
       return result;
 
     } catch (error) {
-      console.error('MAGI问题处理失败:', error);
+      console.error('💥 MAGI决策流程失败:', error);
       
       // 返回错误状态的决策
       return {
@@ -100,8 +141,17 @@ export class MagiQueryService {
     isYesNo: boolean
   ): MagiDecision['finalDecision'] {
     
+    console.log('🔄 开始计算最终决策');
+    console.log('📊 贤者回答概览:', answers.map(a => ({
+      name: a.name,
+      status: a.status,
+      hasConditions: (a.conditions || []).length > 0,
+      hasError: !!a.error
+    })));
+
     if (!isYesNo) {
       // 开放题：综合所有信息，不做最终决策
+      console.log('ℹ️ 开放题处理: 不进行决策，提供综合信息');
       return {
         result: 'info',
         confidence: 1.0,
@@ -110,107 +160,106 @@ export class MagiQueryService {
       };
     }
 
-    // 是非题：进行决策计算
-    const validAnswers = answers.filter(answer => 
-      answer.status !== 'error' && answer.response
+    // 是非题：按照原项目的多数决逻辑
+    console.log('⚖️ 是非题处理: 使用原项目多数决逻辑');
+    
+    // 🚫 Casper的一票否决权：只对"no"状态生效
+    const casperAnswer = answers.find(a => 
+      a.name.toLowerCase().includes('casper') || a.type === 'woman'
     );
+    
+    if (casperAnswer && casperAnswer.status === 'no') {
+      console.log('🚫 Casper行使一票否决权');
+      return {
+        result: 'no',
+        confidence: 1.0,
+        reasoning: 'Casper行使一票否决权。',
+        consensusLevel: 'unanimous'
+      };
+    }
 
-    if (validAnswers.length === 0) {
+    // 错误优先处理
+    const hasError = answers.some(a => a.status === 'error');
+    if (hasError) {
+      console.log('❌ 检测到错误状态，优先处理');
       return {
         result: 'error',
         confidence: 0,
-        reasoning: '所有贤者都无法提供有效回答。',
+        reasoning: '有贤者处理出现错误。',
         consensusLevel: 'none'
       };
     }
 
-    // 统计各状态的投票
+    // 统计各状态票数
     const statusCount = {
       yes: 0,
       no: 0,
       conditional: 0,
-      error: 0
+      info: 0
     };
 
-    validAnswers.forEach(answer => {
+    answers.forEach(answer => {
       if (answer.status === 'yes') statusCount.yes++;
       else if (answer.status === 'no') statusCount.no++;
       else if (answer.status === 'conditional') statusCount.conditional++;
-      else statusCount.error++;
+      else if (answer.status === 'info') statusCount.info++;
     });
 
-    console.log('贤者投票统计:', statusCount);
+    console.log('🗳️ 贤者投票统计:', statusCount);
 
-    // 决策逻辑
-    const totalValid = statusCount.yes + statusCount.no + statusCount.conditional;
+    // 找到得票最多的状态
+    const maxCount = Math.max(...Object.values(statusCount));
     
-    if (totalValid === 0) {
+    // 如果有状态获得2票或以上，采用该状态
+    if (maxCount >= 2) {
+      for (const [status, count] of Object.entries(statusCount)) {
+        if (count === maxCount) {
+          console.log(`✅ 多数决通过: ${status} (${count}票)`);
+          
+          let confidence = count / answers.length;
+          let consensusLevel: 'unanimous' | 'majority' = count === answers.length ? 'unanimous' : 'majority';
+          let reasoning = count === answers.length 
+            ? `三贤者一致${status === 'yes' ? '同意' : status === 'no' ? '拒绝' : '认为需要条件'}。`
+            : `${count}/${answers.length} 贤者${status === 'yes' ? '同意' : status === 'no' ? '拒绝' : '认为需要条件'}。`;
+
+          return {
+            result: status as 'yes' | 'no' | 'conditional' | 'info',
+            confidence,
+            reasoning,
+            consensusLevel
+          };
+        }
+      }
+    }
+
+    // 1:1:1的情况，按优先级处理
+    console.log('⚖️ 三方各异，按优先级处理');
+    
+    if (statusCount.conditional > 0) {
+      console.log('⚠️ 优先选择条件决策');
       return {
-        result: 'error',
-        confidence: 0,
-        reasoning: '没有贤者提供有效的决策状态。',
-        consensusLevel: 'none'
+        result: 'conditional',
+        confidence: 0.5,
+        reasoning: '贤者意见分歧，按优先级选择条件决策。',
+        consensusLevel: 'split'
+      };
+    } else if (statusCount.yes > 0) {
+      console.log('✅ 优先选择同意');
+      return {
+        result: 'yes',
+        confidence: 0.5,
+        reasoning: '贤者意见分歧，按优先级选择同意。',
+        consensusLevel: 'split'
+      };
+    } else {
+      console.log('ℹ️ 默认选择信息状态');
+      return {
+        result: 'info',
+        confidence: 0.3,
+        reasoning: '贤者意见分歧，提供信息参考。',
+        consensusLevel: 'split'
       };
     }
-
-    // 计算最终结果和共识级别
-    let result: 'yes' | 'no' | 'conditional' | 'error';
-    let consensusLevel: 'unanimous' | 'majority' | 'split' | 'none';
-    let confidence: number;
-    let reasoning: string;
-
-    if (statusCount.yes > statusCount.no && statusCount.yes > statusCount.conditional) {
-      // YES占多数
-      result = 'yes';
-      if (statusCount.yes === totalValid) {
-        consensusLevel = 'unanimous';
-        confidence = 1.0;
-        reasoning = '三贤者一致同意。';
-      } else if (statusCount.yes >= Math.ceil(totalValid / 2)) {
-        consensusLevel = 'majority';
-        confidence = statusCount.yes / totalValid;
-        reasoning = `${statusCount.yes}/${totalValid} 贤者同意。`;
-      } else {
-        consensusLevel = 'split';
-        confidence = 0.5;
-        reasoning = '贤者意见分歧，倾向同意。';
-      }
-    } else if (statusCount.no > statusCount.yes && statusCount.no > statusCount.conditional) {
-      // NO占多数
-      result = 'no';
-      if (statusCount.no === totalValid) {
-        consensusLevel = 'unanimous';
-        confidence = 1.0;
-        reasoning = '三贤者一致拒绝。';
-      } else if (statusCount.no >= Math.ceil(totalValid / 2)) {
-        consensusLevel = 'majority';
-        confidence = statusCount.no / totalValid;
-        reasoning = `${statusCount.no}/${totalValid} 贤者拒绝。`;
-      } else {
-        consensusLevel = 'split';
-        confidence = 0.5;
-        reasoning = '贤者意见分歧，倾向拒绝。';
-      }
-    } else if (statusCount.conditional > statusCount.yes && statusCount.conditional > statusCount.no) {
-      // CONDITIONAL占多数
-      result = 'conditional';
-      consensusLevel = statusCount.conditional === totalValid ? 'unanimous' : 'majority';
-      confidence = statusCount.conditional / totalValid;
-      reasoning = `${statusCount.conditional}/${totalValid} 贤者认为需要满足条件。`;
-    } else {
-      // 平局或复杂情况
-      result = 'conditional';
-      consensusLevel = 'split';
-      confidence = 0.3;
-      reasoning = '贤者意见高度分歧，建议谨慎考虑。';
-    }
-
-    return {
-      result,
-      confidence,
-      reasoning,
-      consensusLevel
-    };
   }
 
   /**

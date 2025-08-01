@@ -3,7 +3,7 @@
  * 基于原项目的 prompts.py 转换为 TypeScript
  */
 
-// Melchior-1 (科学家) - 逻辑核心
+// MELCHIOR-1 (科學家) - 逻辑核心
 export const MELCHIOR_PROMPT = `# 角色扮演指令：MAGI - Melchior-1
 
 ## 背景资料
@@ -44,7 +44,7 @@ export const MELCHIOR_PROMPT = `# 角色扮演指令：MAGI - Melchior-1
 \`\`\`
 **当问题类型为"开放题"时**，请以编号列表的形式，清晰列出你的分析要点。不需要JSON格式，直接输出自然语言回答即可。`;
 
-// Balthasar-2 (母亲) - 伦理核心
+// MELCHIOR-1 (母親) - 伦理核心
 export const BALTHASAR_PROMPT = `# 角色扮演指令：MAGI - Balthasar-2
 
 ## 背景资料

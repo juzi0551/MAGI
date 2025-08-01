@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WiseAnswerDisplayProps } from '../../types';
+import { useMagi } from '../../context';
 
 /**
- * 贤者回答显示组件
- * 显示单个贤者的回答内容
+ * 贤者回答显示组件 - 与MAGI Context完全集成
+ * 显示单个贤者的回答内容，包含动态更新和详细信息
  */
 const WiseAnswerDisplay = ({
   name,
@@ -14,7 +15,26 @@ const WiseAnswerDisplay = ({
   onToggleExpand,
   className = ''
 }: WiseAnswerDisplayProps) => {
+  const magi = useMagi();
   const [expanded, setExpanded] = useState(isExpanded);
+  const [currentAnswer, setCurrentAnswer] = useState<any>(null);
+
+  // 从MAGI Context获取对应的贤者回答
+  useEffect(() => {
+    const answer = magi.wiseManAnswers.find(a => 
+      a.name.toLowerCase().includes(name) || 
+      (name === 'melchior' && a.type === 'scientist') ||
+      (name === 'balthasar' && a.type === 'mother') ||
+      (name === 'casper' && a.type === 'woman')
+    );
+    
+    if (answer) {
+      console.log(`🎯 更新${name}贤者回答:`, answer);
+      setCurrentAnswer(answer);
+    } else if (magi.systemStatus === 'standby') {
+      setCurrentAnswer(null);
+    }
+  }, [magi.wiseManAnswers, magi.systemStatus, name]);
 
   const handleToggleExpand = () => {
     const newExpanded = !expanded;
@@ -25,9 +45,9 @@ const WiseAnswerDisplay = ({
   const getWiseManTitle = (name: string): string => {
     switch (name) {
       case 'melchior':
-        return 'MELCHIOR-1 (科学家)';
+        return 'MELCHIOR-1 (科學家)';
       case 'balthasar':
-        return 'BALTHASAR-2 (母亲)';
+        return 'MELCHIOR-1 (母親)';
       case 'casper':
         return 'CASPER-3 (女人)';
       default:
@@ -44,7 +64,7 @@ const WiseAnswerDisplay = ({
       case 'conditional':
         return '條 件';
       case 'info':
-        return '';
+        return '情 報';
       case 'error':
         return '錯 誤';
       case 'processing':
@@ -55,47 +75,99 @@ const WiseAnswerDisplay = ({
     }
   };
 
-  const displayResponse = expanded || response.length <= 200 
-    ? response 
-    : response.substring(0, 200) + '...';
+  // 获取当前状态和内容
+  const getCurrentStatus = () => {
+    if (magi.systemStatus === 'processing') {
+      return 'processing';
+    } else if (currentAnswer) {
+      return currentAnswer.status;
+    } else {
+      return status || 'standby';
+    }
+  };
+
+  const getCurrentResponse = () => {
+    if (currentAnswer) {
+      return currentAnswer.response;
+    }
+    return response || '';
+  };
+
+  const getCurrentConditions = () => {
+    if (currentAnswer) {
+      return currentAnswer.conditions || [];
+    }
+    return conditions;
+  };
+
+  const currentStatus = getCurrentStatus();
+  const currentResponseText = getCurrentResponse();
+  const currentConditions = getCurrentConditions();
+  
+  const displayResponse = expanded || currentResponseText.length <= 200 
+    ? currentResponseText 
+    : currentResponseText.substring(0, 200) + '...';
+
+  // 生成CSS类名
+  const containerClassName = [
+    'wise-answer',
+    name,
+    currentStatus === 'processing' ? 'processing' : '',
+    currentAnswer ? 'has-answer' : '',
+    className
+  ].filter(Boolean).join(' ');
 
   return (
-    <div className={`wise-answer ${name} ${className}`}>
+    <div className={containerClassName}>
       <div className="wise-answer-title">
         {getWiseManTitle(name)}
-        <div className={`answer-status status-${status}`}>
-          {getStatusText(status)}
+        <div className={`answer-status status-${currentStatus}`}>
+          {getStatusText(currentStatus)}
         </div>
       </div>
       
       <div className="answer-content">
-        {status === 'processing' ? (
-          <div className="answer-loading">思考中</div>
-        ) : status === 'standby' ? (
-          '待機中...'
+        {currentStatus === 'processing' ? (
+          <div className="answer-loading">
+            <span className="loading-dots">●●●</span>
+            <span className="loading-text">思考中...</span>
+          </div>
+        ) : currentStatus === 'standby' || !currentResponseText ? (
+          <div className="answer-standby">待機中...</div>
         ) : (
           <>
-            {displayResponse}
+            <div className="answer-text">
+              {displayResponse}
+            </div>
             
-            {response.length > 200 && (
+            {currentResponseText.length > 200 && (
               <button 
                 className="expand-btn"
                 onClick={handleToggleExpand}
               >
-                {expanded ? '收起' : '展开'}
+                {expanded ? '▲ 收起' : '▼ 展开'}
               </button>
             )}
             
-            {conditions.length > 0 && (
+            {currentConditions.length > 0 && (
               <div className="answer-conditions">
-                <div className="conditions-title">条件:</div>
+                <div className="conditions-title">⚠️ 附加条件:</div>
                 <ul className="conditions-list">
-                  {conditions.map((condition, index) => (
+                  {currentConditions.map((condition: string, index: number) => (
                     <li key={index} className="condition-item">
-                      {condition}
+                      • {condition}
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* 显示处理时间和时间戳 */}
+            {currentAnswer && (
+              <div className="answer-meta">
+                <div className="answer-timestamp">
+                  {new Date(currentAnswer.timestamp).toLocaleTimeString()}
+                </div>
               </div>
             )}
           </>

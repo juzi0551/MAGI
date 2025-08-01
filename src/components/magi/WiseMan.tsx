@@ -37,9 +37,9 @@ const WiseMan = ({
 function getWiseManTitle(name: string): string {
   switch (name) {
     case 'melchior':
-      return 'MELCHIOR-1 (科学家)';
+      return 'MELCHIOR-1 (科學家)';
     case 'balthasar':
-      return 'BALTHASAR-2 (母亲)';
+      return 'MELCHIOR-1 (母親)';
     case 'casper':
       return 'CASPER-3 (女人)';
     default:

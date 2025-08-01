@@ -19,7 +19,15 @@ export class AIService {
     const { provider, model, apiKey, apiBase } = config;
     const apiUrl = this.getApiUrl(provider, apiBase);
     
-    console.log(`使用API端点: ${apiUrl} (提供商: ${provider})`);
+    console.log('🤖 开始问题类型判断');
+    console.log('📋 请求配置:', {
+      provider,
+      model,
+      apiUrl,
+      apiKey: apiKey ? `${apiKey.substring(0, 8)}...` : 'undefined',
+      apiBase: apiBase || '默认'
+    });
+    console.log('❓ 判断问题:', question.query);
 
     const messages = [
       { role: 'system', content: yesNoPrompt },
@@ -32,9 +40,10 @@ export class AIService {
       max_tokens: 1
     };
     
-    console.log('Request (isYesNoQuestion):', requestBody);
+    console.log('📤 发送请求 (isYesNoQuestion):', JSON.stringify(requestBody, null, 2));
 
     try {
+      const startTime = Date.now();
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -44,19 +53,30 @@ export class AIService {
         body: JSON.stringify(requestBody)
       });
 
+      const endTime = Date.now();
+      console.log(`⏱️ 请求耗时: ${endTime - startTime}ms`);
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('API Error (isYesNoQuestion):', errorData);
+        console.error('❌ API错误 (isYesNoQuestion):', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
         return false; // Default to not a yes/no question on error
       }
 
       const data = await response.json();
-      console.log('Original response (isYesNoQuestion):', data);
+      console.log('📥 原始响应 (isYesNoQuestion):', JSON.stringify(data, null, 2));
+      
       const result = data.choices[0].message.content.trim().toLowerCase();
-      return result === 'yes';
+      const isYesNo = result === 'yes';
+      
+      console.log(`✅ 问题类型判断结果: ${isYesNo ? '是非题' : '开放题'} (原始回答: "${result}")`);
+      return isYesNo;
 
     } catch (error) {
-      console.error('Fetch Error (isYesNoQuestion):', error);
+      console.error('💥 请求失败 (isYesNoQuestion):', error);
       return false;
     }
   }
@@ -78,12 +98,25 @@ export class AIService {
     const { provider, model, apiKey, apiBase } = config;
     const apiUrl = this.getApiUrl(provider, apiBase);
     
-    console.log(`使用API端点: ${apiUrl} (提供商: ${provider})`);
+    console.log('🧠 开始MAGI三贤者并行查询');
+    console.log('📋 查询配置:', {
+      provider,
+      model,
+      apiUrl,
+      apiKey: apiKey ? `${apiKey.substring(0, 8)}...` : 'undefined',
+      questionType: isYesNo ? '是非题' : '开放题',
+      personalitiesCount: personalities.length
+    });
 
     /**
      * 获取单个贤者的回答
      */
-    const fetchAnswer = async (personality: string): Promise<AIResponse> => {
+    const fetchAnswer = async (personality: string, index: number): Promise<AIResponse> => {
+      const personalityNames = ['MELCHIOR-1 (科學家)', 'MELCHIOR-1 (母親)', 'Casper-3 (女人)'];
+      const personalityName = personalityNames[index] || `贤者-${index + 1}`;
+      
+      console.log(`🎯 开始查询 ${personalityName}`);
+      
       const userContent = isYesNo
         ? `问题类型：是非题。\n\n${question.query}`
         : `问题类型：开放题。\n\n${question.query}`;
@@ -98,9 +131,15 @@ export class AIService {
         messages: messages
       };
       
-      console.log('Request (fetchMagiAnswers):', requestBody);
+      console.log(`📤 发送请求给 ${personalityName}:`, {
+        model: requestBody.model,
+        messagesCount: requestBody.messages.length,
+        systemPromptLength: personality.length,
+        userContent: userContent.substring(0, 100) + (userContent.length > 100 ? '...' : '')
+      });
 
       try {
+        const startTime = Date.now();
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -110,9 +149,16 @@ export class AIService {
           body: JSON.stringify(requestBody)
         });
 
+        const endTime = Date.now();
+        console.log(`⏱️ ${personalityName} 请求耗时: ${endTime - startTime}ms`);
+
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('API Error:', errorData);
+          console.error(`❌ ${personalityName} API错误:`, {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorData
+          });
           return { 
             id: question.id, 
             response: `API Error: ${errorData.error?.message || 'Unknown error'}`, 
@@ -121,8 +167,10 @@ export class AIService {
         }
 
         const data = await response.json();
-        console.log('Original response (fetchMagiAnswers):', data);
+        console.log(`📥 ${personalityName} 原始响应:`, JSON.stringify(data, null, 2));
+        
         const wiseManResponse = data.choices[0].message.content;
+        console.log(`💭 ${personalityName} 回答内容:`, wiseManResponse.substring(0, 200) + (wiseManResponse.length > 200 ? '...' : ''));
 
         if (isYesNo) {
           // 处理是非题的JSON响应
@@ -133,16 +181,19 @@ export class AIService {
             jsonString = jsonString.substring(3, jsonString.length - 3).trim();
           }
 
+          console.log(`🔍 ${personalityName} 提取的JSON字符串:`, jsonString);
+
           let parsedResponse;
           try {
             // 预处理并尝试解析JSON
             const processedJsonString = this.preprocessJsonString(jsonString);
-            console.log('处理后的JSON字符串:', processedJsonString);
+            console.log(`🔧 ${personalityName} 处理后的JSON:`, processedJsonString);
             parsedResponse = JSON.parse(processedJsonString);
+            console.log(`✅ ${personalityName} JSON解析成功:`, parsedResponse);
           } catch (e) {
             // 如果仍然失败，尝试更激进的修复
             try {
-              console.warn('标准JSON解析失败，尝试提取关键信息:', e);
+              console.warn(`⚠️ ${personalityName} 标准JSON解析失败，尝试提取关键信息:`, e);
               
               // 使用正则表达式提取关键信息
               const answerMatch = jsonString.match(/"answer"\s*:\s*"([^"]+)"/);
@@ -155,12 +206,12 @@ export class AIService {
                     status: statusMatch[1]
                   }
                 };
-                console.log('通过正则提取成功:', parsedResponse);
+                console.log(`🔄 ${personalityName} 通过正则提取成功:`, parsedResponse);
               } else {
                 throw new Error("无法提取关键信息");
               }
             } catch (innerError) {
-              console.warn('JSON解析完全失败，将原始文本作为错误信息处理:', innerError);
+              console.error(`💥 ${personalityName} JSON解析完全失败:`, innerError);
               return { 
                 id: question.id, 
                 response: wiseManResponse, 
@@ -172,15 +223,21 @@ export class AIService {
 
           // 验证解析后的结构
           if (parsedResponse && parsedResponse.answer && parsedResponse.classification && parsedResponse.classification.status) {
-            return {
+            const result = {
               id: question.id,
               response: parsedResponse.answer,
               status: parsedResponse.classification.status,
               conditions: parsedResponse.classification.conditions || [],
               error: null
             };
+            console.log(`🎉 ${personalityName} 处理完成:`, {
+              status: result.status,
+              responseLength: result.response.length,
+              conditionsCount: result.conditions.length
+            });
+            return result;
           } else {
-            console.warn('JSON结构不完整，将原始文本作为信息处理:', wiseManResponse);
+            console.warn(`⚠️ ${personalityName} JSON结构不完整:`, parsedResponse);
             return { 
               id: question.id, 
               response: wiseManResponse, 
@@ -190,16 +247,20 @@ export class AIService {
           }
         } else {
           // 开放性问题直接返回
-          return {
+          const result = {
             id: question.id,
             response: wiseManResponse,
             status: 'info',
             error: null
           };
+          console.log(`🎉 ${personalityName} (开放题) 处理完成:`, {
+            responseLength: result.response.length
+          });
+          return result;
         }
 
       } catch (error) {
-        console.error('Fetch Error:', error);
+        console.error(`💥 ${personalityName} 请求失败:`, error);
         return { 
           id: question.id, 
           response: `Fetch Error: ${error instanceof Error ? error.message : 'Unknown error'}`, 
@@ -209,8 +270,25 @@ export class AIService {
     };
 
     // 并行获取所有贤者的回答
-    const promises = personalities.map(p => fetchAnswer(p));
-    return Promise.all(promises);
+    console.log('🚀 开始并行查询三贤者...');
+    const startTime = Date.now();
+    
+    const promises = personalities.map((p, index) => fetchAnswer(p, index));
+    const results = await Promise.all(promises);
+    
+    const endTime = Date.now();
+    console.log(`⏱️ 所有贤者查询完成，总耗时: ${endTime - startTime}ms`);
+    
+    // 统计结果
+    const statusCounts = results.reduce((acc, result) => {
+      acc[result.status] = (acc[result.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    console.log('📊 贤者回答统计:', statusCounts);
+    console.log('✅ MAGI三贤者查询全部完成');
+    
+    return results;
   }
 
   /**

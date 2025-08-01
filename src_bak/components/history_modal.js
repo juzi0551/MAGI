@@ -70,8 +70,8 @@ const HistoryModal = ({ id, is_open, question, answer, setProps }) => {
 
     const getWiseManName = window.HistoryUtils?.getWiseManName || ((name) => {
         const nameMap = {
-            'melchior': 'MELCHIOR-1 (科学家)',
-            'balthasar': 'BALTHASAR-2 (母亲)',
+            'melchior': 'MELCHIOR-1 (科學家)',
+            'balthasar': 'MELCHIOR-1 (母親)',
             'casper': 'CASPER-3 (女人)'
         };
         return nameMap[name] || (name ? name.toUpperCase() : '未知贤者');
