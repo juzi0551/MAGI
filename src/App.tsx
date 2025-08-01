@@ -1,6 +1,20 @@
-import { MagiSystem, MagiContainer } from './components';
+import { useState } from 'react';
+import { MagiSystem, MagiContainer, InputContainer } from './components';
 
 function App() {
+  const [question, setQuestion] = useState('');
+
+  const handleQuestionChange = (value: string) => {
+    setQuestion(value);
+  };
+
+  const handleQuestionSubmit = (submittedQuestion: string) => {
+    console.log('Question submitted:', submittedQuestion);
+    // TODO: 这里将来会连接到MAGI系统的问答处理逻辑
+    // 暂时只是清空输入框
+    setQuestion('');
+  };
+
   return (
     <div className="app">
       <MagiSystem>
@@ -28,6 +42,14 @@ function App() {
             <MagiContainer status="standby" />
           </div>
         </div>
+        
+        {/* 用户输入组件 */}
+        <InputContainer
+          value={question}
+          onChange={handleQuestionChange}
+          onSubmit={handleQuestionSubmit}
+          placeholder="请输入您的问题..."
+        />
       </MagiSystem>
     </div>
   );

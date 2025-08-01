@@ -628,11 +628,6 @@
 .panel-toggle-btn:hover {
   opacity: 1;
   background: rgba(255, 141, 0, 0.1);
-  /* 移除transform，让按钮保持当前的旋转状态 */
-}
-
-.panel-toggle-btn:active {
-  /* 移除transform，让按钮保持当前的旋转状态 */
 }
 
 /* 设置按钮hover效果 */
@@ -649,10 +644,6 @@
 /* 当右侧面板隐藏时，按钮的特殊样式 */
 .right-panel.hidden ~ .control-buttons .panel-toggle-btn {
   transform: rotate(0deg); /* 隐藏面板后正常角度 */
-}
-
-.right-panel.hidden ~ .control-buttons .settings-icon {
-  /* 设置按钮保持不变 */
 }
 
 @keyframes pulse-glow {
