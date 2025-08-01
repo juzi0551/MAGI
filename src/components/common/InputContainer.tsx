@@ -123,13 +123,6 @@ const InputContainer = ({
         </div>
       )}
       
-      {/* 处理状态指示 */}
-      {magi.isProcessing && (
-        <div className="processing-indicator">
-          <span className="processing-dots">●●●</span>
-          <span className="processing-text">MAGI系统思考中...</span>
-        </div>
-      )}
     </div>
   );
 };

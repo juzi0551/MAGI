@@ -102,7 +102,7 @@ app.layout = Div(
                 ]),
                 Div(id='balthasar-answer', className='wise-answer balthasar', children=[
                     Div(className='wise-answer-title', children=[
-                        'MELCHIOR-1 (母親)',
+                        'BALTHASAR-2 (母親)',
                         Div(id='balthasar-status', children=get_status_element('standby'))
                     ]),
                     Div(id='balthasar-content', className='answer-content', children='待機中...')
@@ -161,7 +161,7 @@ app.clientside_callback(
 
         if (question && question.query) {
             // 立即将最终状态设置为“审议中”
-            return ['progress', 'progress', '思考中...', '思考中...', '思考中...'];
+            return ['progress', 'progress', '審議中', '審議中', '審議中'];
         }
         return [window.dash_clientside.no_update] * 5;
     }

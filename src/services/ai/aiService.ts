@@ -112,7 +112,7 @@ export class AIService {
      * 获取单个贤者的回答
      */
     const fetchAnswer = async (personality: string, index: number): Promise<AIResponse> => {
-      const personalityNames = ['MELCHIOR-1 (科學家)', 'MELCHIOR-1 (母親)', 'Casper-3 (女人)'];
+      const personalityNames = ['MELCHIOR-1 (科學家)', 'BALTHASAR-2 (母親)', 'Casper-3 (女人)'];
       const personalityName = personalityNames[index] || `贤者-${index + 1}`;
       
       console.log(`🎯 开始查询 ${personalityName}`);

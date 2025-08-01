@@ -59,6 +59,13 @@
   overflow-x: hidden;
   word-break: break-word;
   color: #874a00;
+  font-family: var(--font-family-mono); /* 使用等宽字体而不是MAGI字体 */
+  transition: var(--transition-normal);
+}
+
+/* 悬停时回答内容变亮 */
+.wise-answer:hover .answer-content {
+  color: var(--color-primary);
 }
 
 /* 回答面板中的状态显示 */
@@ -138,27 +145,36 @@
   border: 1px dashed var(--color-border);
   border-radius: var(--border-radius);
   background: rgba(255, 141, 0, 0.08);
+  transition: var(--transition-normal);
 }
 
 .conditions-title {
-  color: var(--color-text);
-  font-family: var(--font-family-primary);
+  color: #874a00; /* 与回答内容相同的颜色 */
+  font-family: var(--font-family-mono); /* 使用等宽字体而不是MAGI字体 */
   font-size: var(--font-size-sm);
   font-weight: bold;
   margin-bottom: 6px;
+  transition: var(--transition-normal);
 }
 
 .conditions-list {
   margin: 0;
   padding-left: 16px;
-  color: var(--color-primary-light);
-  font-family: var(--font-family-primary);
+  color: #874a00; /* 与回答内容相同的颜色 */
+  font-family: var(--font-family-mono); /* 使用等宽字体而不是MAGI字体 */
   font-size: var(--font-size-sm);
+  transition: var(--transition-normal);
 }
 
 .condition-item {
   margin-bottom: 4px;
   line-height: 1.4;
+}
+
+/* 悬停时附加条件变亮 */
+.wise-answer:hover .conditions-title,
+.wise-answer:hover .conditions-list {
+  color: var(--color-primary);
 }
 
 /* 展开/折叠按钮 */

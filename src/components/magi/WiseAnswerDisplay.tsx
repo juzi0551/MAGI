@@ -47,7 +47,7 @@ const WiseAnswerDisplay = ({
       case 'melchior':
         return 'MELCHIOR-1 (科學家)';
       case 'balthasar':
-        return 'MELCHIOR-1 (母親)';
+        return 'BALTHASAR-2 (母親)';
       case 'casper':
         return 'CASPER-3 (女人)';
       default:
@@ -129,8 +129,7 @@ const WiseAnswerDisplay = ({
       <div className="answer-content">
         {currentStatus === 'processing' ? (
           <div className="answer-loading">
-            <span className="loading-dots">●●●</span>
-            <span className="loading-text">思考中...</span>
+            <span className="loading-text">審議中</span>
           </div>
         ) : currentStatus === 'standby' || !currentResponseText ? (
           <div className="answer-standby">待機中...</div>
@@ -159,15 +158,6 @@ const WiseAnswerDisplay = ({
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-
-            {/* 显示处理时间和时间戳 */}
-            {currentAnswer && (
-              <div className="answer-meta">
-                <div className="answer-timestamp">
-                  {new Date(currentAnswer.timestamp).toLocaleTimeString()}
-                </div>
               </div>
             )}
           </>

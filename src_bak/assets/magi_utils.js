@@ -72,7 +72,7 @@ const HistoryUtils = {
     getWiseManName: (name) => {
         const nameMap = {
             'melchior': 'MELCHIOR-1 (科學家)',
-            'balthasar': 'MELCHIOR-1 (母親)',
+            'balthasar': 'BALTHASAR-2 (母親)',
             'casper': 'CASPER-3 (女人)'
         };
         return nameMap[name] || name.toUpperCase();

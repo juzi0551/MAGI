@@ -157,7 +157,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
       };
       
       const stageResponse = responses[name as keyof typeof responses]?.[processingStage] || responses[name as keyof typeof responses]?.[0];
-      return { status: 'processing', response: stageResponse || '思考中...' };
+      return { status: 'processing', response: stageResponse || '審議中' };
     }
     
     if (systemStatus === 'completed') {

@@ -39,7 +39,7 @@ function getWiseManTitle(name: string): string {
     case 'melchior':
       return 'MELCHIOR-1 (科學家)';
     case 'balthasar':
-      return 'MELCHIOR-1 (母親)';
+      return 'BALTHASAR-2 (母親)';
     case 'casper':
       return 'CASPER-3 (女人)';
     default:

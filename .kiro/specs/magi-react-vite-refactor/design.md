@@ -494,7 +494,7 @@ interface I18nContextType {
 const zh_CN = {
   'system.title': 'MAGI决策系统',
   'wise_man.melchior': 'MELCHIOR-1 (科學家)',
-  'wise_man.balthasar': 'MELCHIOR-1 (母親)',
+  'wise_man.balthasar': 'BALTHASAR-2 (母親)',
   'wise_man.casper': 'CASPER-3 (女人)',
   'status.standby': '待機中...',
   'status.processing': '審議中...',
