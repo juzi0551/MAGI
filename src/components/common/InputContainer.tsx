@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { InputContainerProps } from '../../types';
 
 /**
@@ -13,17 +12,15 @@ const InputContainer = ({
   placeholder = "", 
   className = '' 
 }: InputContainerProps) => {
-  const [inputValue, setInputValue] = useState(value);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setInputValue(newValue);
     onChange(newValue);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !disabled && inputValue.trim()) {
-      onSubmit(inputValue.trim());
+    if (e.key === 'Enter' && !disabled && value.trim()) {
+      onSubmit(value.trim());
     }
   };
 
@@ -32,7 +29,7 @@ const InputContainer = ({
       <label>質問: </label>
       <input
         type="text"
-        value={inputValue}
+        value={value}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
         placeholder={placeholder}

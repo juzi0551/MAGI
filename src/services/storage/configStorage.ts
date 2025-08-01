@@ -175,7 +175,7 @@ export class ConfigStorageService {
 
     // 这里可以添加版本迁移逻辑
     // 例如：从 0.9.0 迁移到 1.0.0
-    let migratedConfig = { ...config };
+    const migratedConfig = { ...config };
 
     // 确保所有必需字段存在
     if (!migratedConfig.audioSettings) {

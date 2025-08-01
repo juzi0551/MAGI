@@ -206,7 +206,7 @@ export class HistoryStorageService {
     }
 
     // 这里可以添加版本迁移逻辑
-    let migratedHistory = { ...history };
+    const migratedHistory = { ...history };
 
     // 确保所有必需字段存在
     if (!migratedHistory.records) {

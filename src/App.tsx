@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { AppProvider, useMagi, useConfig } from './context';
 import { MagiSystem, MagiContainer, InputContainer } from './components';
 
-function App() {
-  const [question, setQuestion] = useState('');
+function AppContent() {
+  const magi = useMagi();
+  const config = useConfig();
 
   const handleQuestionChange = (value: string) => {
-    setQuestion(value);
+    magi.setQuestion(value);
   };
 
-  const handleQuestionSubmit = (submittedQuestion: string) => {
-    console.log('Question submitted:', submittedQuestion);
-    // TODO: 这里将来会连接到MAGI系统的问答处理逻辑
-    // 暂时只是清空输入框
-    setQuestion('');
+  const handleQuestionSubmit = async () => {
+    // 检查配置是否有效
+    if (!config.isConfigValid) {
+      console.warn('Configuration is not valid, please set up API key first');
+      return;
+    }
+
+    // 使用MAGI Context处理问题
+    await magi.processQuestion();
   };
 
   return (
@@ -39,19 +44,28 @@ function App() {
             maxHeight: 'calc(100% - 20px)',
             maxWidth: 'calc((100vh - 160px) * 2 / 1)', // 基于高度计算最大宽度
           }}>
-            <MagiContainer status="standby" />
+            <MagiContainer status={magi.systemStatus} />
           </div>
         </div>
         
         {/* 用户输入组件 */}
         <InputContainer
-          value={question}
+          value={magi.question}
           onChange={handleQuestionChange}
           onSubmit={handleQuestionSubmit}
           placeholder="请输入您的问题..."
+          disabled={magi.isProcessing}
         />
       </MagiSystem>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
   );
 }
 
