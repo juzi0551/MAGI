@@ -214,3 +214,75 @@
   40% { content: '..'; }
   60%, 100% { content: '...'; }
 }
+
+/* ===== 回答面板响应式设计 ===== */
+
+/* 平板 (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .wise-answers {
+    gap: var(--spacing-sm);
+  }
+  
+  .wise-answer {
+    min-height: 100px;
+  }
+  
+  .wise-answer-title {
+    padding: var(--spacing-sm) var(--spacing-sm) 6px var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+  
+  .wise-answer .answer-content {
+    padding: var(--spacing-sm);
+    font-size: 0.7em;
+  }
+}
+
+/* 移动端 (≤768px) - 适配所有小屏设备 */
+@media (max-width: 768px) {
+  .wise-answers {
+    gap: var(--spacing-xs);
+  }
+  
+  .wise-answer {
+    min-height: 80px;
+  }
+  
+  .wise-answer-title {
+    padding: var(--spacing-xs) var(--spacing-xs) 3px var(--spacing-xs);
+    font-size: 10px;
+  }
+  
+  .wise-answer .answer-content {
+    padding: var(--spacing-xs);
+    font-size: 0.6em;
+    line-height: 1.0;
+  }
+  
+  .answer-status {
+    padding: 1px 4px;
+    font-size: 8px;
+    min-width: 40px;
+  }
+  
+  .answer-conditions {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+  
+  .conditions-title {
+    font-size: var(--font-size-xs);
+    margin-bottom: 4px;
+  }
+  
+  .conditions-list {
+    padding-left: 12px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .expand-btn {
+    padding: 4px var(--spacing-sm);
+    font-size: 10px;
+    margin-top: 6px;
+  }
+}

@@ -47,3 +47,24 @@
   color: rgba(255, 141, 0, 0.6);
   font-style: italic;
 }
+
+/* ===== 输入容器响应式设计 ===== */
+
+/* 移动端 (≤768px) - 适配所有小屏设备 */
+@media (max-width: 768px) {
+  .input-container {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-xs);
+    column-gap: 8px;
+  }
+  
+  .input-container > input {
+    height: 32px;
+    font-size: 13px;
+    padding: 0 6px;
+  }
+}

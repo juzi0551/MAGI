@@ -66,40 +66,29 @@ body {
   font-size: var(--font-size-lg);
 }
 
-/* 响应式设计 */
-@media (max-width: 1024px) {
-  .system {
-    flex-direction: column;
+/* ===== 全局响应式设计 ===== */
+
+/* 平板 (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .input-container {
+    position: relative;
+    margin-top: var(--spacing-md);
+    bottom: auto;
+    left: auto;
+    right: auto;
   }
 
-  .left-panel {
-    width: 100%;
-    border-right: none;
-    border-bottom: var(--border-width) solid var(--color-border);
-    padding-right: 0;
-    padding-bottom: var(--spacing-sm);
-  }
-
-  .right-panel {
-    width: 100%;
-    padding-left: 0;
-    padding-top: var(--spacing-sm);
-  }
-
-  .magi {
-    aspect-ratio: 1.5 / 1;
+  .history-panel {
+    position: relative;
+    bottom: auto; 
+    left: auto;
+    right: auto;
+    margin-top: var(--spacing-md);
   }
 }
 
+/* 移动端 (≤768px) */
 @media (max-width: 768px) {
-  .system {
-    padding: var(--spacing-xs);
-  }
-
-  .magi {
-    aspect-ratio: 1.2 / 1;
-  }
-
   .input-container {
     position: relative;
     margin-top: var(--spacing-md);
@@ -121,23 +110,17 @@ body {
     right: var(--spacing-md);
     font-size: 24px;
   }
-}
-
-@media (max-width: 480px) {
-  .magi {
-    aspect-ratio: 1 / 1;
-  }
-
+  
   .wise-answers {
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .wise-answer {
-    min-height: 100px;
+    min-height: 80px;
   }
 
   .modal-content {
     width: 95vw;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-sm);
   }
 }

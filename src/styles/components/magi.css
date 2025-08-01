@@ -736,3 +736,150 @@
 .system.startup-complete .right-panel.right-panel {
   transform: translateX(0) !important;
 }
+
+/* ===== 响应式设计优化 ===== */
+
+/* 桌面 (>1024px) - 双栏布局保持不变 */
+@media (min-width: 1025px) {
+  .system {
+    flex-direction: row;
+    padding: var(--spacing-sm);
+  }
+  
+  .left-panel {
+    width: var(--panel-left-width);
+    border-right: none;
+    padding-right: var(--spacing-sm);
+  }
+  
+  .right-panel {
+    width: var(--panel-right-width);
+    padding-left: var(--spacing-sm);
+  }
+  
+  .magi {
+    aspect-ratio: 2 / 1;
+  }
+  
+  /* 确保桌面端控制按钮位置 */
+  .control-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* 平板 (768px - 1024px) - 单栏布局，右侧内容移至底部 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .system {
+    flex-direction: column;
+    padding: var(--spacing-md);
+  }
+
+  .left-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--color-border);
+    padding-right: 0;
+    padding-bottom: var(--spacing-md);
+  }
+
+  .right-panel {
+    width: 100%;
+    padding-left: 0;
+    padding-top: var(--spacing-md);
+  }
+
+  .magi {
+    aspect-ratio: 1.8 / 1;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* 平板端控制按钮调整 */
+  .control-buttons {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+/* 移动端 (≤768px) - 紧凑布局，隐藏装饰元素，适配所有小屏设备 */
+@media (max-width: 768px) {
+  .system {
+    flex-direction: column;
+    padding: var(--spacing-xs);
+  }
+
+  .left-panel {
+    width: 100%;
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .right-panel {
+    width: 100%;
+    padding-left: 0;
+    padding-top: var(--spacing-sm);
+  }
+
+  .magi {
+    aspect-ratio: 1.2 / 1;
+    max-width: 100%;
+  }
+  
+  /* 移动端隐藏装饰元素 */
+  .magi::after {
+    display: none;
+  }
+  
+  /* 适配小屏的字体大小 */
+  .magi > .title {
+    font-size: 4cqh;
+  }
+  
+  .magi > .header > span {
+    font-size: 16cqh;
+  }
+  
+  .magi > .system-status > div {
+    font-size: 2.5cqh;
+  }
+  
+  .magi > .system-status > div:first-child {
+    font-size: 6cqh;
+  }
+  
+  .magi > .response > .inner {
+    font-size: 6cqh;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  /* 贤者文字适配小屏 */
+  .magi > .wise-man > .inner {
+    font-size: 6cqh;
+  }
+  
+  /* 简化连接线显示 */
+  .connection {
+    height: 4px;
+  }
+  
+  /* 移动端控制按钮 */
+  .control-buttons {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    width: auto;
+    min-width: 70px;
+    height: 30px;
+    padding: 3px;
+  }
+  
+  .panel-toggle-btn,
+  .settings-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+}
