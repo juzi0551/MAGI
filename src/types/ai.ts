@@ -8,6 +8,7 @@ export type AIProvider =
   | 'openai' 
   | 'anthropic'
   | 'google'
+  | 'cohere'
   | 'zhipu'
   | 'moonshot'
   | 'alibaba'
@@ -29,37 +30,54 @@ export type FinalStatus = 'yes' | 'no' | 'conditional' | 'info' | 'error';
 // 贤者名称类型
 export type WiseManName = 'melchior' | 'balthasar' | 'casper';
 
-// 贤者回答接口
+// 贤者类型
+export type WiseManType = 'scientist' | 'mother' | 'woman';
+
+// MAGI问题接口
+export interface MagiQuestion {
+  id: string;
+  query: string;
+  timestamp: Date;
+}
+
+// 贤者回答接口（扩展版）
 export interface WiseManAnswer {
-  name: WiseManName;
-  status: WiseManStatus;
+  id: string;
+  name: string; // 'Melchior-1', 'Balthasar-2', 'Casper-3'
+  type: WiseManType;
   response: string;
+  status: 'yes' | 'no' | 'conditional' | 'info' | 'error';
   conditions?: string[];
-  timestamp?: number;
-  processingTime?: number; // 处理时长（毫秒）
+  error?: string | null;
+  timestamp: Date;
 }
 
-// AI请求参数接口
-export interface AIRequestParams {
-  question: string;
-  personality: string;
-  isYesNoQuestion: boolean;
-  provider: AIProvider;
-  model: string;
-  apiKey: string;
-  apiBase?: string;
-}
-
-// AI响应接口
+// AI服务响应接口
 export interface AIResponse {
-  answer: string;
-  classification: {
-    status: WiseManStatus;
-    conditions?: string[];
-  };
+  id: string;
+  response: string;
+  status: string;
+  conditions?: string[];
+  error?: string | null;
 }
 
-// 问题分析结果接口
+// MAGI决策结果接口
+export interface MagiDecision {
+  id: string;
+  question: string;
+  questionType: 'yes-no' | 'open';
+  wiseManAnswers: WiseManAnswer[];
+  finalDecision: {
+    result: 'yes' | 'no' | 'conditional' | 'info' | 'error';
+    confidence: number; // 0-1
+    reasoning: string;
+    consensusLevel: 'unanimous' | 'majority' | 'split' | 'none' | 'informational';
+  };
+  timestamp: Date;
+  processingTime: number; // 毫秒
+}
+
+// 问题分析结果接口（保持向后兼容）
 export interface QuestionAnalysis {
   id: string;
   question: string;

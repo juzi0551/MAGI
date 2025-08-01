@@ -7,8 +7,10 @@ import {
   FinalStatus, 
   AppError,
   ErrorType,
-  WiseManName 
+  MagiQuestion,
+  MagiDecision 
 } from '../types/ai';
+import MagiAIService from '../services/ai';
 
 interface MagiState {
   question: string;
@@ -110,13 +112,6 @@ function magiReducer(state: MagiState, action: MagiAction): MagiState {
   }
 }
 
-// 贤者人格提示词配置
-const WISE_MAN_PERSONALITIES = {
-  melchior: '科学家',
-  balthasar: '母亲',
-  casper: '女人'
-} as const;
-
 // 决策逻辑计算
 function calculateFinalDecision(answers: WiseManAnswer[]): FinalStatus | null {
   if (answers.length === 0) return null;
@@ -182,38 +177,46 @@ export function MagiProvider({ children }: ContextProviderProps) {
       dispatch({ type: 'SET_SYSTEM_STATUS', payload: 'processing' });
       dispatch({ type: 'SET_PROCESSING', payload: true });
 
-      // 判断问题类型
-      const questionType: QuestionType = isYesNoQuestion(state.question) ? 'yes_no' : 'info';
-      dispatch({ type: 'SET_QUESTION_TYPE', payload: questionType });
+      // 创建MAGI问题对象
+      const magiQuestion: MagiQuestion = {
+        id: `question-${Date.now()}`,
+        query: state.question,
+        timestamp: new Date()
+      };
 
-      // TODO: 这里后续需要集成AI服务
-      // 模拟AI处理过程
-      const wiseManNames: WiseManName[] = ['melchior', 'balthasar', 'casper'];
+      // 使用AI服务处理问题
+      const decision: MagiDecision = await MagiAIService.processQuestion(magiQuestion);
       
-      // 模拟并行处理三个贤者的回答
-      const answers: WiseManAnswer[] = await Promise.all(
-        wiseManNames.map(async (name) => {
-          // 模拟处理延迟
-          await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-          
-          // 模拟AI回答
-          const mockAnswer: WiseManAnswer = {
-            name,
-            status: questionType === 'yes_no' ? 'yes' : 'info',
-            response: `这是${WISE_MAN_PERSONALITIES[name]}的回答：${state.question}`,
-            timestamp: Date.now(),
-            processingTime: 1000 + Math.random() * 2000
-          };
-          
-          // 实时更新每个贤者的回答
-          dispatch({ type: 'UPDATE_WISE_MAN_ANSWER', payload: mockAnswer });
-          
-          return mockAnswer;
-        })
-      );
+      // 更新问题类型
+      dispatch({ 
+        type: 'SET_QUESTION_TYPE', 
+        payload: decision.questionType === 'yes-no' ? 'yes_no' : 'info' 
+      });
 
-      // 计算最终决策
-      const finalStatus = calculateFinalDecision(answers) || 'error';
+      // 更新贤者回答
+      dispatch({ type: 'SET_WISE_MAN_ANSWERS', payload: decision.wiseManAnswers });
+
+      // 转换最终决策到FinalStatus
+      let finalStatus: FinalStatus;
+      switch (decision.finalDecision.result) {
+        case 'yes':
+          finalStatus = 'yes';
+          break;
+        case 'no':
+          finalStatus = 'no';
+          break;
+        case 'conditional':
+          finalStatus = 'conditional';
+          break;
+        case 'info':
+          finalStatus = 'info';
+          break;
+        case 'error':
+        default:
+          finalStatus = 'error';
+          break;
+      }
+      
       dispatch({ type: 'SET_FINAL_STATUS', payload: finalStatus });
       
       // 处理完成
@@ -221,11 +224,12 @@ export function MagiProvider({ children }: ContextProviderProps) {
       dispatch({ type: 'SET_PROCESSING', payload: false });
 
     } catch (error) {
+      console.error('处理问题时发生错误:', error);
       dispatch({
         type: 'SET_ERROR',
         payload: {
           type: ErrorType.UNKNOWN_ERROR,
-          message: error instanceof Error ? error.message : '处理问题时发生错误',
+          message: MagiAIService.getErrorMessage(error as Error),
           timestamp: Date.now()
         }
       });
@@ -299,16 +303,4 @@ export function useMagi(): MagiContextType {
     throw new Error('useMagi must be used within a MagiProvider');
   }
   return context;
-}
-
-// 辅助函数：判断是否为是/否问题
-function isYesNoQuestion(question: string): boolean {
-  const yesNoPatterns = [
-    /^(是否|能否|可否|会否|要否|应该|需要|可以|能够|会|要|应)/,
-    /\?(是|否|yes|no)$/i,
-    /吗\?*$/,
-    /(好不好|行不行|对不对|可不可以)$/,
-  ];
-  
-  return yesNoPatterns.some(pattern => pattern.test(question.trim()));
 }

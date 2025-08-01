@@ -92,26 +92,29 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         finalStatus: 'conditional', // 模拟决策结果
         answers: [
           {
-            name: 'melchior',
+            id: 'melchior-1',
+            name: 'Melchior-1',
+            type: 'scientist' as const,
             status: 'yes',
             response: '从逻辑角度分析，该方案具有可行性。数据支持这一决策，风险可控。',
-            timestamp: Date.now(),
-            processingTime: 3000
+            timestamp: new Date()
           },
           {
-            name: 'balthasar',
+            id: 'balthasar-2',
+            name: 'Balthasar-2',
+            type: 'mother' as const,
             status: 'conditional',
             response: '在道德层面需要谨慎考虑。建议在确保人员安全的前提下执行。',
-            timestamp: Date.now(),
-            processingTime: 3200,
+            timestamp: new Date(),
             conditions: ['确保人员安全', '制定应急预案', '获得上级批准']
           },
           {
-            name: 'casper',
+            id: 'casper-3',
+            name: 'Casper-3',
+            type: 'woman' as const,
             status: 'no',
             response: '直觉告诉我这个方案存在隐患。建议重新评估或寻找替代方案。',
-            timestamp: Date.now(),
-            processingTime: 2800
+            timestamp: new Date()
           }
         ],
         duration: 4000
