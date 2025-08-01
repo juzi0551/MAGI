@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     target: 'es2020',
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // 生产环境关闭sourcemap以减小体积
     rollupOptions: {
       output: {
         manualChunks: {
@@ -24,5 +24,7 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
-  }
+  },
+  // Render平台优化
+  base: './', // 使用相对路径，适合静态部署
 })
