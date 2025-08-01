@@ -1,6 +1,7 @@
 import { ContextProviderProps } from '../types/context';
 import { ConfigProvider } from './ConfigContext';
 import { MagiProvider } from './MagiContext';
+import { HistoryProvider } from './HistoryContext';
 
 /**
  * 应用主Context Provider
@@ -9,9 +10,11 @@ import { MagiProvider } from './MagiContext';
 export function AppProvider({ children }: ContextProviderProps) {
   return (
     <ConfigProvider>
-      <MagiProvider>
-        {children}
-      </MagiProvider>
+      <HistoryProvider>
+        <MagiProvider>
+          {children}
+        </MagiProvider>
+      </HistoryProvider>
     </ConfigProvider>
   );
 }
@@ -21,3 +24,4 @@ export function AppProvider({ children }: ContextProviderProps) {
  */
 export { ConfigProvider, useConfig } from './ConfigContext';
 export { MagiProvider, useMagi } from './MagiContext';
+export { HistoryProvider, useHistory } from './HistoryContext';

@@ -58,7 +58,7 @@ export interface HeaderProps {
 export interface InputContainerProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: (question: string) => void;
+  onSubmit?: () => void;
   disabled?: boolean;
   placeholder?: string;
   className?: string;

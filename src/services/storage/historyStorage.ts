@@ -215,11 +215,38 @@ export class HistoryStorageService {
 
     // 验证和修复记录格式
     migratedHistory.records = migratedHistory.records.filter(record => {
-      return record && 
-             record.id && 
-             record.timestamp && 
-             record.question && 
-             Array.isArray(record.answers);
+      // 基础字段验证
+      if (!record || 
+          !record.id || 
+          !record.timestamp || 
+          !record.question || 
+          !Array.isArray(record.answers)) {
+        return false;
+      }
+
+      // 验证answers数组内部结构
+      const validAnswers = record.answers.every(answer => 
+        answer &&
+        typeof answer.id === 'string' &&
+        typeof answer.name === 'string' &&
+        typeof answer.response === 'string' &&
+        typeof answer.status === 'string' &&
+        (typeof answer.timestamp === 'number' || typeof answer.timestamp === 'string') // 兼容旧格式
+      );
+
+      if (!validAnswers) {
+        return false;
+      }
+
+      // 修复答案中的timestamp格式（如果是Date字符串，转换为number）
+      record.answers = record.answers.map(answer => ({
+        ...answer,
+        timestamp: typeof answer.timestamp === 'string' 
+          ? new Date(answer.timestamp).getTime() 
+          : answer.timestamp
+      }));
+
+      return true;
     });
 
     // 更新版本号

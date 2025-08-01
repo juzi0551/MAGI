@@ -63,7 +63,7 @@ export class MagiQueryService {
           status: response.status as 'yes' | 'no' | 'conditional' | 'info' | 'error',
           conditions: response.conditions || [],
           error: response.error || null,
-          timestamp: new Date()
+          timestamp: Date.now()
         };
 
         console.log(`🎯 ${wiseManNames[index]} 回答解析:`, {

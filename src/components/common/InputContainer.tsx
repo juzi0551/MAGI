@@ -27,7 +27,6 @@ const InputContainer = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    console.log('📝 用户输入:', newValue);
     
     setLocalValue(newValue);
     magi.setQuestion(newValue); // 直接同步到MAGI Context
@@ -39,13 +38,16 @@ const InputContainer = ({
   const handleSubmit = async () => {
     const question = localValue.trim();
     if (!question) {
-      console.warn('⚠️ 空问题，跳过处理');
+      return;
+    }
+
+    // 检查是否被禁用
+    if (disabled || magi.isProcessing) {
       return;
     }
 
     // 检查API配置
     if (!config.isConfigValid || !config.apiKey) {
-      console.error('❌ API配置无效，无法处理问题');
       magi.clearError();
       setTimeout(() => {
         alert('请先配置API密钥才能进行问答');
@@ -53,23 +55,9 @@ const InputContainer = ({
       return;
     }
 
-    console.log('🚀 开始处理问题:', question);
-    console.log('📋 当前配置:', {
-      provider: config.provider,
-      model: config.model,
-      apiKey: config.apiKey ? '***已配置***' : '未配置',
-      apiBase: config.apiBase || '默认'
-    });
-
-    try {
-      // 触发MAGI处理流程
-      await magi.processQuestion();
-      
-      if (onSubmit) {
-        onSubmit(question);
-      }
-    } catch (error) {
-      console.error('💥 问题处理失败:', error);
+    // 只调用onSubmit回调，不直接调用magi.processQuestion
+    if (onSubmit) {
+      onSubmit();
     }
   };
 

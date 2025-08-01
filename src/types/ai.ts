@@ -49,7 +49,7 @@ export interface WiseManAnswer {
   status: 'yes' | 'no' | 'conditional' | 'info' | 'error';
   conditions?: string[];
   error?: string | null;
-  timestamp: Date;
+  timestamp: number; // 修复：使用number而不是Date，确保localStorage序列化兼容
 }
 
 // AI服务响应接口

@@ -20,9 +20,9 @@ export {
   type UseConfigReturn
 } from './useConfig';
 
-// 历史记录Hook
+// 历史记录Hook (服务层)
 export {
-  useHistory,
+  useHistory as useHistoryService,
   useHistoryList,
   useHistoryDetail,
   type UseHistoryReturn

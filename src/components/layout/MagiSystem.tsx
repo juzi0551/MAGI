@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { MagiSystemProps, SystemStatus } from '../../types';
+import { MagiSystemProps } from '../../types';
 import { HistoryRecord } from '../../types/history';
-import { useConfig } from '../../context';
+import { useConfig, useHistory, useMagi } from '../../context';
 import InputContainer from '../common/InputContainer';
 import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
 import HistoryPanel from '../common/HistoryPanel';
@@ -15,18 +15,14 @@ import StartupScreen from '../common/StartupScreen';
  */
 const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   const config = useConfig();
+  const history = useHistory();
+  const magi = useMagi();
   
   // 启动动画状态
   const [isStartupComplete, setIsStartupComplete] = useState(false);
   const [showStartupScreen, setShowStartupScreen] = useState(true);
-
-  const [question, setQuestion] = useState('');
-  const [systemStatus, setSystemStatus] = useState<SystemStatus>('standby');
-  const [processingStage, setProcessingStage] = useState(0);
-
-  // 历史记录相关状态
-  const [historyRecords, setHistoryRecords] = useState<HistoryRecord[]>([]);
-  const [selectedRecord, setSelectedRecord] = useState<HistoryRecord | null>(null);
+  
+  // 历史记录模态框状态
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   
   // 设置面板状态
@@ -35,18 +31,67 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   // 右侧面板显示状态
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
 
+  // 追踪已保存的问题，避免重复保存
+  const [savedQuestions, setSavedQuestions] = useState<Set<string>>(new Set());
+
   // 页面加载时检查配置，如果没有API密钥则自动打开设置面板
   useEffect(() => {
     if (!config.isLoading && !config.isConfigValid) {
       // 延迟一点时间让初始化和启动动画完成
       setTimeout(() => {
         if (!config.apiKey && isStartupComplete) {
-          console.log('⚠️ 检测到缺少API配置，自动打开设置面板');
           setIsSettingsPanelOpen(true);
         }
       }, 2000);
     }
   }, [config.isLoading, config.isConfigValid, config.apiKey, isStartupComplete]);
+
+  // 监听AI处理开始，清空旧的保存追踪
+  useEffect(() => {
+    if (magi.systemStatus === 'processing') {
+      setSavedQuestions(new Set());
+    }
+  }, [magi.systemStatus]);
+
+  // 监听AI处理完成，自动保存历史记录
+  useEffect(() => {
+    if (magi.systemStatus === 'completed' && 
+        magi.question && 
+        magi.wiseManAnswers.length > 0 && 
+        magi.finalStatus &&
+        magi.processingStartTime) {
+      
+      // 生成问题的唯一标识（基于问题内容和处理开始时间）
+      const questionKey = `${magi.question}_${magi.processingStartTime}`;
+      
+      // 检查是否已经保存过这个问题
+      if (savedQuestions.has(questionKey)) {
+        return;
+      }
+
+      // 计算处理时长
+      const duration = Date.now() - magi.processingStartTime;
+      
+      // 创建历史记录
+      const newRecord = {
+        question: magi.question,
+        questionType: magi.questionType || 'info',
+        finalStatus: magi.finalStatus,
+        answers: magi.wiseManAnswers,
+        duration: duration
+      };
+      
+      try {
+        // 保存到历史记录
+        history.addRecord(newRecord);
+        
+        // 标记为已保存
+        setSavedQuestions(prev => new Set(prev).add(questionKey));
+      } catch (error) {
+        console.error('❌ 保存历史记录失败:', error);
+      }
+    }
+  }, [magi.systemStatus, magi.question, magi.wiseManAnswers, magi.finalStatus, magi.processingStartTime, magi.questionType, history, savedQuestions]);
 
   // 启动动画完成处理
   const handleStartupComplete = () => {
@@ -58,116 +103,39 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   };
 
   const handleQuestionChange = (value: string) => {
-    setQuestion(value);
+    magi.setQuestion(value);
   };
 
-  const handleQuestionSubmit = (question: string) => {
-    console.log('提交问题:', question);
-    setSystemStatus('processing');
-    setProcessingStage(0);
-    
-    // 模拟多阶段处理过程
-    const stages = [
-      { delay: 1000, stage: 1 },
-      { delay: 2000, stage: 2 },
-      { delay: 3000, stage: 3 }
-    ];
-    
-    stages.forEach(({ delay, stage }) => {
-      setTimeout(() => {
-        setProcessingStage(stage);
-      }, delay);
-    });
-    
-    // 完成处理
-    setTimeout(() => {
-      setSystemStatus('completed');
-      
-      // 创建历史记录
-      const newRecord: HistoryRecord = {
-        id: `record-${Date.now()}`,
-        timestamp: Date.now(),
-        question: question,
-        questionType: 'info', // 使用有效的问题类型
-        finalStatus: 'conditional', // 模拟决策结果
-        answers: [
-          {
-            id: 'melchior-1',
-            name: 'Melchior-1',
-            type: 'scientist' as const,
-            status: 'yes',
-            response: '从逻辑角度分析，该方案具有可行性。数据支持这一决策，风险可控。',
-            timestamp: new Date()
-          },
-          {
-            id: 'balthasar-2',
-            name: 'Balthasar-2',
-            type: 'mother' as const,
-            status: 'conditional',
-            response: '在道德层面需要谨慎考虑。建议在确保人员安全的前提下执行。',
-            timestamp: new Date(),
-            conditions: ['确保人员安全', '制定应急预案', '获得上级批准']
-          },
-          {
-            id: 'casper-3',
-            name: 'Casper-3',
-            type: 'woman' as const,
-            status: 'no',
-            response: '直觉告诉我这个方案存在隐患。建议重新评估或寻找替代方案。',
-            timestamp: new Date()
-          }
-        ],
-        duration: 4000
-      };
-      
-      // 添加到历史记录
-      setHistoryRecords(prev => [...prev, newRecord]);
-      setQuestion('');
-      
-      // 5秒后重置为待机状态
-      setTimeout(() => {
-        setSystemStatus('standby');
-        setProcessingStage(0);
-      }, 5000);
-    }, 4000);
+  const handleQuestionSubmit = async () => {
+    try {
+      // 触发MAGI处理流程
+      await magi.processQuestion();
+    } catch (error) {
+      console.error('💥 问题处理失败:', error);
+    }
   };
 
   const getWiseAnswerContent = (name: string) => {
-    if (systemStatus === 'standby') {
+    // 查找对应贤者的回答
+    const answer = magi.wiseManAnswers.find(answer => {
+      const wiseName = name.toLowerCase();
+      const answerName = answer.name.toLowerCase();
+      return answerName.includes(wiseName);
+    });
+
+    if (magi.systemStatus === 'standby') {
       return { status: 'standby', response: '待機中...' };
     }
     
-    if (systemStatus === 'processing') {
-      const responses = {
-        melchior: [
-          '正在分析问题的逻辑结构...',
-          '计算概率和可行性...',
-          '评估技术实现方案...'
-        ],
-        balthasar: [
-          '正在考虑伦理和道德因素...',
-          '评估对人类福祉的影响...',
-          '权衡长远利益与风险...'
-        ],
-        casper: [
-          '正在进行直觉判断...',
-          '感受情感层面的反应...',
-          '综合主观因素分析...'
-        ]
-      };
-      
-      const stageResponse = responses[name as keyof typeof responses]?.[processingStage] || responses[name as keyof typeof responses]?.[0];
-      return { status: 'processing', response: stageResponse || '審議中' };
+    if (magi.systemStatus === 'processing') {
+      if (answer) {
+        return { status: answer.status, response: answer.response };
+      }
+      return { status: 'processing', response: '審議中...' };
     }
     
-    if (systemStatus === 'completed') {
-      const completedResponses = {
-        melchior: { status: 'yes', response: '从逻辑角度分析，该方案具有可行性。数据支持这一决策，风险可控。' },
-        balthasar: { status: 'conditional', response: '在道德层面需要谨慎考虑。建议在确保人员安全的前提下执行。' },
-        casper: { status: 'no', response: '直觉告诉我这个方案存在隐患。建议重新评估或寻找替代方案。' }
-      };
-      
-      return completedResponses[name as keyof typeof completedResponses] || { status: 'info', response: '分析完成' };
+    if (magi.systemStatus === 'completed' && answer) {
+      return { status: answer.status, response: answer.response };
     }
     
     return { status: 'standby', response: '待機中...' };
@@ -175,17 +143,17 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
 
   // 历史记录事件处理
   const handleRecordDetail = (record: HistoryRecord & { _clickTimestamp?: number }) => {
-    setSelectedRecord(record);
+    history.selectRecord(record);
     setIsHistoryModalOpen(true);
   };
 
   const handleClearHistory = () => {
-    setHistoryRecords([]);
+    history.clearHistory();
   };
 
   const handleHistoryModalClose = () => {
     setIsHistoryModalOpen(false);
-    setSelectedRecord(null);
+    history.selectRecord(null);
   };
 
   // 设置面板事件处理
@@ -215,23 +183,23 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
       }`}>
         <div className={`left-panel ${!isRightPanelVisible ? 'fullscreen' : ''}`}>
           {/* 左侧面板内容 - 传递状态给子组件 */}
-          <div data-system-status={systemStatus}>
+          <div data-system-status={magi.systemStatus}>
             {children}
           </div>
           
           {/* 历史记录面板 */}
           <HistoryPanel
-            records={historyRecords}
+            records={history.records}
             onRecordDetail={handleRecordDetail}
             onClearHistory={handleClearHistory}
           />
           
           {/* 输入容器 */}
           <InputContainer
-            value={question}
+            value={magi.question}
             onChange={handleQuestionChange}
             onSubmit={handleQuestionSubmit}
-            disabled={systemStatus === 'processing'}
+            disabled={magi.systemStatus === 'processing'}
           />
         </div>
         
@@ -279,7 +247,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         {/* 历史记录详情模态框 */}
         <HistoryModal
           isOpen={isHistoryModalOpen}
-          record={selectedRecord}
+          record={history.selectedRecord}
           onClose={handleHistoryModalClose}
         />
         

@@ -35,7 +35,8 @@ type MagiAction =
   | { type: 'SET_PROCESSING_START_TIME'; payload: number | null }
   | { type: 'SET_ERROR'; payload: AppError | null }
   | { type: 'REFRESH_TRIGGER' }
-  | { type: 'RESET_SYSTEM' };
+  | { type: 'RESET_SYSTEM' }
+  | { type: 'COMPLETE_PROCESSING' }; // 新增：专门用于完成处理，保留processingStartTime
 
 const initialState: MagiState = {
   question: '',
@@ -90,6 +91,14 @@ function magiReducer(state: MagiState, action: MagiAction): MagiState {
         ...state, 
         isProcessing: action.payload,
         processingStartTime: action.payload ? Date.now() : null
+      };
+    
+    case 'COMPLETE_PROCESSING':
+      return {
+        ...state,
+        systemStatus: 'completed',
+        isProcessing: false,
+        // 保留processingStartTime用于历史记录保存
       };
     
     case 'SET_PROCESSING_START_TIME':
@@ -167,6 +176,11 @@ export function MagiProvider({ children }: ContextProviderProps) {
       return;
     }
 
+    // 防止重复提交
+    if (state.isProcessing) {
+      return;
+    }
+
     try {
       // 重置状态
       dispatch({ type: 'SET_WISE_MAN_ANSWERS', payload: [] });
@@ -219,9 +233,8 @@ export function MagiProvider({ children }: ContextProviderProps) {
       
       dispatch({ type: 'SET_FINAL_STATUS', payload: finalStatus });
       
-      // 处理完成
-      dispatch({ type: 'SET_SYSTEM_STATUS', payload: 'completed' });
-      dispatch({ type: 'SET_PROCESSING', payload: false });
+      // 处理完成 - 使用新的action保留processingStartTime
+      dispatch({ type: 'COMPLETE_PROCESSING' });
 
     } catch (error) {
       console.error('处理问题时发生错误:', error);
