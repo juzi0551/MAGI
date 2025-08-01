@@ -21,6 +21,7 @@ interface MagiState {
   refreshTrigger: number;
   isProcessing: boolean;
   processingStartTime: number | null;
+  processingQuestion: string | null; // 新增：正在处理的原始问题
   error: AppError | null;
 }
 
@@ -47,6 +48,7 @@ const initialState: MagiState = {
   refreshTrigger: 0,
   isProcessing: false,
   processingStartTime: null,
+  processingQuestion: null, // 新增
   error: null,
 };
 
@@ -90,7 +92,8 @@ function magiReducer(state: MagiState, action: MagiAction): MagiState {
       return { 
         ...state, 
         isProcessing: action.payload,
-        processingStartTime: action.payload ? Date.now() : null
+        processingStartTime: action.payload ? Date.now() : null,
+        processingQuestion: action.payload ? state.question : null // 保存正在处理的问题
       };
     
     case 'COMPLETE_PROCESSING':
@@ -289,6 +292,7 @@ export function MagiProvider({ children }: ContextProviderProps) {
     // 处理状态
     isProcessing: state.isProcessing,
     processingStartTime: state.processingStartTime,
+    processingQuestion: state.processingQuestion,
     error: state.error,
 
     // 操作方法

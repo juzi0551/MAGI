@@ -125,7 +125,9 @@ export function HistoryProvider({ children }: ContextProviderProps) {
     try {
       const result = HistoryStorageService.getRecords();
       if (result.success && result.data) {
-        dispatch({ type: 'SET_RECORDS', payload: result.data });
+        // 按时间倒序排序（最新的在前面）
+        const sortedRecords = result.data.sort((a, b) => b.timestamp - a.timestamp);
+        dispatch({ type: 'SET_RECORDS', payload: sortedRecords });
         
         // 更新统计信息
         const statsResult = HistoryStorageService.getStatistics();

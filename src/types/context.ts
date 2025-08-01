@@ -26,6 +26,7 @@ export interface MagiContextType {
   // 处理状态
   isProcessing: boolean;
   processingStartTime: number | null;
+  processingQuestion: string | null; // 新增：正在处理的原始问题
   error: AppError | null;
   
   // 操作方法

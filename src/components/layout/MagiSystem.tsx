@@ -56,13 +56,13 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   // 监听AI处理完成，自动保存历史记录
   useEffect(() => {
     if (magi.systemStatus === 'completed' && 
-        magi.question && 
+        magi.processingQuestion && 
         magi.wiseManAnswers.length > 0 && 
         magi.finalStatus &&
         magi.processingStartTime) {
       
       // 生成问题的唯一标识（基于问题内容和处理开始时间）
-      const questionKey = `${magi.question}_${magi.processingStartTime}`;
+      const questionKey = `${magi.processingQuestion}_${magi.processingStartTime}`;
       
       // 检查是否已经保存过这个问题
       if (savedQuestions.has(questionKey)) {
@@ -74,7 +74,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
       
       // 创建历史记录
       const newRecord = {
-        question: magi.question,
+        question: magi.processingQuestion, // 使用处理时的原始问题
         questionType: magi.questionType || 'info',
         finalStatus: magi.finalStatus,
         answers: magi.wiseManAnswers,
@@ -91,7 +91,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
         console.error('❌ 保存历史记录失败:', error);
       }
     }
-  }, [magi.systemStatus, magi.question, magi.wiseManAnswers, magi.finalStatus, magi.processingStartTime, magi.questionType, history, savedQuestions]);
+  }, [magi.systemStatus, magi.wiseManAnswers, magi.finalStatus, magi.processingStartTime, magi.processingQuestion, magi.questionType, history, savedQuestions]);
 
   // 启动动画完成处理
   const handleStartupComplete = () => {
