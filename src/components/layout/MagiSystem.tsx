@@ -21,6 +21,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   const { isAudioEnabled, audioVolume } = useAudio();
   const audio = useMagiAudio();
   const stopProcessingSoundRef = useRef<(() => void) | null>(null);
+  const hasPlayedDecisionSoundRef = useRef(false);
 
   // 初始化音频
   useEffect(() => {
@@ -71,6 +72,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     if (isAudioEnabled) {
       if (magi.systemStatus === 'processing') {
         stopProcessingSoundRef.current = audio.playProcessingSound();
+        hasPlayedDecisionSoundRef.current = false; // 为新的决议重置播放标志
       } else {
         if (stopProcessingSoundRef.current) {
           stopProcessingSoundRef.current();
@@ -87,8 +89,9 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   }, [magi.systemStatus, isAudioEnabled, audio]);
 
   useEffect(() => {
-    if (isAudioEnabled && magi.systemStatus === 'completed' && magi.finalStatus) {
+    if (isAudioEnabled && magi.systemStatus === 'completed' && magi.finalStatus && !hasPlayedDecisionSoundRef.current) {
       audio.playDecisionSound(magi.finalStatus);
+      hasPlayedDecisionSoundRef.current = true; // 标记为已播放
     }
   }, [magi.finalStatus, magi.systemStatus, isAudioEnabled, audio]);
 

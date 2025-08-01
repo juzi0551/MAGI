@@ -158,4 +158,3 @@ pip-delete-this-directory.txt
 *.tar.gz
 *.rar
 *.7z
-package-lock.json
