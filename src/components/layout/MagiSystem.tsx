@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MagiSystemProps } from '../../types';
 import { HistoryRecord } from '../../types/history';
-import { useConfig, useHistory, useMagi } from '../../context';
+import { useConfig, useHistory, useMagi, useAudio } from '../../context';
+import { useMagiAudio } from '../../hooks/useMagiAudio';
 import InputContainer from '../common/InputContainer';
 import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
 import HistoryPanel from '../common/HistoryPanel';
@@ -17,7 +18,22 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   const config = useConfig();
   const history = useHistory();
   const magi = useMagi();
-  
+  const { isAudioEnabled, audioVolume } = useAudio();
+  const audio = useMagiAudio();
+  const stopProcessingSoundRef = useRef<(() => void) | null>(null);
+
+  // 初始化音频
+  useEffect(() => {
+    const initAudio = () => {
+      audio.initialize();
+      window.removeEventListener('click', initAudio);
+    };
+    window.addEventListener('click', initAudio);
+    return () => {
+      window.removeEventListener('click', initAudio);
+    };
+  }, [audio]);
+
   // 启动动画状态
   const [isStartupComplete, setIsStartupComplete] = useState(false);
   const [showStartupScreen, setShowStartupScreen] = useState(true);
@@ -45,6 +61,36 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
       }, 2000);
     }
   }, [config.isLoading, config.isConfigValid, config.apiKey, isStartupComplete]);
+
+  // 音频效果
+  useEffect(() => {
+    audio.setVolume(audioVolume / 100);
+  }, [audioVolume, audio]);
+
+  useEffect(() => {
+    if (isAudioEnabled) {
+      if (magi.systemStatus === 'processing') {
+        stopProcessingSoundRef.current = audio.playProcessingSound();
+      } else {
+        if (stopProcessingSoundRef.current) {
+          stopProcessingSoundRef.current();
+          stopProcessingSoundRef.current = null;
+        }
+      }
+    }
+    return () => {
+      if (stopProcessingSoundRef.current) {
+        stopProcessingSoundRef.current();
+        stopProcessingSoundRef.current = null;
+      }
+    };
+  }, [magi.systemStatus, isAudioEnabled, audio]);
+
+  useEffect(() => {
+    if (isAudioEnabled && magi.systemStatus === 'completed' && magi.finalStatus) {
+      audio.playDecisionSound(magi.finalStatus);
+    }
+  }, [magi.finalStatus, magi.systemStatus, isAudioEnabled, audio]);
 
   // 监听AI处理开始，清空旧的保存追踪
   useEffect(() => {

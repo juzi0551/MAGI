@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useConfig } from '../../context';
+import { useConfig, useAudio } from '../../context';
 import { AIProvider } from '../../types/ai';
 
 interface SettingsModalProps {
@@ -26,6 +26,7 @@ const DEFAULT_MODELS = {
  */
 const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const config = useConfig();
+  const { isAudioEnabled, audioVolume, toggleAudio, setAudioVolume } = useAudio();
   
   // 本地状态管理
   const [localProvider, setLocalProvider] = useState<AIProvider>(config.provider);
@@ -134,6 +135,28 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
             type="password"
             value={localApiKey}
             onChange={(e) => setLocalApiKey(e.target.value)}
+          />
+        </div>
+
+        <hr />
+
+        <h2>音频设置</h2>
+        <div className="form-group">
+          <label>启用音频</label>
+          <label className="switch">
+            <input type="checkbox" checked={isAudioEnabled} onChange={toggleAudio} />
+            <span className="slider round"></span>
+          </label>
+        </div>
+        <div className="form-group">
+          <label>音量</label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={audioVolume}
+            onChange={(e) => setAudioVolume(Number(e.target.value))}
+            disabled={!isAudioEnabled}
           />
         </div>
 

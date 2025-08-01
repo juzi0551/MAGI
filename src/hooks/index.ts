@@ -27,3 +27,6 @@ export {
   useHistoryDetail,
   type UseHistoryReturn
 } from './useHistory';
+
+// 音频效果Hook
+export { useMagiAudio } from './useMagiAudio';

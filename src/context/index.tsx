@@ -2,6 +2,7 @@ import { ContextProviderProps } from '../types/context';
 import { ConfigProvider } from './ConfigContext';
 import { MagiProvider } from './MagiContext';
 import { HistoryProvider } from './HistoryContext';
+import { AudioProvider } from './AudioContext';
 
 /**
  * 应用主Context Provider
@@ -10,11 +11,13 @@ import { HistoryProvider } from './HistoryContext';
 export function AppProvider({ children }: ContextProviderProps) {
   return (
     <ConfigProvider>
-      <HistoryProvider>
-        <MagiProvider>
-          {children}
-        </MagiProvider>
-      </HistoryProvider>
+      <AudioProvider>
+        <HistoryProvider>
+          <MagiProvider>
+            {children}
+          </MagiProvider>
+        </HistoryProvider>
+      </AudioProvider>
     </ConfigProvider>
   );
 }
@@ -25,3 +28,4 @@ export function AppProvider({ children }: ContextProviderProps) {
 export { ConfigProvider, useConfig } from './ConfigContext';
 export { MagiProvider, useMagi } from './MagiContext';
 export { HistoryProvider, useHistory } from './HistoryContext';
+export { AudioProvider, useAudio } from './AudioContext';
