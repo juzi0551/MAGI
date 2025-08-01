@@ -4,13 +4,34 @@
   "version": "1.0.0",
   "type": "module",
   "description": "MAGI决策系统 - 基于《新世纪福音战士》的超级计算机系统",
+  "author": "Your Name",
+  "license": "MIT",
+  "homepage": "https://github.com/juzi0551/MAGI#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juzi0551/MAGI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juzi0551/MAGI/issues"
+  },
+  "keywords": ["magi", "eva", "react", "vite", "typescript", "ai"],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:prod": "NODE_ENV=production tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
     "preview": "vite preview",
+    "serve": "vite preview --port 4173",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -32,5 +53,17 @@
     "jest-environment-jsdom": "^29.7.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
