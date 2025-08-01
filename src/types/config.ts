@@ -94,7 +94,7 @@ export interface ConfigMigration {
 export const DEFAULT_CONFIG: AppConfig = {
   userConfig: {
     provider: 'openrouter',
-    model: 'openrouter/google/gemini-2.5-flash',
+    model: 'google/gemini-2.5-flash',
     apiKey: '',
   },
   audioSettings: {
@@ -120,14 +120,14 @@ export const AI_PROVIDERS: AIProviderOption[] = [
     value: 'openrouter',
     label: 'OpenRouter',
     models: {
-      'openrouter/anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet',
-      'openrouter/anthropic/claude-3-haiku': 'Claude 3 Haiku',
-      'openrouter/openai/gpt-4': 'GPT-4',
-      'openrouter/meta-llama/llama-3.1-70b-instruct': 'Llama 3.1 70B',
-      'openrouter/google/gemini-pro': 'Gemini Pro',
-      'openrouter/google/gemini-2.5-flash': 'Gemini 2.5 Flash',
+      'anthropic/claude-3.5-sonnet': 'Claude 3.5 Sonnet',
+      'anthropic/claude-3-haiku': 'Claude 3 Haiku',
+      'openai/gpt-4': 'GPT-4',
+      'meta-llama/llama-3.1-70b-instruct': 'Llama 3.1 70B',
+      'google/gemini-pro': 'Gemini Pro',
+      'google/gemini-2.5-flash': 'Gemini 2.5 Flash',
     },
-    defaultModel: 'openrouter/google/gemini-2.5-flash',
+    defaultModel: 'google/gemini-2.5-flash',
     requiresApiKey: true,
     description: '聚合多种AI模型的服务平台',
   },

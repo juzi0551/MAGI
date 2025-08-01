@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagiSystemProps, SystemStatus } from '../../types';
 import { HistoryRecord } from '../../types/history';
+import { useConfig } from '../../context';
 import InputContainer from '../common/InputContainer';
 import WiseAnswerDisplay from '../magi/WiseAnswerDisplay';
 import HistoryPanel from '../common/HistoryPanel';
 import HistoryModal from '../common/HistoryModal';
-import SettingsPanel from '../common/SettingsPanel';
+import SettingsModal from '../common/SettingsModal';
 import StartupScreen from '../common/StartupScreen';
 
 /**
@@ -13,6 +14,8 @@ import StartupScreen from '../common/StartupScreen';
  * 负责整体布局和状态协调
  */
 const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
+  const config = useConfig();
+  
   // 启动动画状态
   const [isStartupComplete, setIsStartupComplete] = useState(false);
   const [showStartupScreen, setShowStartupScreen] = useState(true);
@@ -31,6 +34,19 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
   
   // 右侧面板显示状态
   const [isRightPanelVisible, setIsRightPanelVisible] = useState(true);
+
+  // 页面加载时检查配置，如果没有API密钥则自动打开设置面板
+  useEffect(() => {
+    if (!config.isLoading && !config.isConfigValid) {
+      // 延迟一点时间让初始化和启动动画完成
+      setTimeout(() => {
+        if (!config.apiKey && isStartupComplete) {
+          console.log('⚠️ 检测到缺少API配置，自动打开设置面板');
+          setIsSettingsPanelOpen(true);
+        }
+      }, 2000);
+    }
+  }, [config.isLoading, config.isConfigValid, config.apiKey, isStartupComplete]);
 
   // 启动动画完成处理
   const handleStartupComplete = () => {
@@ -264,8 +280,8 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
           onClose={handleHistoryModalClose}
         />
         
-        {/* 设置面板 */}
-        <SettingsPanel
+        {/* 设置模态框 */}
+        <SettingsModal
           isOpen={isSettingsPanelOpen}
           onClose={handleSettingsClose}
         />

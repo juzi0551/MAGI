@@ -22,7 +22,7 @@ const DEFAULT_CONFIG: ConfigStorage = {
   version: '1.0.0',
   userConfig: {
     provider: 'openrouter' as AIProvider,
-    model: 'anthropic/claude-3.5-sonnet',
+    model: 'google/gemini-2.5-flash',
     apiKey: '',
     apiBase: undefined
   },

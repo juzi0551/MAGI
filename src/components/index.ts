@@ -10,6 +10,7 @@ export { default as MagiSystem } from './layout/MagiSystem';
 export { default as InputContainer } from './common/InputContainer';
 export { default as HistoryPanel } from './common/HistoryPanel';
 export { default as HistoryModal } from './common/HistoryModal';
+export { default as SettingsModal } from './common/SettingsModal';
 
 // MAGI系统组件
 export { default as MagiContainer } from './magi/MagiContainer';
