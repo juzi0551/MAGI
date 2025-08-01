@@ -107,7 +107,7 @@ const HistoryPanel = ({
           {records.length === 0 ? (
             <div className="no-history">暫 無</div>
           ) : (
-            records.slice().reverse().map((record) => (
+            records.map((record) => (
               <div
                 key={record.id}
                 className="history-item"

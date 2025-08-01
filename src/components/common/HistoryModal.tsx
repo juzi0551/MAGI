@@ -104,11 +104,11 @@ const HistoryModal = ({
   }
 
   return (
-    <div
-      className={`modal-content history-modal-content ${className}`}
-      onClick={handleBackgroundClick}
-    >
-      <div className="modal-inner" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleBackgroundClick}>
+      <div
+        className={`modal-content history-modal-content ${className}`}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* 模态框标题 */}
         <div className="modal-header">
           <div className="modal-title">📚 历史记录详情</div>

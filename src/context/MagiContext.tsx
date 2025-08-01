@@ -193,6 +193,9 @@ export function MagiProvider({ children }: ContextProviderProps) {
       // 开始处理
       dispatch({ type: 'SET_SYSTEM_STATUS', payload: 'processing' });
       dispatch({ type: 'SET_PROCESSING', payload: true });
+      
+      // 清空输入框（问题发送成功后立即清空）
+      dispatch({ type: 'SET_QUESTION', payload: '' });
 
       // 创建MAGI问题对象
       const magiQuestion: MagiQuestion = {
