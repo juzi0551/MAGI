@@ -24,12 +24,7 @@ export type {
 
 // 提示词配置
 export {
-  MELCHIOR_PROMPT,
-  BALTHASAR_PROMPT,
-  CASPER_PROMPT,
-  YES_NO_QUESTION_PROMPT,
-  PERSONALITY_PROMPTS,
-  getPersonalityPrompt
+   YES_NO_QUESTION_PROMPT,
 } from '../../config/prompts';
 
 // 便捷的默认导出
