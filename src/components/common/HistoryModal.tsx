@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { HistoryModalProps } from '../../types';
 import { WiseManAnswer } from '../../types/ai';
+import { PersonalityId } from '../../types/ai';
+import { useConfig } from '../../context/ConfigContext';
+import { getHistoryPersonalityName } from '../../utils/personalityUtils';
 
 // 为了保持代码一致性，创建WiseAnswer别名
 type WiseAnswer = WiseManAnswer;
@@ -16,6 +19,7 @@ const HistoryModal = ({
   className = ''
 }: HistoryModalProps) => {
   const [expandedAnswers, setExpandedAnswers] = useState<Record<number, boolean>>({});
+  const { personalities } = useConfig();
 
   // 键盘事件处理
   useEffect(() => {
@@ -89,14 +93,34 @@ const HistoryModal = ({
     return statusMap[status as keyof typeof statusMap] || '未知状态';
   };
 
-  // 贤者名称获取
-  const getWiseManName = (name: string): string => {
+  // 贤者名称获取（使用历史快照或当前配置）
+  const getWiseManName = (answer: WiseAnswer): string => {
+    if (!record) return '未知贤者';
+    
+    // 尝试从贤者名称映射到人格ID
+    let personalityId: PersonalityId | null = null;
+    const name = answer.name?.toLowerCase() || '';
+    
+    if (name.includes('melchior') || answer.type === 'scientist') {
+      personalityId = 'melchior';
+    } else if (name.includes('balthasar') || answer.type === 'mother') {
+      personalityId = 'balthasar';
+    } else if (name.includes('casper') || answer.type === 'woman') {
+      personalityId = 'casper';
+    }
+    
+    // 如果能映射到人格ID，使用历史名称获取函数
+    if (personalityId) {
+      return getHistoryPersonalityName(personalityId, record, personalities);
+    }
+    
+    // 兜底逻辑：使用原有的名称映射
     const nameMap = {
       'melchior': 'MELCHIOR-1 (科學家)',
       'balthasar': 'BALTHASAR-2 (母親)',
       'casper': 'CASPER-3 (女人)'
     };
-    return nameMap[name as keyof typeof nameMap] || (name ? name.toUpperCase() : '未知贤者');
+    return nameMap[name as keyof typeof nameMap] || (answer.name ? answer.name.toUpperCase() : '未知贤者');
   };
 
   if (!isOpen || !record) {
@@ -159,7 +183,7 @@ const HistoryModal = ({
                     <div key={`answer-${index}`} className="wise-answer-item">
                       <div className="wise-header">
                         <div className="wise-name">
-                          {getWiseManName(answer.name)}
+                          {getWiseManName(answer)}
                         </div>
                         <div className={`wise-status status-${answer.status || 'info'}`}>
                           {getStatusText(answer.status || 'info')}

@@ -3,6 +3,8 @@
  * 基于原项目的 prompts.py 转换为 TypeScript
  */
 
+import { PersonalitySettings } from '../types/config';
+
 // 默认的EVA背景故事
 export const DEFAULT_BACKGROUND_INFO = `赤木直子（赤木ナオコ，Naoko Akagi）是MAGI电脑系统的开发者。她一生致力于研究，并将女儿律子留给祖母照顾，通过信件与女儿进行互动。在第二次冲击之后，她在位于NERV的前身"人工进化研究所"工作，并修正与解决许多系统的秘密与计划。她爱上了碇源堂，可是碇源堂内心只有碇唯，直子只不过是被他利用的棋子。最后在2010年，在受到碇源堂指使的第一个绫波丽刺激下，她才明白自己在碇源堂的眼中已再没利用的价值，并捏死了绫波丽来泄愤。MAGI完成之后的第二天，赤木直子在终极教条自杀身亡。`;
 
@@ -155,4 +157,26 @@ export const YES_NO_QUESTION_PROMPT = `### 1. 角色与目标 (Role & Goal)
 *  (可验证的陈述句) User: \`The Earth is flat.\` -> \`Yes\`
 *  (开放式疑问句，等同于 "How are you?") User: \`你好吗?\` -> \`No\`
 *  (封闭式疑问句) User: \`他是医生吗?\` -> \`Yes\``;
+
+// 默认人格配置
+export const DEFAULT_PERSONALITIES: PersonalitySettings = {
+  melchior: {
+    id: 'melchior',
+    displayName: 'MELCHIOR-1',
+    subtitle: '科学家',
+    customPrompt: ''
+  },
+  balthasar: {
+    id: 'balthasar', 
+    displayName: 'BALTHASAR-2',
+    subtitle: '母亲',
+    customPrompt: ''
+  },
+  casper: {
+    id: 'casper',
+    displayName: 'CASPER-3', 
+    subtitle: '女人',
+    customPrompt: ''
+  }
+};
 

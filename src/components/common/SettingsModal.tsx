@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useConfig, useAudio } from '../../context';
-import { AIProvider } from '../../types/ai';
-import { DEFAULT_BACKGROUND_INFO, DEFAULT_PERSONALITY_PROMPTS } from '../../config/prompts';
+import { AIProvider, PersonalityId } from '../../types/ai';
+import { PersonalitySettings } from '../../types/config';
+import { DEFAULT_BACKGROUND_INFO, DEFAULT_PERSONALITY_PROMPTS, DEFAULT_PERSONALITIES } from '../../config/prompts';
+import { mergePersonalitySettings } from '../../utils/personalityUtils';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -45,7 +47,13 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     balthasar: config.customPrompts?.balthasar || '',
     casper: config.customPrompts?.casper || ''
   });
-  const [activePersonality, setActivePersonality] = useState<'melchior' | 'balthasar' | 'casper'>('melchior');
+  
+  // 新增：人格名称设置的本地状态
+  const [localPersonalities, setLocalPersonalities] = useState<PersonalitySettings>(() => {
+    return config.personalities || mergePersonalitySettings();
+  });
+  
+  const [activePersonality, setActivePersonality] = useState<PersonalityId>('melchior');
 
   // 同步配置到本地状态
   useEffect(() => {
@@ -60,6 +68,8 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         balthasar: config.customPrompts?.balthasar || '',
         casper: config.customPrompts?.casper || ''
       });
+      // 新增：同步人格配置
+      setLocalPersonalities(config.personalities || mergePersonalitySettings());
     }
   }, [isOpen, config]);
 
@@ -80,7 +90,7 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   };
 
   // 恢复默认人格
-  const handleRestoreDefaultPersonality = (personality: 'melchior' | 'balthasar' | 'casper') => {
+  const handleRestoreDefaultPersonality = (personality: PersonalityId) => {
     setLocalCustomPrompts(prev => ({
       ...prev,
       [personality]: ''
@@ -88,21 +98,62 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   };
 
   // 填入默认人格
-  const handleFillDefaultPersonality = (personality: 'melchior' | 'balthasar' | 'casper') => {
+  const handleFillDefaultPersonality = (personality: PersonalityId) => {
     setLocalCustomPrompts(prev => ({
       ...prev,
       [personality]: DEFAULT_PERSONALITY_PROMPTS[personality]
     }));
   };
 
+  // 新增：人格名称修改处理
+  const handlePersonalityNameChange = (personality: PersonalityId, field: 'displayName' | 'subtitle', value: string) => {
+    setLocalPersonalities(prev => ({
+      ...prev,
+      [personality]: {
+        ...prev[personality],
+        [field]: value
+      }
+    }));
+  };
+
+  // 新增：恢复默认人格名称
+  const handleRestoreDefaultPersonalityName = (personality: PersonalityId) => {
+    setLocalPersonalities(prev => ({
+      ...prev,
+      [personality]: {
+        ...prev[personality],
+        displayName: DEFAULT_PERSONALITIES[personality].displayName,
+        subtitle: DEFAULT_PERSONALITIES[personality].subtitle
+      }
+    }));
+  };
+
   // 保存配置
   const handleSave = () => {
+    // 合并人格提示词到新的人格配置中
+    const updatedPersonalities: PersonalitySettings = {
+      melchior: {
+        ...localPersonalities.melchior,
+        customPrompt: localCustomPrompts.melchior || ''
+      },
+      balthasar: {
+        ...localPersonalities.balthasar,
+        customPrompt: localCustomPrompts.balthasar || ''
+      },
+      casper: {
+        ...localPersonalities.casper,
+        customPrompt: localCustomPrompts.casper || ''
+      }
+    };
+
     config.updateConfig({
       provider: localProvider,
       model: localModel,
       apiKey: localApiKey,
       apiBase: localApiBase || undefined,
       customBackground: localCustomBackground || undefined,
+      personalities: updatedPersonalities,
+      // 保持向后兼容
       customPrompts: {
         melchior: localCustomPrompts.melchior || undefined,
         balthasar: localCustomPrompts.balthasar || undefined,
@@ -293,30 +344,67 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     className={`personality-tab ${activePersonality === 'melchior' ? 'active' : ''}`}
                     onClick={() => setActivePersonality('melchior')}
                   >
-                    Melchior (科学家)
+                    {localPersonalities.melchior.displayName} ({localPersonalities.melchior.subtitle})
                   </button>
                   <button
                     className={`personality-tab ${activePersonality === 'balthasar' ? 'active' : ''}`}
                     onClick={() => setActivePersonality('balthasar')}
                   >
-                    Balthasar (母亲)
+                    {localPersonalities.balthasar.displayName} ({localPersonalities.balthasar.subtitle})
                   </button>
                   <button
                     className={`personality-tab ${activePersonality === 'casper' ? 'active' : ''}`}
                     onClick={() => setActivePersonality('casper')}
                   >
-                    Casper (女人)
+                    {localPersonalities.casper.displayName} ({localPersonalities.casper.subtitle})
                   </button>
                 </div>
 
                 {/* 当前选中人格的设置 */}
                 <div className="personality-content">
+                  {/* 人格名称设置 */}
+                  <div className="form-group">
+                    <div className="textarea-header">
+                      <label>人格名称设置</label>
+                      <button 
+                        type="button" 
+                        className="restore-default-btn"
+                        onClick={() => handleRestoreDefaultPersonalityName(activePersonality)}
+                      >
+                        恢复默认名称
+                      </button>
+                    </div>
+                    <div className="personality-name-inputs">
+                      <div className="input-group">
+                        <label htmlFor={`displayName-${activePersonality}`}>显示名称:</label>
+                        <input
+                          id={`displayName-${activePersonality}`}
+                          type="text"
+                          value={localPersonalities[activePersonality].displayName}
+                          onChange={(e) => handlePersonalityNameChange(activePersonality, 'displayName', e.target.value)}
+                          placeholder="例如: MELCHIOR-1"
+                          className="personality-name-input"
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label htmlFor={`subtitle-${activePersonality}`}>副标题:</label>
+                        <input
+                          id={`subtitle-${activePersonality}`}
+                          type="text"
+                          value={localPersonalities[activePersonality].subtitle}
+                          onChange={(e) => handlePersonalityNameChange(activePersonality, 'subtitle', e.target.value)}
+                          placeholder="例如: 科学家"
+                          className="personality-name-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 人格描述设置 */}
                   <div className="form-group">
                     <div className="textarea-header">
                       <label>
-                        {activePersonality === 'melchior' && 'Melchior-1 (科学家) 人格描述'}
-                        {activePersonality === 'balthasar' && 'Balthasar-2 (母亲) 人格描述'}
-                        {activePersonality === 'casper' && 'Casper-3 (女人) 人格描述'}
+                        {localPersonalities[activePersonality].displayName} ({localPersonalities[activePersonality].subtitle}) 人格描述
                       </label>
                       <div className="button-group">
                         <button 

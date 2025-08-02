@@ -1,10 +1,11 @@
 import { AIService } from './aiService';
-import { MagiQuestion, MagiDecision, WiseManAnswer } from '../../types/ai';
+import { MagiQuestion, MagiDecision, WiseManAnswer, PersonalityId } from '../../types/ai';
 import { UserConfig } from '../../types/config';
 import { 
   YES_NO_QUESTION_PROMPT, 
   generateFinalPrompt
 } from '../../config/prompts';
+import { getPersonalityFullName } from '../../utils/personalityUtils';
 
 /**
  * MAGI查询服务 - 核心业务逻辑
@@ -35,11 +36,14 @@ export class MagiQueryService {
 
       // 步骤2: 生成三贤者的完整提示词（考虑用户自定义设置）
       console.log('📋 步骤2: 生成三贤者提示词');
-      const personalityNames = ['melchior', 'balthasar', 'casper'];
-      const personalities = personalityNames.map(name => {
-        const customPrompt = userConfig?.customPrompts?.[name as keyof typeof userConfig.customPrompts];
+      const personalityIds: PersonalityId[] = ['melchior', 'balthasar', 'casper'];
+      const personalities = personalityIds.map(personalityId => {
+        // 优先使用新的人格配置，否则回退到旧的customPrompts
+        const customPrompt = userConfig?.personalities?.[personalityId]?.customPrompt ||
+                            userConfig?.customPrompts?.[personalityId];
+        
         return generateFinalPrompt(
-          name,
+          personalityId,
           userConfig?.customBackground,
           customPrompt
         );
@@ -61,12 +65,15 @@ export class MagiQueryService {
       // 步骤4: 解析贤者回答
       console.log('📋 步骤4: 解析贤者回答');
       const wiseManAnswers: WiseManAnswer[] = rawResponses.map((response, index) => {
-        const wiseManNames = ['Melchior-1', 'Balthasar-2', 'Casper-3'];
+        const personalityId = personalityIds[index];
         const wiseManTypes = ['scientist', 'mother', 'woman'];
         
+        // 动态获取人格名称
+        const wiseManName = getPersonalityFullName(personalityId, userConfig?.personalities);
+        
         const answer: WiseManAnswer = {
-          id: `${question.id}-${wiseManNames[index].toLowerCase()}`,
-          name: wiseManNames[index],
+          id: `${question.id}-${personalityId}`,
+          name: wiseManName,
           type: wiseManTypes[index] as 'scientist' | 'mother' | 'woman',
           response: response.response,
           status: response.status as 'yes' | 'no' | 'conditional' | 'info' | 'error',
@@ -75,7 +82,7 @@ export class MagiQueryService {
           timestamp: Date.now()
         };
 
-        console.log(`🎯 ${wiseManNames[index]} 回答解析:`, {
+        console.log(`🎯 ${wiseManName} 回答解析:`, {
           status: answer.status,
           responseLength: answer.response.length,
           hasConditions: (answer.conditions || []).length > 0,

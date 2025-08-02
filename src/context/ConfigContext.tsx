@@ -1,8 +1,9 @@
 import { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { ConfigContextType, ContextProviderProps } from '../types/context';
-import { UserConfig, AudioSettings, DEFAULT_CONFIG } from '../types/config';
+import { UserConfig, AudioSettings, DEFAULT_CONFIG, PersonalitySettings } from '../types/config';
 import { AIProvider } from '../types/ai';
 import { ConfigStorageService } from '../services/storage/configStorage';
+import { mergePersonalitySettings, migratePersonalityConfig, needsMigration, validatePersonalitySettings } from '../utils/personalityUtils';
 
 interface ConfigState {
   provider: AIProvider;
@@ -11,6 +12,11 @@ interface ConfigState {
   apiBase?: string;
   audioSettings: AudioSettings;
   customBackground?: string;
+  
+  // 新的人格配置
+  personalities?: PersonalitySettings;
+  
+  // 兼容性：保留旧字段
   customPrompts?: {
     melchior?: string;
     balthasar?: string;
@@ -38,6 +44,7 @@ const initialState: ConfigState = {
   apiBase: DEFAULT_CONFIG.userConfig.apiBase,
   audioSettings: DEFAULT_CONFIG.audioSettings,
   customBackground: DEFAULT_CONFIG.userConfig.customBackground,
+  personalities: mergePersonalitySettings(),
   customPrompts: DEFAULT_CONFIG.userConfig.customPrompts,
   isConfigValid: false,
   isLoading: false,
@@ -53,6 +60,16 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
       return { ...state, error: action.payload };
     
     case 'SET_CONFIG':
+      // 检查是否需要迁移配置
+      let personalities = action.payload.personalities;
+      if (needsMigration(action.payload)) {
+        personalities = migratePersonalityConfig(action.payload);
+        // 自动保存迁移后的配置
+        ConfigStorageService.updateUserConfig({ personalities });
+      } else if (personalities) {
+        personalities = mergePersonalitySettings(personalities);
+      }
+      
       return {
         ...state,
         provider: action.payload.provider,
@@ -60,6 +77,7 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         apiKey: action.payload.apiKey,
         apiBase: action.payload.apiBase,
         customBackground: action.payload.customBackground,
+        personalities: personalities || state.personalities,
         customPrompts: action.payload.customPrompts,
         isConfigValid: !!(action.payload.provider && action.payload.model && action.payload.apiKey?.trim()),
       };
@@ -77,6 +95,7 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         apiKey: action.payload.apiKey !== undefined ? action.payload.apiKey : state.apiKey,
         apiBase: action.payload.apiBase !== undefined ? action.payload.apiBase : state.apiBase,
         customBackground: action.payload.customBackground !== undefined ? action.payload.customBackground : state.customBackground,
+        personalities: action.payload.personalities !== undefined ? mergePersonalitySettings(action.payload.personalities) : state.personalities,
         customPrompts: action.payload.customPrompts !== undefined ? action.payload.customPrompts : state.customPrompts,
       };
       
@@ -104,14 +123,18 @@ function configReducer(state: ConfigState, action: ConfigAction): ConfigState {
         apiKey: DEFAULT_CONFIG.userConfig.apiKey,
         apiBase: DEFAULT_CONFIG.userConfig.apiBase,
         customBackground: DEFAULT_CONFIG.userConfig.customBackground,
+        personalities: mergePersonalitySettings(),
         customPrompts: DEFAULT_CONFIG.userConfig.customPrompts,
         isConfigValid: false,
       };
     
     case 'VALIDATE_CONFIG':
+      const basicConfigValid = !!(state.provider && state.model && state.apiKey?.trim());
+      const personalitiesValid = state.personalities ? validatePersonalitySettings(state.personalities) : true;
+      
       return {
         ...state,
-        isConfigValid: !!(state.provider && state.model && state.apiKey?.trim()),
+        isConfigValid: basicConfigValid && personalitiesValid,
       };
     
     default:
@@ -248,6 +271,7 @@ export function ConfigProvider({ children }: ContextProviderProps) {
     apiBase: state.apiBase,
     audioSettings: state.audioSettings,
     customBackground: state.customBackground,
+    personalities: state.personalities,
     customPrompts: state.customPrompts,
     isConfigValid: state.isConfigValid,
     isLoading: state.isLoading,

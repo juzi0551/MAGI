@@ -27,11 +27,14 @@ export type SystemStatus = 'standby' | 'processing' | 'completed';
 // 最终决策状态类型
 export type FinalStatus = 'yes' | 'no' | 'conditional' | 'info' | 'error';
 
-// 贤者名称类型
+// 贤者名称类型 - 内部标识符
 export type WiseManName = 'melchior' | 'balthasar' | 'casper';
 
 // 贤者类型
 export type WiseManType = 'scientist' | 'mother' | 'woman';
+
+// 人格标识符映射类型 - 用于类型安全的键访问
+export type PersonalityId = WiseManName;
 
 // MAGI问题接口
 export interface MagiQuestion {

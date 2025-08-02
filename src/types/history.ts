@@ -13,6 +13,13 @@ export interface HistoryRecord {
   finalStatus: FinalStatus;
   answers: WiseManAnswer[];
   duration?: number; // 处理时长（毫秒）
+  
+  // 新增：保存创建时的人格名称映射（用于历史记录显示）
+  personalityNamesSnapshot?: {
+    melchior: string;
+    balthasar: string;
+    casper: string;
+  };
 }
 
 // 历史记录存储格式接口

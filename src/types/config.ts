@@ -4,6 +4,21 @@
 
 import { AIProvider } from './ai';
 
+// 人格配置接口
+export interface PersonalityConfig {
+  id: 'melchior' | 'balthasar' | 'casper';  // 内部标识符，不可变
+  displayName: string;                       // 用户自定义显示名称
+  subtitle: string;                          // 副标题描述
+  customPrompt?: string;                     // 自定义提示词
+}
+
+// 人格设置集合接口
+export interface PersonalitySettings {
+  melchior: PersonalityConfig;
+  balthasar: PersonalityConfig;
+  casper: PersonalityConfig;
+}
+
 // 用户配置接口
 export interface UserConfig {
   provider: AIProvider;
@@ -11,6 +26,11 @@ export interface UserConfig {
   apiKey: string;
   apiBase?: string;
   customBackground?: string;
+  
+  // 新的人格配置格式
+  personalities?: PersonalitySettings;
+  
+  // 兼容性：保留旧字段用于数据迁移
   customPrompts?: {
     melchior?: string;
     balthasar?: string;
@@ -49,6 +69,11 @@ export interface ConfigContextType {
   apiBase?: string;
   audioSettings: AudioSettings;
   customBackground?: string;
+  
+  // 新的人格配置
+  personalities?: PersonalitySettings;
+  
+  // 兼容性：保留旧字段
   customPrompts?: {
     melchior?: string;
     balthasar?: string;

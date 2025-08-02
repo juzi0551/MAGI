@@ -11,7 +11,7 @@ import {
   AppError 
 } from './ai';
 import { HistoryRecord } from './history';
-import { AudioSettings, UserConfig } from './config';
+import { AudioSettings, UserConfig, PersonalitySettings } from './config';
 
 // MAGI系统上下文类型
 export interface MagiContextType {
@@ -54,6 +54,11 @@ export interface ConfigContextType {
   
   // 自定义设置状态
   customBackground?: string;
+  
+  // 人格配置状态
+  personalities?: PersonalitySettings;
+  
+  // 兼容性：保留旧字段
   customPrompts?: {
     melchior?: string;
     balthasar?: string;

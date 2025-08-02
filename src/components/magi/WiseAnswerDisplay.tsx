@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { WiseAnswerDisplayProps } from '../../types';
-import { useMagi } from '../../context';
+import { useMagi, useConfig } from '../../context';
+import { getPersonalityFullName } from '../../utils/personalityUtils';
+import { PersonalityId } from '../../types/ai';
 
 /**
  * 贤者回答显示组件 - 与MAGI Context完全集成
@@ -16,8 +18,19 @@ const WiseAnswerDisplay = ({
   className = ''
 }: WiseAnswerDisplayProps) => {
   const magi = useMagi();
+  const { personalities } = useConfig();
   const [expanded, setExpanded] = useState(isExpanded);
   const [currentAnswer, setCurrentAnswer] = useState<any>(null);
+
+  // 动态获取人格标题
+  const getWiseManTitle = (name: string): string => {
+    // 检查是否为人格ID
+    if (['melchior', 'balthasar', 'casper'].includes(name)) {
+      return getPersonalityFullName(name as PersonalityId, personalities);
+    }
+    // 如果不是人格ID，可能已经是格式化后的名称，直接使用
+    return name;
+  };
 
   // 从MAGI Context获取对应的贤者回答
   useEffect(() => {
@@ -42,18 +55,6 @@ const WiseAnswerDisplay = ({
     onToggleExpand?.();
   };
 
-  const getWiseManTitle = (name: string): string => {
-    switch (name) {
-      case 'melchior':
-        return 'MELCHIOR-1 (科學家)';
-      case 'balthasar':
-        return 'BALTHASAR-2 (母親)';
-      case 'casper':
-        return 'CASPER-3 (女人)';
-      default:
-        return name.toUpperCase();
-    }
-  };
 
   const getStatusText = (status: string): string => {
     switch (status) {

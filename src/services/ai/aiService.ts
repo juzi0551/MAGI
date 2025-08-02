@@ -1,5 +1,6 @@
-import { AIProvider, AIResponse, MagiQuestion } from '../../types/ai';
+import { AIProvider, AIResponse, MagiQuestion, PersonalityId } from '../../types/ai';
 import { ConfigStorageService } from '../storage/configStorage';
+import { getPersonalityFullName } from '../../utils/personalityUtils';
 
 /**
  * AI服务类 - 统一多AI提供商接口
@@ -112,8 +113,19 @@ export class AIService {
      * 获取单个贤者的回答
      */
     const fetchAnswer = async (personality: string, index: number): Promise<AIResponse> => {
-      const personalityNames = ['MELCHIOR-1 (科學家)', 'BALTHASAR-2 (母親)', 'Casper-3 (女人)'];
-      const personalityName = personalityNames[index] || `贤者-${index + 1}`;
+      // 获取人格配置
+      const configResult = ConfigStorageService.getUserConfig();
+      const userConfig = configResult.success ? configResult.data : undefined;
+      const personalities = userConfig?.personalities;
+      
+      // 定义人格ID映射
+      const personalityIds: PersonalityId[] = ['melchior', 'balthasar', 'casper'];
+      const personalityId = personalityIds[index];
+      
+      // 动态获取人格名称
+      const personalityName = personalityId 
+        ? getPersonalityFullName(personalityId, personalities)
+        : `贤者-${index + 1}`;
       
       console.log(`🎯 开始查询 ${personalityName}`);
       

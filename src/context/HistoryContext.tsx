@@ -2,6 +2,8 @@ import { createContext, useContext, useReducer, useEffect, useCallback } from 'r
 import { HistoryContextType, ContextProviderProps } from '../types/context';
 import { HistoryRecord } from '../types/history';
 import { HistoryStorageService } from '../services/storage/historyStorage';
+import { useConfig } from './ConfigContext';
+import { createPersonalitySnapshot, migrateHistoryRecord } from '../utils/personalityUtils';
 
 /**
  * 历史记录状态类型
@@ -107,6 +109,7 @@ const HistoryContext = createContext<HistoryContextType | undefined>(undefined);
  */
 export function HistoryProvider({ children }: ContextProviderProps) {
   const [state, dispatch] = useReducer(historyReducer, initialState);
+  const config = useConfig();
 
   /**
    * 错误处理
@@ -125,8 +128,11 @@ export function HistoryProvider({ children }: ContextProviderProps) {
     try {
       const result = HistoryStorageService.getRecords();
       if (result.success && result.data) {
-        // 按时间倒序排序（最新的在前面）
-        const sortedRecords = result.data.sort((a, b) => b.timestamp - a.timestamp);
+        // 为旧记录迁移添加名称快照，按时间倒序排序（最新的在前面）
+        const migratedRecords = result.data.map(record => 
+          migrateHistoryRecord(record, config.personalities)
+        );
+        const sortedRecords = migratedRecords.sort((a, b) => b.timestamp - a.timestamp);
         dispatch({ type: 'SET_RECORDS', payload: sortedRecords });
         
         // 更新统计信息
@@ -146,7 +152,7 @@ export function HistoryProvider({ children }: ContextProviderProps) {
     } catch (error) {
       handleError(`加载历史记录异常: ${error instanceof Error ? error.message : '未知错误'}`);
     }
-  }, [handleError]);
+  }, [handleError, config.personalities]);
 
   /**
    * 初始化时加载历史记录
@@ -164,6 +170,7 @@ export function HistoryProvider({ children }: ContextProviderProps) {
         ...record,
         id: `record-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         timestamp: Date.now(),
+        personalityNamesSnapshot: createPersonalitySnapshot(config.personalities)
       };
 
       const result = HistoryStorageService.addRecord(newRecord);
@@ -185,7 +192,7 @@ export function HistoryProvider({ children }: ContextProviderProps) {
     } catch (error) {
       handleError(`添加历史记录异常: ${error instanceof Error ? error.message : '未知错误'}`);
     }
-  }, [state.totalRecords, state.totalProcessingTime, handleError]);
+  }, [state.totalRecords, state.totalProcessingTime, handleError, config.personalities]);
 
   /**
    * 选择记录

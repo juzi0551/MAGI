@@ -435,6 +435,47 @@
   transform: translateY(-1px);
 }
 
+/* 人格名称输入样式 */
+.personality-name-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.input-group label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  font-weight: bold;
+}
+
+.personality-name-input {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid rgba(255, 141, 0, 0.3);
+  border-radius: var(--border-radius);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--color-text);
+  font-family: var(--font-family-fallback);
+  font-size: var(--font-size-sm);
+  transition: var(--transition-normal);
+}
+
+.personality-name-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px rgba(255, 141, 0, 0.2);
+}
+
+.personality-name-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* 大文本域样式 */
 .background-textarea,
 .personality-textarea {
@@ -627,6 +668,15 @@
   .restore-default-btn {
     font-size: 10px;
     padding: 4px var(--spacing-xs);
+  }
+  
+  .personality-name-inputs {
+    gap: var(--spacing-xs);
+  }
+  
+  .personality-name-input {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
   }
   
   .background-textarea,

@@ -1,4 +1,7 @@
 import { WiseManProps } from '../../types';
+import { useConfig } from '../../context';
+import { getPersonalityFullName, getMagiPanelDisplayName } from '../../utils/personalityUtils';
+import { PersonalityId } from '../../types/ai';
 
 /**
  * 贤者组件
@@ -12,11 +15,32 @@ const WiseMan = ({
   className = '', 
   isAnimating = false 
 }: WiseManProps) => {
+  const { personalities } = useConfig();
+
   const handleClick = () => {
     onClick?.();
   };
 
   const wiseManClass = `wise-man ${name} status-${status} ${isAnimating ? 'animating' : ''} ${className}`;
+
+  // 动态获取人格标题
+  const getWiseManTitle = (name: string): string => {
+    // 如果name是人格ID，使用配置中的名称
+    if (['melchior', 'balthasar', 'casper'].includes(name)) {
+      return getPersonalityFullName(name as PersonalityId, personalities);
+    }
+    // 否则使用默认逻辑
+    switch (name) {
+      case 'melchior':
+        return 'MELCHIOR-1 (科學家)';
+      case 'balthasar':
+        return 'BALTHASAR-2 (母親)';
+      case 'casper':
+        return 'CASPER-3 (女人)';
+      default:
+        return name.toUpperCase();
+    }
+  };
 
   return (
     <div 
@@ -27,25 +51,14 @@ const WiseMan = ({
       title={`${getWiseManTitle(name)} - ${getStatusText(status)}`}
     >
       <div className="inner">
-        {name.toUpperCase()} • {orderNumber}
+        {['melchior', 'balthasar', 'casper'].includes(name) 
+          ? getMagiPanelDisplayName(name as PersonalityId, personalities)
+          : name.toUpperCase()
+        } • {orderNumber}
       </div>
     </div>
   );
 };
-
-// 获取贤者标题的辅助函数
-function getWiseManTitle(name: string): string {
-  switch (name) {
-    case 'melchior':
-      return 'MELCHIOR-1 (科學家)';
-    case 'balthasar':
-      return 'BALTHASAR-2 (母親)';
-    case 'casper':
-      return 'CASPER-3 (女人)';
-    default:
-      return name.toUpperCase();
-  }
-}
 
 // 获取状态文本的辅助函数
 function getStatusText(status: string): string {
