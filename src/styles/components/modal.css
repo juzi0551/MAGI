@@ -391,6 +391,31 @@
   font-weight: bold;
 }
 
+/* 按钮组样式 */
+.button-group {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+/* 填入默认按钮样式 */
+.fill-default-btn {
+  background: rgba(0, 255, 127, 0.1);
+  border: 1px solid #00ff7f;
+  color: #00ff7f;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  transition: var(--transition-normal);
+  border-radius: var(--border-radius);
+}
+
+.fill-default-btn:hover {
+  background: rgba(0, 255, 127, 0.2);
+  transform: translateY(-1px);
+}
+
 /* 恢复默认按钮 */
 .restore-default-btn {
   background: rgba(255, 141, 0, 0.1);
@@ -598,6 +623,7 @@
     gap: var(--spacing-xs);
   }
   
+  .fill-default-btn,
   .restore-default-btn {
     font-size: 10px;
     padding: 4px var(--spacing-xs);

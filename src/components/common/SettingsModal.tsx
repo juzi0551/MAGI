@@ -71,11 +71,24 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
   // 恢复默认背景
   const handleRestoreDefaultBackground = () => {
+    setLocalCustomBackground('');
+  };
+
+  // 填入默认背景
+  const handleFillDefaultBackground = () => {
     setLocalCustomBackground(DEFAULT_BACKGROUND_INFO);
   };
 
   // 恢复默认人格
   const handleRestoreDefaultPersonality = (personality: 'melchior' | 'balthasar' | 'casper') => {
+    setLocalCustomPrompts(prev => ({
+      ...prev,
+      [personality]: ''
+    }));
+  };
+
+  // 填入默认人格
+  const handleFillDefaultPersonality = (personality: 'melchior' | 'balthasar' | 'casper') => {
     setLocalCustomPrompts(prev => ({
       ...prev,
       [personality]: DEFAULT_PERSONALITY_PROMPTS[personality]
@@ -244,13 +257,22 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                 <div className="form-group">
                   <div className="textarea-header">
                     <label>自定义背景故事</label>
-                    <button 
-                      type="button" 
-                      className="restore-default-btn"
-                      onClick={handleRestoreDefaultBackground}
-                    >
-                      恢复默认
-                    </button>
+                    <div className="button-group">
+                      <button 
+                        type="button" 
+                        className="fill-default-btn"
+                        onClick={handleFillDefaultBackground}
+                      >
+                        填入默认
+                      </button>
+                      <button 
+                        type="button" 
+                        className="restore-default-btn"
+                        onClick={handleRestoreDefaultBackground}
+                      >
+                        恢复默认
+                      </button>
+                    </div>
                   </div>
                   <textarea
                     value={localCustomBackground}
@@ -296,13 +318,22 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                         {activePersonality === 'balthasar' && 'Balthasar-2 (母亲) 人格描述'}
                         {activePersonality === 'casper' && 'Casper-3 (女人) 人格描述'}
                       </label>
-                      <button 
-                        type="button" 
-                        className="restore-default-btn"
-                        onClick={() => handleRestoreDefaultPersonality(activePersonality)}
-                      >
-                        恢复默认
-                      </button>
+                      <div className="button-group">
+                        <button 
+                          type="button" 
+                          className="fill-default-btn"
+                          onClick={() => handleFillDefaultPersonality(activePersonality)}
+                        >
+                          填入默认
+                        </button>
+                        <button 
+                          type="button" 
+                          className="restore-default-btn"
+                          onClick={() => handleRestoreDefaultPersonality(activePersonality)}
+                        >
+                          恢复默认
+                        </button>
+                      </div>
                     </div>
                     <textarea
                       value={localCustomPrompts[activePersonality]}
