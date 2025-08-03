@@ -11,11 +11,13 @@ import SettingsModal from '../common/SettingsModal';
 import StartupScreen from '../common/StartupScreen';
 import hideIcon from '../../assets/images/hide.svg';
 import settingIcon from '../../assets/images/setting.svg';
+import githubIcon from '../../assets/images/github.png';
 
 // 确保资源被Vite识别和包含
 const icons = {
   hide: hideIcon,
-  setting: settingIcon
+  setting: settingIcon,
+  github: githubIcon
 };
 
 /**
@@ -222,6 +224,11 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
     setIsSettingsPanelOpen(false);
   };
 
+  // GitHub点击事件处理
+  const handleGithubClick = () => {
+    window.open('https://github.com/juzi0551/MAGI', '_blank');
+  };
+
   // 右侧面板显示/隐藏事件处理
   const handleRightPanelToggle = () => {
     setIsRightPanelVisible(!isRightPanelVisible);
@@ -284,8 +291,13 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
 
         {/* 控制按钮区域 - 独立于右侧面板 */}
         <div className="control-buttons">
+          {/* GitHub按钮 */}
+          <div className="github-icon control-button" title="GitHub" onClick={handleGithubClick}>
+            <img src={icons.github} alt="GitHub" width="20" height="20" />
+          </div>
+
           {/* 展开/收缩按钮 */}
-          <div className="panel-toggle-btn" title={isRightPanelVisible ? "收缩右侧面板" : "展开右侧面板"} onClick={handleRightPanelToggle}>
+          <div className="panel-toggle-btn control-button" title={isRightPanelVisible ? "收缩右侧面板" : "展开右侧面板"} onClick={handleRightPanelToggle}>
             <img
               src={icons.hide}
               alt={isRightPanelVisible ? "隐藏" : "展开"}
@@ -295,7 +307,7 @@ const MagiSystem = ({ children, className = '' }: MagiSystemProps) => {
           </div>
 
           {/* 设置图标 */}
-          <div className="settings-icon" title="设置" onClick={handleSettingsClick}>
+          <div className="settings-icon control-button" title="设置" onClick={handleSettingsClick}>
             <img src={icons.setting} alt="设置" width="20" height="20" />
           </div>
         </div>

@@ -567,25 +567,24 @@
   padding-right: 0;
 }
 
-/* 控制按钮区域 - 使用flex布局with space-between */
+/* 控制按钮区域 - 使用flex布局 */
 .control-buttons {
   position: fixed;
   bottom: 20px;
   right: 20px;
   width: auto;
-  min-width: 100px;
+  min-width: 150px; /* 确保有足够宽度容纳3个按钮 */
   height: 40px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between; /* 改为space-between确保分散对齐 */
+  gap: 10px; /* 使用gap代替space-between */
   z-index: 9999;
-  /* 临时调试 - 可以看到容器边界 */
   padding: 5px;
 }
 
-/* 展开/收缩按钮 - 默认转180度 */
-.panel-toggle-btn {
+/* 通用控制按钮样式 */
+.control-button {
   position: relative;
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid var(--color-primary);
@@ -601,48 +600,44 @@
   transition: var(--transition-normal);
   user-select: none;
   flex-shrink: 0;
+}
+
+.control-button:hover {
+  opacity: 1;
+  background: rgba(255, 141, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.control-button:active {
+  transform: scale(0.95);
+}
+
+/* GitHub按钮特有样式 */
+.github-icon img {
+  opacity: 0.5; /* 半透明效果 */
+  transition: opacity var(--transition-normal);
+}
+
+.github-icon:hover img {
+  opacity: 0.8; /* hover时稍微增加透明度 */
+}
+
+/* 展开/收缩按钮 - 继承通用样式，添加旋转 */
+.panel-toggle-btn {
   transform: rotate(180deg); /* 默认转180度 */
 }
 
-/* 设置按钮 - 回到flex item */
-.settings-icon {
-  position: relative;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: var(--transition-normal);
-  user-select: none;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
 .panel-toggle-btn:hover {
-  opacity: 1;
-  background: rgba(255, 141, 0, 0.1);
-}
-
-/* 设置按钮hover效果 */
-.settings-icon:hover {
-  opacity: 1;
-  background: rgba(255, 141, 0, 0.1);
-  transform: rotate(90deg);
-}
-
-.settings-icon:active {
-  transform: scale(0.95);
+  transform: rotate(180deg) scale(1.1); /* 保持旋转的同时缩放 */
 }
 
 /* 当右侧面板隐藏时，按钮的特殊样式 */
 .right-panel.hidden ~ .control-buttons .panel-toggle-btn {
   transform: rotate(0deg); /* 隐藏面板后正常角度 */
+}
+
+.right-panel.hidden ~ .control-buttons .panel-toggle-btn:hover {
+  transform: rotate(0deg) scale(1.1); /* 保持正常角度的同时缩放 */
 }
 
 @keyframes pulse-glow {
@@ -876,7 +871,9 @@
   }
   
   .panel-toggle-btn,
-  .settings-icon {
+  .github-icon,
+  .settings-icon,
+  .control-button {
     width: 30px;
     height: 30px;
     font-size: 14px;

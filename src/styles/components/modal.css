@@ -237,8 +237,8 @@
   cursor: not-allowed;
 }
 
-/* 设置图标 */
-.settings-icon {
+/* 模态框设置图标 */
+.modal-settings-icon {
   position: fixed;
   bottom: var(--spacing-xl);
   right: var(--spacing-xl);
@@ -254,7 +254,7 @@
   border: 1px solid var(--color-border);
 }
 
-.settings-icon:hover {
+.modal-settings-icon:hover {
   opacity: var(--opacity-active);
   background: rgba(255, 141, 0, 0.1);
   transform: scale(1.1);

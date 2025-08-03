@@ -106,7 +106,7 @@ body {
     margin-top: var(--spacing-md);
   }
 
-  .settings-icon {
+  .modal-settings-icon {
     bottom: var(--spacing-md);
     right: var(--spacing-md);
     font-size: 24px;
