@@ -195,13 +195,11 @@
   line-height: 0.9;
 }
 
-/* 贤者核心 */
+/* 贤者核心 - 移除cursor: pointer和transition */
 .magi>.wise-man {
   display: flex;
   background: var(--color-primary);
   padding: 2px;
-  cursor: pointer;
-  transition: var(--transition-normal);
   position: relative;
   z-index: 2;
 }
@@ -234,7 +232,8 @@
   clip-path: polygon(0 0, 71% 0, 100% 44%, 100% 100%, 0 100%);
 }
 
-.magi>.wise-man::before {
+/* 移除悬停效果 - 去掉::before背景光晕效果 */
+/* .magi>.wise-man::before {
   content: '';
   position: absolute;
   top: -2px;
@@ -249,7 +248,7 @@
 
 .magi>.wise-man:hover::before {
   opacity: 0.3;
-}
+} */
 
 .magi>.wise-man>.inner {
   width: 100%;
@@ -487,8 +486,8 @@
   animation: var(--animation-flicker);
 }
 
-/* 悬停效果 */
-.magi>.wise-man:hover {
+/* 移除悬停效果 - 去掉鼠标放到核心上的放大和样式变化 */
+/* .magi>.wise-man:hover {
   opacity: var(--opacity-hover);
   transform: scale(1.02);
 }
@@ -496,7 +495,7 @@
 .magi>.wise-man:active {
   opacity: var(--opacity-active);
   transform: scale(0.98);
-}
+} */
 
 /* 动画状态 */
 .magi>.wise-man.animating {
