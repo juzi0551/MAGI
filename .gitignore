@@ -18,6 +18,9 @@ build/
 # IDE and editor files
 .vscode/
 .idea/
+
+# Documentation (development only)
+src/docs/
 *.swp
 *.swo
 *~
